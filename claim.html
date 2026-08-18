@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claim your league — PlayoffProof</title>
+<style>
+:root{--bg:#000;--bg2:#0a0c10;--ink:#f5f5f7;--ink2:#a1a1a6;--muted:#6e6e73;
+ --grad:linear-gradient(100deg,#4f8bff 10%,#8b5cf6 55%,#c084fc 90%)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,Roboto,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 80px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;margin-bottom:52px}
+.mark{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--grad);font-size:13px}
+.card{width:100%;max-width:520px;background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:26px;padding:38px 34px}
+h1{font-size:clamp(26px,5vw,34px);letter-spacing:-.02em;line-height:1.15;margin-bottom:10px}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:14px;color:var(--ink2);line-height:1.55;margin-bottom:26px}
+label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 7px}
+input,select{width:100%;background:#000;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:13px 16px;font:inherit;font-size:15px;color:var(--ink);outline:none}
+input:focus,select:focus{border-color:#4f8bff}
+button{width:100%;margin-top:28px;background:var(--grad);color:#fff;border:0;border-radius:980px;padding:16px;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+.fine{font-size:12px;color:var(--muted);line-height:1.6;margin-top:16px;text-align:center}
+.fine b{color:var(--ink2)}
+.lockline{display:flex;gap:10px;align-items:flex-start;background:rgba(79,139,255,.08);border:1px solid rgba(79,139,255,.25);border-radius:14px;padding:12px 14px;font-size:12.5px;color:var(--ink2);line-height:1.5;margin-top:22px}
+a{color:var(--ink2)}
+</style></head>
+<body>
+<div class="logo"><span class="mark">▲</span>PlayoffProof</div>
+<div class="card">
+ <h1>Become a <span class="grad">Founding Load Manager</span></h1>
+ <p class="sub">First 200 leagues. <b style="color:var(--ink)">$69</b> for the full 2026-27 season — tools unlock Oct 21, founding price locked for every season you renew. <b style="color:var(--ink)">All sales final:</b> this is a data product — once you've seen the intel it can't be unseen, so we don't do refunds. Not sure? <a href="simulator-demo.html" style="color:#4f8bff">The full demo is free</a> — try everything first.</p>
+
+ <form id="claim">
+  <label>Your email</label>
+  <input type="email" name="email" required placeholder="you@email.com">
+  <label>Fantasy platform</label>
+  <select name="platform" required>
+   <option value="">Choose…</option>
+   <option>ESPN</option><option>Yahoo</option><option>Sleeper</option>
+   <option>Fantrax</option><option>CBS</option><option>Other</option>
+  </select>
+  <label>League ID or league URL</label>
+  <input name="league" required placeholder="e.g. 13504, or paste your league's URL">
+  <label>Your team name</label>
+  <input name="team" required placeholder="e.g. Lebronchitis">
+  <button type="submit" id="go">Claim my league → choose payment, $69</button>
+ </form>
+
+ <div id="paychoice" style="display:none">
+  <p style="font-size:13px;color:var(--ink2);margin:6px 0 14px">✓ Claim saved. Finish with whichever you trust:</p>
+  <a id="payCard" href="#" style="display:block;text-align:center;background:var(--grad);color:#fff;border-radius:980px;padding:15px;font-weight:700;font-size:15px;text-decoration:none">💳 Card · Apple Pay · Google Pay</a>
+  <a id="payPP" href="#" style="display:block;text-align:center;background:#ffc439;color:#111;border-radius:980px;padding:15px;font-weight:700;font-size:15px;text-decoration:none;margin-top:10px">PayPal · Venmo</a>
+  <p style="font-size:11.5px;color:var(--muted);text-align:center;margin-top:10px">Both are $69 · all sales final (data product) · duplicate-league claims refunded in full</p>
+ </div>
+
+ <div class="lockline">🔒 <span><b>One claim per league — enforced.</b> We verify every claim against its league ID. The only refund we ever issue: if someone from your league beat you to the claim, you get 100% back instantly — and we tell you who to blame. We never ask for your fantasy password.</span></div>
+ <p class="fine">Step 2 is a secure Stripe page — card details never touch our servers.<br><a href="index.html">← back</a></p>
+</div>
+
+<script>
+// ============================================================
+// SETUP (two placeholders to replace before launch):
+// 1. FORM_ENDPOINT — your Formspree form (records the league claim
+//    BEFORE payment so you can enforce one-per-league and follow up
+//    on abandoned checkouts).
+// 2. STRIPE_LINK — a Stripe Payment Link for:
+//    Product "Founding Load Manager — Season Pass", $69/year
+//    subscription, charged immediately (no trial). Policy: ALL
+//    SALES FINAL (data product) — state it on the Stripe checkout
+//    too (custom text field in Payment Link settings) so it is
+//    disclosed at the point of payment; sole exception is the
+//    duplicate-league refund. Stripe can redirect to a thank-you
+//    page after payment.
+// ============================================================
+const FORM_ENDPOINT='https://formspree.io/f/YOUR_FORM_ID';
+const STRIPE_LINK='https://buy.stripe.com/YOUR_SETUP_LINK';
+// 3. PAYPAL_LINK — from a PayPal BUSINESS account: create a $69
+//    payment link/button for "Founding Load Manager — Season Pass".
+//    US PayPal checkout automatically offers "Pay with Venmo" on
+//    mobile — that's the Venmo answer, through the legit rail.
+//    State "all sales final — digital data product" in the item
+//    description (PayPal disputes lean buyer-friendly on digital
+//    goods; the disclosure is your defense).
+const PAYPAL_LINK='https://www.paypal.com/ncp/payment/YOUR_PP_LINK';
+
+document.getElementById('claim').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const btn=document.getElementById('go');btn.disabled=true;btn.textContent='Saving your claim…';
+ const data=new FormData(e.target);
+ try{await fetch(FORM_ENDPOINT,{method:'POST',body:data,headers:{'Accept':'application/json'}});}catch(err){}
+ const email=encodeURIComponent(data.get('email'));
+ document.getElementById('payCard').href=STRIPE_LINK+(STRIPE_LINK.includes('?')?'&':'?')+'prefilled_email='+email;
+ if(PAYPAL_LINK.includes('YOUR_PP_LINK')){document.getElementById('payPP').style.display='none';}
+ else{document.getElementById('payPP').href=PAYPAL_LINK;}
+ document.getElementById('claim').style.display='none';
+ document.getElementById('paychoice').style.display='block';
+});
+</script>
+</body></html>
