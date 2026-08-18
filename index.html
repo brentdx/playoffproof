@@ -65,12 +65,10 @@ h2{font-size:clamp(36px,6.4vw,80px)}
 .gr2{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:center}
 .gr{background:#000;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px 10px 14px}
 .gr .k2g{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.gr .lt{font-size:clamp(54px,9vw,72px);font-weight:800;letter-spacing:-.03em;line-height:1.1;transition:color .35s}
+.gr .lt{font-size:clamp(40px,8vw,58px);font-weight:800;letter-spacing:-.03em;line-height:1.1;transition:color .35s}
 .gr .cap{font-size:11px;color:var(--muted)}
 .lt.gA{color:#2fd575}.lt.gB{color:#a7d52f}.lt.gC{color:#f5b83d}.lt.gD{color:#ff5d5d}
-.oddsline{text-align:center;font-size:14px;color:var(--ink2);margin:16px 0 6px}
-.oddsline b{font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}
-.oddsline .dchip{font-weight:700;font-variant-numeric:tabular-nums}
+.gr .dchip{font-size:12px;font-weight:800;color:#2fd575;font-variant-numeric:tabular-nums;min-height:17px}
 .arow{display:flex;align-items:center;gap:14px;padding:13px 2px;border-top:1px solid rgba(255,255,255,.08)}
 .arow:first-of-type{border-top:0;margin-top:8px}
 .arow .at{flex:1;min-width:0}
@@ -157,14 +155,13 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 <section id="aha" style="min-height:auto">
  <div class="kicker rv">Try it · ten seconds</div>
  <h2 class="rv d1" style="font-size:clamp(30px,5vw,60px)">Your draft kit grades<br><span class="grad">the wrong season.</span></h2>
- <p class="sub rv d2" style="margin-top:14px">Every ranking site grades this first round an A. Your actual playoff weeks grade it a C+. Two taps close the gap.</p>
+ <p class="sub rv d2" style="margin-top:14px">Every ranking site sees a 72% favorite. Your actual playoff weeks say 15%. Two taps close the gap.</p>
  <div class="aha-card rv d2">
   <div class="gr2">
-   <div class="gr"><div class="k2g">Draft kit says</div><div class="lt gA">A</div><div class="cap">season averages</div></div>
-   <div class="gr"><div class="k2g">April says</div><div class="lt gC" id="aprLt">C+</div><div class="cap">your playoff weeks</div></div>
+   <div class="gr"><div class="k2g">Win your regular season</div><div class="lt gA">72%</div><div class="dchip">&nbsp;</div><div class="cap">season averages · every draft kit</div></div>
+   <div class="gr"><div class="k2g">Win your playoffs</div><div class="lt gC" id="aprLt">15%</div><div class="dchip" id="aprD">&nbsp;</div><div class="cap">your actual title weeks</div></div>
   </div>
   <p class="whyline">Same roster. Kawhi and Curry project to sit chunks of your playoff weeks, and this bench can't cover the missing games.</p>
-  <div class="oddsline">Title odds <b id="aprOdds">15%</b> <span class="dchip" id="aprD"></span></div>
   <p class="fixk">Now make the two moves your draft kit would never suggest:</p>
   <div class="arow" id="swap0">
    <span class="at"><b class="nm">Sam Merrill <span class="tg">bench</span></b><small class="ds">1 of 7 semi/final-week games in your title weeks</small></span>
@@ -191,13 +188,13 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
       {o:'Dru Smith',od:'February stats, zero April minutes',
        n:'Tyler Herro',nd:'in for Dru Smith \u00b7 contract year, plays every April minute',p:6}],
   st=[false,false],
-  lt=document.getElementById('aprLt'),od=document.getElementById('aprOdds'),
+  lt=document.getElementById('aprLt'),
   dc=document.getElementById('aprD'),pn=document.getElementById('aprPunch');
  let cur=BASE;
- function grade(o){return o>=28?['A-','gA']:o>=22?['B','gB']:o>=15?['C+','gC']:['D','gD'];}
+ function tint(o){return o>=28?'gA':o>=22?'gB':o>=15?'gC':'gD';}
  function tween(from,to){const t0=performance.now();
   (function step(t){const p=Math.min(1,(t-t0)/450),v=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));
-   od.textContent=v+'%';if(p<1)requestAnimationFrame(step);})(t0);}
+   lt.textContent=v+'%';if(p<1)requestAnimationFrame(step);})(t0);}
  function paint(i){const row=document.getElementById('swap'+i),s=SW[i],on=st[i];
   row.classList.toggle('on',on);
   row.querySelector('.nm').innerHTML=(on?'\u2713 '+s.n:s.o)+' <span class="tg">'+(on?'April-proof':'bench')+'</span>';
@@ -205,11 +202,10 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   row.querySelector('.swapbtn').textContent=on?'\u21ba undo':'\u21c4 swap';}
  function update(){
   const target=BASE+SW.reduce((s,x,i)=>s+(st[i]?x.p:0),0);
-  const [g,cls]=grade(target);
   tween(cur,target);cur=target;
-  lt.textContent=g;lt.className='lt '+cls;
+  lt.className='lt '+tint(target);
   const d=target-BASE;
-  dc.textContent=d?'+'+d+' pts':'';dc.style.color=d?'#2fd575':'';
+  dc.innerHTML=d?'+'+d+' pts':'&nbsp;';
   pn.classList.toggle('on',st.every(Boolean));}
  SW.forEach((s,i)=>{document.querySelector('#swap'+i+' .swapbtn').addEventListener('click',()=>{st[i]=!st[i];paint(i);update();});});
 })();
