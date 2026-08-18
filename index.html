@@ -73,7 +73,8 @@ h2{font-size:clamp(36px,6.4vw,80px)}
 .arow:first-of-type{border-top:0;margin-top:8px}
 .arow .at{flex:1;min-width:0}
 .arow .at b{display:block;font-size:14.5px;letter-spacing:-.01em}
-.arow .at small{color:var(--muted);font-size:12px;line-height:1.4}
+.arow .at small{color:var(--muted);font-size:12px;line-height:1.4;display:block}
+.arow .at small .r{display:block;margin-top:5px;color:var(--ink2)}
 .arow .hit{font-size:12px;font-weight:800;color:#2fd575;min-width:34px;text-align:right;font-variant-numeric:tabular-nums;opacity:0;transition:opacity .3s;flex:none}
 .arow.on .hit{opacity:1}
 .arow .tg{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:2px 8px;vertical-align:2px;margin-left:4px}
@@ -183,9 +184,12 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 (function(){
  const BASE=15,
   SW=[{o:'Sam Merrill',od:'1 of 7 semi/final-week games in your title weeks',
-       n:'Deni Avdija',nd:'in for Sam Merrill \u00b7 5 of 7 playoff-week games, plays through April',p:7},
+       n:'Deni Avdija',nd:'in for Sam Merrill \u00b7 5 of 7 playoff-week games'
+        +'<span class="r">\ud83c\udfe2 POR win-now mandate: new owner traded for Morant, needs April wins</span>'
+        +'<span class="r">\ud83d\ude91 injury-prone starter ahead of him: those playoff-week minutes land on Deni</span>',p:7},
       {o:'Dru Smith',od:'February stats, zero April minutes',
-       n:'Tyler Herro',nd:'in for Dru Smith \u00b7 contract year, plays every April minute',p:6}],
+       n:'Tyler Herro',nd:'in for Dru Smith \u00b7 plays every April minute'
+        +'<span class="r">\ud83d\udcb0 contract year: every April game prices his next deal</span>',p:6}],
   st=[false,false],
   lt=document.getElementById('aprLt'),
   dc=document.getElementById('aprD'),pn=document.getElementById('aprPunch');
@@ -197,7 +201,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  function paint(i){const row=document.getElementById('swap'+i),s=SW[i],on=st[i];
   row.classList.toggle('on',on);
   row.querySelector('.nm').innerHTML=(on?'\u2713 '+s.n:s.o)+' <span class="tg">'+(on?'April-proof':'bench')+'</span>';
-  row.querySelector('.ds').textContent=on?s.nd:s.od;
+  row.querySelector('.ds').innerHTML=on?s.nd:s.od;
   row.querySelector('.swapbtn').textContent=on?'\u21ba undo':'\u21c4 swap';}
  function update(){
   const target=BASE+SW.reduce((s,x,i)=>s+(st[i]?x.p:0),0);
