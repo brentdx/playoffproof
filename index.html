@@ -60,6 +60,16 @@ h2{font-size:clamp(36px,6.4vw,80px)}
 .shot{max-width:980px;width:100%;margin-top:56px;border-radius:26px;border:1px solid rgba(255,255,255,.1);
   box-shadow:0 40px 120px rgba(79,139,255,.14),0 24px 60px rgba(0,0,0,.6);overflow:hidden}
 .shot img{display:block;width:100%}
+/* ---------- feature clips ---------- */
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;max-width:1080px;margin-top:54px;width:100%}
+.feat{background:var(--bg2);border:1px solid rgba(255,255,255,.08);border-radius:24px;overflow:hidden;text-align:left;display:flex;flex-direction:column}
+.feat .vid{position:relative}
+.feat video{display:block;width:100%;height:auto}
+.feat .vid::after{content:'';position:absolute;left:0;right:0;bottom:0;height:56px;background:linear-gradient(transparent,var(--bg2))}
+.feat .txt{padding:20px 22px 24px}
+.feat .k2{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.feat b{display:block;font-size:18px;letter-spacing:-.01em;margin-bottom:6px}
+.feat p{font-size:14px;color:var(--ink2);line-height:1.55}
 /* ---------- promise checklist ---------- */
 .promise{display:flex;flex-direction:column;gap:20px;margin-top:50px;max-width:620px;text-align:left}
 .promise .row{display:flex;gap:16px;align-items:flex-start;font-size:clamp(16px,1.8vw,20px);color:var(--ink2);line-height:1.5}
@@ -135,7 +145,28 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  </div>
 </section>
 
-<!-- 5 · PRODUCT -->
+<!-- 5 · INSIDE THE SIMULATOR -->
+<section id="inside" style="min-height:auto;padding-top:40px">
+ <div class="kicker rv">Inside the simulator</div>
+ <h2 class="rv d1">See your odds <span class="grad">move.</span></h2>
+ <p class="sub rv d2" style="margin-top:14px">Three of the weapons inside. Every one of them is live in the free demo.</p>
+ <div class="feats">
+  <div class="feat rv d1">
+   <div class="vid"><video autoplay muted loop playsinline preload="metadata" poster="clips/whatif-poster.jpg" src="clips/whatif.mp4" width="880" height="1150" aria-label="Tapping what-if on a risky player moves title odds from 16% to 23%"></video></div>
+   <div class="txt"><div class="k2">One-tap counterfactuals</div><b>What if he plays?</b><p>Tap any risk on your roster. 1,500 seasons re-run on the spot and your title odds react in front of you.</p></div>
+  </div>
+  <div class="feat rv d2">
+   <div class="vid"><video autoplay muted loop playsinline preload="metadata" poster="clips/pickup-poster.jpg" src="clips/pickup.mp4" width="880" height="1010" aria-label="Adding a ranked free agent re-runs the simulation and lifts the odds"></video></div>
+   <div class="txt"><div class="k2">Waivers, ranked for April</div><b>The pickup that wins the finals week</b><p>Free agents ranked by the games they'll actually play in your playoff weeks, not season averages. One tap swaps them in.</p></div>
+  </div>
+  <div class="feat rv d3">
+   <div class="vid"><video autoplay muted loop playsinline preload="metadata" poster="clips/intel-poster.jpg" src="clips/intel.mp4" width="880" height="1240" aria-label="Team intel dials scoring every organization and coach for late-season effort"></video></div>
+   <div class="txt"><div class="k2">Intel no draft kit has</div><b>Who's actually trying in April</b><p>Every front office and coach scored for late-season effort: tank math, rest habits, contract money. Researched for you, yours to override.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 6 · GET STARTED -->
 <section id="how" style="min-height:auto;padding-top:40px">
  <h2 class="rv" style="font-size:clamp(28px,4.6vw,56px)">Get started<br><span class="grad">in minutes.</span></h2>
  <div class="rv d1" style="display:flex;gap:clamp(18px,4vw,54px);justify-content:center;flex-wrap:wrap;margin-top:34px;text-align:left">
@@ -143,7 +174,6 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   <div style="max-width:220px"><div style="font-size:13px;font-weight:800;color:#7d6bfa;letter-spacing:.1em">STEP 2</div><b style="font-size:16px">See your real odds</b><div style="font-size:13px;color:var(--ink2);line-height:1.5;margin-top:4px">1,500 simulated seasons, fought on your playoff weeks — with your risks ranked and one-tap fixes.</div></div>
   <div style="max-width:220px"><div style="font-size:13px;font-weight:800;color:#8b5cf6;letter-spacing:.1em">STEP 3</div><b style="font-size:16px">Lock your league</b><div style="font-size:13px;color:var(--ink2);line-height:1.5;margin-top:4px">Claim it before your rivals do — one manager per league, forever.</div></div>
  </div>
- <a class="shot rv d2" href="simulator-demo.html"><img src="playoffproof-demo.gif" alt="Two draft-night picks changed: title odds jump from 16% to 23%" onerror="this.closest('a').style.display='none'"></a>
  <div class="cta-row rv d3"><a class="cta-big" href="simulator-demo.html">▶ Play the live demo</a><span class="tiny" style="align-self:center">no signup · no password · works with a paste of your league page</span></div>
 </section>
 
@@ -151,7 +181,6 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  <h2 class="rv">Own the alpha<br><span class="grad">for your league.</span></h2>
  <p class="sub rv d1" style="margin-top:14px">We score the signal no site captures — how hard each organization will try to win <i>or tank</i> down the stretch, which coaches actually play their guys, whose contract pays him to play in your finals week, and whose body will let him.</p>
  <p class="sub rv d2" style="margin-top:16px;color:var(--ink);font-weight:600">And we sell it once per league. <span class="grad">One manager. Ever.</span> Claim yours and the rest of your league is locked out — not at launch, not mid-season, not for money.</p>
- <div class="shot rv d2" style="max-width:1120px"><iframe src="simulator-demo.html?embed=1&view=intel" loading="lazy" title="PlayoffProof intel" style="width:100%;height:760px;border:0;display:block;background:#fff"></iframe></div>
 </section>
 
 <!-- 7 · CTA -->
@@ -195,9 +224,6 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 </footer>
 
 <script>
-document.querySelectorAll('iframe').forEach(f=>{
- f.addEventListener('load',()=>{try{const d=f.contentDocument;
-  if(d&&!d.getElementById('oTitle')){const box=f.closest('.shot')||f;box.style.display='none';}}catch(e){}});});
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}}),{threshold:.18});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 </script>
