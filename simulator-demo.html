@@ -160,6 +160,7 @@ input[type=range]{width:100%;accent-color:var(--brand);height:22px}
 <div><div class="logo"><span class="mark">▲</span>PlayoffProof <small>simulator</small></div>
 <p class="sub" id="leagueLine" style="margin-top:4px">League: demo (10-team H2H 9-cat) · edit anything · contract incentives modeled</p></div>
 <div style="display:flex;gap:8px;align-items:center"><button class="ghost" onclick="toggleSetup()" id="setupBtn">⚙ League setup</button>
+<button class="ghost" id="resetBtn" onclick="resetDemo()" style="display:none" title="Clear your saved league and restart with the demo league">↺ fresh demo</button>
 <button class="ghost" onclick="saveFile()">💾</button>
 <label class="ghost" style="border:1px solid var(--line2);border-radius:12px;padding:11px 13px;cursor:pointer">📂<input type="file" id="loadf" accept=".json" style="display:none"></label></div>
 </div>
@@ -827,15 +828,20 @@ function runSim(){
 }
 // persistence
 const LK='playoffproofLeague';
-function autoSave(){try{localStorage.setItem(LK,JSON.stringify(league));}catch(e){}}
+const IS_EMB=!!new URLSearchParams(location.search).get('embed');
+function autoSave(){if(IS_EMB)return;try{localStorage.setItem(LK,JSON.stringify(league));}catch(e){}}
 function saveFile(){const b=new Blob([JSON.stringify(league)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='my-league.json';a.click();}
 document.getElementById('loadf').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{league=JSON.parse(r.result);restoreIntel();buildSetup();renderInc();renderIntel();runSim();}catch(err){alert('bad file');}};
+  r.onload=()=>{try{league=JSON.parse(r.result);restoreIntel();buildSetup();renderInc();renderIntel();runSim();autoSave();
+    const l=document.getElementById('leagueLine');l.textContent='League: loaded from file · auto-saves in this browser';l.style.color='';
+  }catch(err){const l=document.getElementById('leagueLine');l.textContent='⚠️ That file didn\'t load. Export a fresh one with 💾';l.style.color='var(--crit)';}};
   r.readAsText(f);});
-(function(){try{const p=localStorage.getItem(LK);
-  if(p&&confirm('Restore your saved league?')){league=JSON.parse(p);restoreIntel();}}catch(e){}})();
+function resetDemo(){try{localStorage.removeItem(LK);}catch(e){}location.reload();}
+(function(){if(IS_EMB)return;try{const p=localStorage.getItem(LK);
+  if(p){league=JSON.parse(p);restoreIntel();
+    const b=document.getElementById('resetBtn');if(b)b.style.display='';}}catch(e){}})();
 let lastTitles=null,lastN=1000;
 function shareCard(){
   if(!lastTitles)return;
