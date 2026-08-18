@@ -60,6 +60,33 @@ h2{font-size:clamp(36px,6.4vw,80px)}
 .shot{max-width:980px;width:100%;margin-top:56px;border-radius:26px;border:1px solid rgba(255,255,255,.1);
   box-shadow:0 40px 120px rgba(79,139,255,.14),0 24px 60px rgba(0,0,0,.6);overflow:hidden}
 .shot img{display:block;width:100%}
+/* ---------- april grade widget ---------- */
+.aha-card{width:100%;max-width:680px;margin-top:50px;background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:26px;padding:30px 28px;text-align:left}
+.gr2{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:center}
+.gr{background:#000;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px 10px 14px}
+.gr .k2g{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.gr .lt{font-size:clamp(54px,9vw,72px);font-weight:800;letter-spacing:-.03em;line-height:1.1;transition:color .35s}
+.gr .cap{font-size:11px;color:var(--muted)}
+.lt.gA{color:#2fd575}.lt.gB{color:#a7d52f}.lt.gC{color:#f5b83d}.lt.gD{color:#ff5d5d}
+.oddsline{text-align:center;font-size:14px;color:var(--ink2);margin:16px 0 6px}
+.oddsline b{font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}
+.oddsline .dchip{font-weight:700;font-variant-numeric:tabular-nums}
+.arow{display:flex;align-items:center;gap:14px;padding:13px 2px;border-top:1px solid rgba(255,255,255,.08)}
+.arow:first-of-type{border-top:0;margin-top:8px}
+.arow .at{flex:1;min-width:0}
+.arow .at b{display:block;font-size:14.5px;letter-spacing:-.01em}
+.arow .at small{color:var(--muted);font-size:12px;line-height:1.4}
+.arow .hit{font-size:12px;font-weight:800;color:#ff5d5d;min-width:30px;text-align:right;font-variant-numeric:tabular-nums;opacity:0;transition:opacity .3s;flex:none}
+.arow:has(input:checked) .hit{opacity:1}
+.sw{position:relative;width:46px;height:28px;flex:none}
+.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
+.sw .tr{position:absolute;inset:0;background:rgba(255,255,255,.16);border-radius:99px;transition:background .25s}
+.sw .kn{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.sw input:checked ~ .tr{background:linear-gradient(100deg,#4f8bff,#8b5cf6)}
+.sw input:checked ~ .kn{transform:translateX(18px)}
+.punch{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.2,.8,.2,1),opacity .5s;text-align:center}
+.punch.on{max-height:200px;opacity:1}
+.punch p{font-size:14.5px;color:var(--ink);font-weight:600;margin:18px 8px 14px;line-height:1.5}
 /* ---------- feature clips ---------- */
 .feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;max-width:1080px;margin-top:54px;width:100%}
 .feat{background:var(--bg2);border:1px solid rgba(255,255,255,.08);border-radius:24px;overflow:hidden;text-align:left;display:flex;flex-direction:column}
@@ -134,6 +161,50 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  </div>
 </section>
 
+<!-- 3.5 · TRY IT: APRIL GRADE -->
+<section id="aha" style="min-height:auto">
+ <div class="kicker rv">Try it · ten seconds</div>
+ <h2 class="rv d1" style="font-size:clamp(30px,5vw,60px)">Your draft kit grades<br><span class="grad">the wrong season.</span></h2>
+ <p class="sub rv d2" style="margin-top:14px">Here's a first round every ranking site loves. Flip on what actually happens in April.</p>
+ <div class="aha-card rv d2">
+  <div class="gr2">
+   <div class="gr"><div class="k2g">Draft kit says</div><div class="lt gA">A</div><div class="cap">season averages</div></div>
+   <div class="gr"><div class="k2g">April says</div><div class="lt gA" id="aprLt">A</div><div class="cap">your playoff weeks</div></div>
+  </div>
+  <div class="oddsline">Title odds <b id="aprOdds">31%</b> <span class="dchip" id="aprD"></span></div>
+  <label class="arow"><span class="at"><b>🛌 Coaches rest locked seeds</b><small>seed clinched = your stars watch your finals from the bench</small></span><span class="hit">-7</span><span class="sw"><input type="checkbox" data-hit="7"><span class="tr"></span><span class="kn"></span></span></label>
+  <label class="arow"><span class="at"><b>🛑 Tank teams shut stars down</b><small>lottery math outbids your championship week</small></span><span class="hit">-9</span><span class="sw"><input type="checkbox" data-hit="9"><span class="tr"></span><span class="kn"></span></span></label>
+  <label class="arow"><span class="at"><b>🗓️ The real April schedule</b><small>half your roster plays 2 games in your finals week</small></span><span class="hit">-6</span><span class="sw"><input type="checkbox" data-hit="6"><span class="tr"></span><span class="kn"></span></span></label>
+  <div class="punch" id="aprPunch">
+   <p>Same roster. Two thirds of your title odds gone.<br>That's why 65% of top seeds still lose.</p>
+   <a class="cta-ghost" href="simulator-demo.html" style="font-size:14px;padding:12px 26px">▶ See YOUR roster's April grade</a>
+  </div>
+ </div>
+</section>
+
+<script>
+(function(){
+ const BASE=31,lt=document.getElementById('aprLt'),od=document.getElementById('aprOdds'),
+  dc=document.getElementById('aprD'),pn=document.getElementById('aprPunch'),
+  sws=[...document.querySelectorAll('#aha .sw input')];
+ let cur=BASE;
+ function grade(o){return o>=28?['A','gA']:o>=22?['B+','gB']:o>=15?['C+','gC']:['D+','gD'];}
+ function tween(from,to){const t0=performance.now();
+  (function step(t){const p=Math.min(1,(t-t0)/450),v=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));
+   od.textContent=v+'%';if(p<1)requestAnimationFrame(step);})(t0);}
+ function update(){
+  const target=BASE-sws.reduce((s,i)=>s+(i.checked?+i.dataset.hit:0),0);
+  const [g,cls]=grade(target);
+  tween(cur,target);cur=target;
+  lt.textContent=g;lt.className='lt '+cls;
+  const d=target-BASE;
+  dc.textContent=d?d+' pts':'';dc.style.color=d?'var(--crit,#ff5d5d)':'';
+  pn.classList.toggle('on',sws.every(i=>i.checked));
+ }
+ sws.forEach(i=>i.addEventListener('change',update));
+})();
+</script>
+
 <!-- 4 · THE PROMISE -->
 <section id="promise">
  <div class="kicker rv">The promise</div>
@@ -149,8 +220,8 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 <section id="inside" style="min-height:auto;padding-top:40px">
  <div class="kicker rv">Inside the simulator</div>
  <h2 class="rv d1">See your odds <span class="grad">move.</span></h2>
- <p class="sub rv d2" style="margin-top:14px">Three of the weapons inside. Every one of them is live in the free demo.</p>
- <div class="feats">
+ <p class="sub rv d2" style="margin-top:14px">Two of the weapons inside. Both live in the free demo.</p>
+ <div class="feats" style="max-width:900px">
   <div class="feat rv d1">
    <div class="vid"><video autoplay muted loop playsinline preload="metadata" poster="clips/whatif-poster.jpg" src="clips/whatif.mp4" width="880" height="1150" aria-label="Tapping what-if on a risky player moves title odds from 16% to 23%"></video></div>
    <div class="txt"><div class="k2">One-tap counterfactuals</div><b>What if he plays?</b><p>Tap any risk on your roster. 1,500 seasons re-run on the spot and your title odds react in front of you.</p></div>
@@ -158,10 +229,6 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   <div class="feat rv d2">
    <div class="vid"><video autoplay muted loop playsinline preload="metadata" poster="clips/pickup-poster.jpg" src="clips/pickup.mp4" width="880" height="1010" aria-label="Adding a ranked free agent re-runs the simulation and lifts the odds"></video></div>
    <div class="txt"><div class="k2">Waivers, ranked for April</div><b>The pickup that wins the finals week</b><p>Free agents ranked by the games they'll actually play in your playoff weeks, not season averages. One tap swaps them in.</p></div>
-  </div>
-  <div class="feat rv d3">
-   <div class="vid"><video autoplay muted loop playsinline preload="metadata" poster="clips/intel-poster.jpg" src="clips/intel.mp4" width="880" height="1240" aria-label="Team intel dials scoring every organization and coach for late-season effort"></video></div>
-   <div class="txt"><div class="k2">Intel no draft kit has</div><b>Who's actually trying in April</b><p>Every front office and coach scored for late-season effort: tank math, rest habits, contract money. Researched for you, yours to override.</p></div>
   </div>
  </div>
 </section>
