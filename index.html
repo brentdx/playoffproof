@@ -4,7 +4,7 @@
 <title>PlayoffProof — Championships are won in April</title>
 <meta name="description" content="You win the regular season every year. Then April takes it. PlayoffProof simulates your fantasy playoffs — rest, shutdowns, contract incentives and real schedules — before you draft.">
 <meta property="og:title" content="PlayoffProof — Championships are won in April">
-<meta property="og:description" content="65% of top seeds still lose their fantasy playoffs. Simulate yours before you draft. Free demo, no signup.">
+<meta property="og:description" content="65% of top seeds still lose their fantasy playoffs. PlayoffProof scores who actually shows up in April. One manager per league.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://playoffproof.com">
 <meta property="og:image" content="https://playoffproof.com/og-card.png">
@@ -86,7 +86,7 @@ h2{font-size:clamp(36px,6.4vw,80px)}
 .whyline{font-size:13px;color:var(--ink2);line-height:1.55;text-align:center;margin:16px 6px 0}
 .fixk{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;margin:18px 0 4px}
 .punch{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.2,.8,.2,1),opacity .5s;text-align:center}
-.punch.on{max-height:200px;opacity:1}
+.punch.on{max-height:280px;opacity:1}
 .punch p{font-size:14.5px;color:var(--ink);font-weight:600;margin:18px 8px 14px;line-height:1.5}
 /* ---------- promise checklist ---------- */
 .promise{display:flex;flex-direction:column;gap:20px;margin-top:50px;max-width:620px;text-align:left}
@@ -125,7 +125,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   <a href="#promise" class="hideM">The promise</a>
   <a href="#how" class="hideM">How it works</a>
   <span style="font-size:12px;color:var(--muted)" class="hideM">Opens Sept 1</span>
-  <a class="pill-cta" href="simulator-demo.html">Try the demo</a>
+  <a class="pill-cta" href="claim.html">Claim your league</a>
  </div>
 </nav>
 
@@ -163,19 +163,20 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
    <div class="gr"><div class="k2g">Win your playoffs</div><div class="lt gC" id="aprLt">15%</div><div class="dchip" id="aprD">&nbsp;</div><div class="cap">your actual title weeks</div></div>
   </div>
   <p class="whyline">Same roster. Kawhi and Curry project to sit chunks of your playoff weeks, and this bench can't cover the missing games.</p>
-  <p class="fixk">Now make the two moves your draft kit would never suggest:</p>
+  <p class="fixk">Now make two moves no ranking site will. You don't only win in the draft:</p>
   <div class="arow" id="swap0">
    <span class="at"><b class="nm">Sam Merrill <span class="tg">bench</span></b><small class="ds">1 of 7 semi/final-week games in your title weeks</small></span>
    <span class="hit">+7</span>
-   <button class="swapbtn">⇄ swap</button>
+   <button class="swapbtn">⇄ add him</button>
   </div>
   <div class="arow" id="swap1">
    <span class="at"><b class="nm">Dru Smith <span class="tg">bench</span></b><small class="ds">February stats, zero April minutes</small></span>
    <span class="hit">+6</span>
-   <button class="swapbtn">⇄ swap</button>
+   <button class="swapbtn">⇄ trade for him</button>
   </div>
   <div class="punch" id="aprPunch">
-   <p>Two bench moves on draft night. Title odds nearly doubled.<br>Every other draft kit grades both rosters exactly the same.</p>
+   <p>A waiver claim and a trade. Title odds nearly doubled.<br>Every ranking site still grades both rosters exactly the same.</p>
+   <a class="cta-ghost" href="claim.html" style="font-size:14px;padding:12px 26px">🔒 Claim your league — $69</a>
   </div>
  </div>
 </section>
@@ -184,11 +185,11 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 (function(){
  const BASE=15,
   SW=[{o:'Sam Merrill',od:'1 of 7 semi/final-week games in your title weeks',
-       n:'Deni Avdija',nd:'in for Sam Merrill \u00b7 5 of 7 playoff-week games'
+       n:'Deni Avdija',b:'\u21c4 add him',nd:'off the wire for Sam Merrill \u00b7 5 of 7 playoff-week games'
         +'<span class="r">\ud83c\udfe2 POR has no tank switch: the new owner just paid for a Dame-Ja backcourt and promised wins, so nobody gets shut down in March</span>'
         +'<span class="r">\ud83d\ude91 Morant: 79 games in his last 3 seasons \u00b7 every April night Ja sits, the offense runs through Deni</span>',p:7},
       {o:'Dru Smith',od:'February stats, zero April minutes',
-       n:'Tyler Herro',nd:'in for Dru Smith \u00b7 plays every April minute'
+       n:'Tyler Herro',b:'\u21c4 trade for him',nd:'traded in for Dru Smith \u00b7 plays every April minute'
         +'<span class="r">\ud83d\udcb0 $33M expiring, extension unsigned \u00b7 he is pricing his next max in your title weeks</span>'
         +'<span class="r">\ud83c\udfaf hometown rebuild runs through him: zero rest risk, zero minutes cap</span>',p:6}],
   st=[false,false],
@@ -203,7 +204,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   row.classList.toggle('on',on);
   row.querySelector('.nm').innerHTML=(on?'\u2713 '+s.n:s.o)+' <span class="tg">'+(on?'April-proof':'bench')+'</span>';
   row.querySelector('.ds').innerHTML=on?s.nd:s.od;
-  row.querySelector('.swapbtn').textContent=on?'\u21ba undo':'\u21c4 swap';}
+  row.querySelector('.swapbtn').textContent=on?'\u21ba undo':s.b;}
  function update(){
   const target=BASE+SW.reduce((s,x,i)=>s+(st[i]?x.p:0),0);
   tween(cur,target);cur=target;
@@ -234,7 +235,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   <div style="max-width:220px"><div style="font-size:13px;font-weight:800;color:#7d6bfa;letter-spacing:.1em">STEP 2</div><b style="font-size:16px">See your real odds</b><div style="font-size:13px;color:var(--ink2);line-height:1.5;margin-top:4px">1,500 simulated seasons, fought on your playoff weeks — with your risks ranked and one-tap fixes.</div></div>
   <div style="max-width:220px"><div style="font-size:13px;font-weight:800;color:#8b5cf6;letter-spacing:.1em">STEP 3</div><b style="font-size:16px">Lock your league</b><div style="font-size:13px;color:var(--ink2);line-height:1.5;margin-top:4px">Claim it before your rivals do — one manager per league, forever.</div></div>
  </div>
- <div class="cta-row rv d3"><a class="cta-big" href="simulator-demo.html">▶ Play the live demo</a><span class="tiny" style="align-self:center">no signup · no password · works with a paste of your league page</span></div>
+ <div class="cta-row rv d3"><a class="cta-big" href="claim.html">I'm ready to win the playoffs →</a><span class="tiny" style="align-self:center">one manager per league · founding price $69 · locked the moment you claim</span></div>
 </section>
 
 <section style="min-height:auto;padding-top:70px">
@@ -254,7 +255,6 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  </div>
  <div class="cta-row rv d2">
   <a class="cta-big" href="claim.html">🔒 Become a Founding Load Manager — $69</a>
-  <a class="cta-ghost" href="simulator-demo.html">▶ Play the demo</a>
  </div>
  <p class="tiny rv d2" style="max-width:560px;margin-left:auto;margin-right:auto"><span style="text-decoration:line-through;opacity:.6">$99</span> <b style="color:var(--ink)">$69 — Founding Load Manager</b> · first 200 leagues · founding price locked for every season you renew · your league locks the moment you claim it. <b>All sales final</b> — this is a data product; once you've seen the intel, it can't be unseen. (Only exception: if someone from your league claimed it first, you're refunded in full.)</p>
  <form class="email rv d3" action="https://formspree.io/f/xdenylpe" method="POST">
@@ -278,7 +278,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 </section>
 
 <footer>
- PlayoffProof · <a href="simulator-demo.html">live demo</a> · contact<br>
+ PlayoffProof · contact<br>
  Odds from Monte Carlo simulation of real league data on 2026-27 projections. Your league's numbers will differ — that's the point.<br>
  PlayoffProof™ — their coaches manage the load; we manage yours. Not affiliated with the NBA or any fantasy platform. Player names and statistics are facts; facts are free.
 </footer>
