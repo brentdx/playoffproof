@@ -1,15 +1,15 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PlayoffProof: Championships are won in April</title>
-<meta name="description" content="You win the regular season every year. Then April takes it. PlayoffProof simulates your fantasy playoffs (rest, shutdowns, contract incentives and real schedules) before you draft.">
-<meta property="og:title" content="PlayoffProof: Championships are won in April">
-<meta property="og:description" content="65% of top seeds still lose their fantasy playoffs. PlayoffProof scores who actually shows up in April. One manager per league.">
+<title>PlayoffProof: Championships are won in the playoffs</title>
+<meta name="description" content="You win the regular season every year. Then the playoffs take it. PlayoffProof simulates your fantasy playoffs (rest, shutdowns, contract incentives and real schedules) before you draft.">
+<meta property="og:title" content="PlayoffProof: Championships are won in the playoffs">
+<meta property="og:description" content="65% of top seeds still lose their fantasy playoffs. PlayoffProof scores who actually shows up when your title is on the line. One manager per league.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://playoffproof.com">
 <meta property="og:image" content="https://playoffproof.com/og-card.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="PlayoffProof: Championships are won in April">
+<meta name="twitter:title" content="PlayoffProof: Championships are won in the playoffs">
 <meta name="twitter:description" content="65% of top seeds still lose their fantasy playoffs. Simulate yours before you draft.">
 <meta name="twitter:image" content="https://playoffproof.com/og-card.png">
 <style>
@@ -60,7 +60,7 @@ h2{font-size:clamp(36px,6.4vw,80px)}
 .shot{max-width:980px;width:100%;margin-top:56px;border-radius:26px;border:1px solid rgba(255,255,255,.1);
   box-shadow:0 40px 120px rgba(79,139,255,.14),0 24px 60px rgba(0,0,0,.6);overflow:hidden}
 .shot img{display:block;width:100%}
-/* ---------- april grade widget ---------- */
+/* ---------- playoff grade widget ---------- */
 .aha-card{width:100%;max-width:680px;margin-top:50px;background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:26px;padding:30px 28px;text-align:left}
 .gr2{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:center}
 .gr{background:#000;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px 10px 14px}
@@ -131,9 +131,10 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 
 <!-- 1 · THE PROBLEM + THE STAT -->
 <section style="min-height:100vh">
+ <div class="kicker rv" style="color:#4f8bff;margin-bottom:16px">For fantasy basketball managers</div>
  <h1 class="rv">You win the regular season.<br><span class="dim">And lose the playoffs.</span></h1>
  <p class="sub rv d1" style="font-size:clamp(19px,2.3vw,26px);color:var(--ink);font-weight:600;margin-top:30px">That's by design.</p>
- <p class="sub rv d2" style="margin-top:12px">Every ranking, every projection, every draft kit you use is built on <b style="color:var(--ink)">season averages</b>, and averages don't play in April.<br>You need to build for the playoffs.</p>
+ <p class="sub rv d2" style="margin-top:12px">Every ranking, every projection, every draft kit you use is built on <b style="color:var(--ink)">season averages</b>, and averages don't win titles.<br>You need to build for the playoffs.</p>
  <div class="rv d3" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:54px;text-align:left">
   <div class="stat-huge" style="font-size:clamp(72px,10vw,140px);line-height:.95">65%</div>
   <div style="width:1px;align-self:stretch;background:rgba(255,255,255,.14)" class="statdiv"></div>
@@ -152,7 +153,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  </div>
 </section>
 
-<!-- 3.5 · TRY IT: APRIL GRADE -->
+<!-- 3.5 · TRY IT: PLAYOFF GRADE -->
 <section id="aha" style="min-height:auto">
  <div class="kicker rv">Try it · ten seconds</div>
  <h2 class="rv d1" style="font-size:clamp(30px,5vw,60px)">Your draft kit grades<br><span class="grad">the wrong season.</span></h2>
@@ -170,7 +171,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
    <button class="swapbtn">⇄ add him</button>
   </div>
   <div class="arow" id="swap1">
-   <span class="at"><b class="nm">Dru Smith <span class="tg">bench</span></b><small class="ds">February stats, zero April minutes</small></span>
+   <span class="at"><b class="nm">Dru Smith <span class="tg">bench</span></b><small class="ds">February stats, zero playoff-week minutes</small></span>
    <span class="hit">+6</span>
    <button class="swapbtn">⇄ trade for him</button>
   </div>
@@ -187,9 +188,9 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   SW=[{o:'Sam Merrill',od:'1 of 7 semi/final-week games in your title weeks',
        n:'Deni Avdija',b:'\u21c4 add him',nd:'off the wire for Sam Merrill \u00b7 5 of 7 playoff-week games'
         +'<span class="r">\ud83c\udfe2 POR has no tank switch: the new owner just paid for a Dame-Ja backcourt and promised wins, so nobody gets shut down in March</span>'
-        +'<span class="r">\ud83d\ude91 Morant: 79 games in his last 3 seasons \u00b7 every April night Ja sits, the offense runs through Deni</span>',p:7},
-      {o:'Dru Smith',od:'February stats, zero April minutes',
-       n:'Tyler Herro',b:'\u21c4 trade for him',nd:'traded in for Dru Smith \u00b7 plays every April minute'
+        +'<span class="r">\ud83d\ude91 Morant: 79 games in his last 3 seasons \u00b7 every playoff-week night Ja sits, the offense runs through Deni</span>',p:7},
+      {o:'Dru Smith',od:'February stats, zero playoff-week minutes',
+       n:'Tyler Herro',b:'\u21c4 trade for him',nd:'traded in for Dru Smith \u00b7 plays every playoff-week minute'
         +'<span class="r">\ud83d\udcb0 $33M expiring, extension unsigned \u00b7 he is pricing his next max in your title weeks</span>'
         +'<span class="r">\ud83c\udfaf hometown rebuild runs through him: zero rest risk, zero minutes cap</span>',p:6}],
   st=[false,false],
@@ -202,7 +203,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
    lt.textContent=v+'%';if(p<1)requestAnimationFrame(step);})(t0);}
  function paint(i){const row=document.getElementById('swap'+i),s=SW[i],on=st[i];
   row.classList.toggle('on',on);
-  row.querySelector('.nm').innerHTML=(on?'\u2713 '+s.n:s.o)+' <span class="tg">'+(on?'April-proof':'bench')+'</span>';
+  row.querySelector('.nm').innerHTML=(on?'\u2713 '+s.n:s.o)+' <span class="tg">'+(on?'playoff-proof':'bench')+'</span>';
   row.querySelector('.ds').innerHTML=on?s.nd:s.od;
   row.querySelector('.swapbtn').textContent=on?'\u21ba undo':s.b;}
  function update(){
