@@ -17,6 +17,8 @@
   --bg:#000;--bg2:#0a0c10;--ink:#f5f5f7;--ink2:#a1a1a6;--muted:#6e6e73;
   --b1:#4f8bff;--b2:#8b5cf6;--grad:linear-gradient(100deg,#4f8bff 10%,#8b5cf6 55%,#c084fc 90%);
 }
+/* subtle glow so the hero stat carries weight without shouting */
+@keyframes glowPulse{0%,100%{text-shadow:0 0 30px rgba(79,139,255,.22)}50%{text-shadow:0 0 46px rgba(139,92,246,.38)}}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,Roboto,sans-serif;
@@ -101,9 +103,10 @@ h2{font-size:clamp(36px,6.4vw,80px)}
 .founder-id .who{text-align:left;font-size:14px;line-height:1.45}
 .founder-id .who span{color:var(--muted)}
 /* ---------- cta ---------- */
-.cta-big{background:var(--grad);color:#fff;border:0;border-radius:980px;padding:18px 40px;font-weight:700;font-size:18px;cursor:pointer;
-  text-decoration:none;display:inline-block;transition:transform .2s,box-shadow .2s}
-.cta-big:hover{transform:scale(1.03);box-shadow:0 18px 50px rgba(139,92,246,.4)}
+.cta-big{background:var(--grad);color:#fff;border:0;border-radius:980px;padding:22px 52px;font-weight:800;font-size:clamp(19px,2.2vw,23px);
+  letter-spacing:-.01em;cursor:pointer;text-decoration:none;display:inline-block;transition:transform .18s,box-shadow .18s;
+  box-shadow:0 14px 44px rgba(139,92,246,.32)}
+.cta-big:hover{transform:scale(1.04);box-shadow:0 22px 64px rgba(139,92,246,.5)}
 .cta-ghost{border:1px solid rgba(255,255,255,.25);border-radius:980px;padding:17px 34px;font-weight:600;font-size:16px;color:var(--ink);
   background:transparent;cursor:pointer;text-decoration:none;display:inline-block}
 .cta-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:44px}
@@ -125,7 +128,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   <a href="#promise" class="hideM">The promise</a>
   <a href="#how" class="hideM">How it works</a>
   <span style="font-size:12px;color:var(--muted)" class="hideM">Opens Sept 1</span>
-  <a class="pill-cta" href="claim.html">Claim your league</a>
+  <a class="pill-cta" href="claim.html">Ready to Win?</a>
  </div>
 </nav>
 
@@ -136,9 +139,13 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  <p class="sub rv d1" style="font-size:clamp(19px,2.3vw,26px);color:var(--ink);font-weight:600;margin-top:30px">That's by design.</p>
  <p class="sub rv d2" style="margin-top:12px">Every ranking, every projection, every draft kit you use is built on <b style="color:var(--ink)">season averages</b>, and averages don't win titles.<br>You need to build for the playoffs.</p>
  <div class="rv d3" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:54px;text-align:left">
-  <div class="stat-huge" style="font-size:clamp(72px,10vw,140px);line-height:.95">65%</div>
+  <div class="stat-huge" style="font-size:clamp(72px,10vw,140px);line-height:.95;animation:glowPulse 4s ease-in-out infinite">65%</div>
   <div style="width:1px;align-self:stretch;background:rgba(255,255,255,.14)" class="statdiv"></div>
   <p class="stat-cap" style="max-width:330px;margin:0;font-size:clamp(15px,1.6vw,19px)">of top seeds <b style="color:var(--ink)">still lose</b> their fantasy playoffs. Blame rest days, tank shutdowns, and schedules nobody checked in October.</p>
+ </div>
+ <div class="cta-row rv d3" style="margin-top:40px">
+  <a class="cta-big" href="claim.html">Ready to Win?</a>
+  <span class="tiny" style="align-self:center">one manager per league · opens Sept 1</span>
  </div>
 </section>
 
@@ -177,7 +184,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   </div>
   <div class="punch" id="aprPunch">
    <p>A waiver claim and a trade. Title odds nearly doubled.<br>Every ranking site still grades both rosters exactly the same.</p>
-   <a class="cta-ghost" href="claim.html" style="font-size:14px;padding:12px 26px">🔒 Claim your league · $69</a>
+   <a class="cta-big" href="claim.html">Ready to Win? · $69</a>
   </div>
  </div>
 </section>
@@ -236,13 +243,17 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   <div style="max-width:220px"><div style="font-size:13px;font-weight:800;color:#7d6bfa;letter-spacing:.1em">STEP 2</div><b style="font-size:16px">See your real odds</b><div style="font-size:13px;color:var(--ink2);line-height:1.5;margin-top:4px">1,500 simulated seasons, fought on your playoff weeks, with your risks ranked and one-tap fixes.</div></div>
   <div style="max-width:220px"><div style="font-size:13px;font-weight:800;color:#8b5cf6;letter-spacing:.1em">STEP 3</div><b style="font-size:16px">Lock your league</b><div style="font-size:13px;color:var(--ink2);line-height:1.5;margin-top:4px">Claim it before your rivals do. One manager per league, forever.</div></div>
  </div>
- <div class="cta-row rv d3"><a class="cta-big" href="claim.html">I'm ready to win the playoffs →</a><span class="tiny" style="align-self:center">one manager per league · founding price $69 · locked the moment you claim</span></div>
+ <div class="cta-row rv d3"><a class="cta-big" href="claim.html">Ready to Win?</a><span class="tiny" style="align-self:center">one manager per league · founding price $69 · locked the moment you claim</span></div>
 </section>
 
 <section style="min-height:auto;padding-top:70px">
  <h2 class="rv">Own the alpha<br><span class="grad">for your league.</span></h2>
  <p class="sub rv d1" style="margin-top:14px">We score the signal no site captures: how hard each organization will try to win <i>or tank</i> down the stretch, which coaches actually play their guys, whose contract pays him to play in your finals week, and whose body will let him.</p>
  <p class="sub rv d2" style="margin-top:16px;color:var(--ink);font-weight:600">And we sell it once per league. <span class="grad">One manager. Ever.</span> Claim yours and the rest of your league is locked out. Not at launch, not mid-season, not for money.</p>
+ <div class="cta-row rv d2" style="margin-top:40px">
+  <a class="cta-big" href="claim.html">Ready to Win?</a>
+  <span class="tiny" style="align-self:center">founding price $69 · locked the moment you claim</span>
+ </div>
 </section>
 
 <!-- 7 · CTA -->
@@ -255,7 +266,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
   <div style="display:flex;gap:clamp(26px,6vw,64px);justify-content:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:2px"><span>days</span><span>hours</span><span>mins</span><span>secs</span></div>
  </div>
  <div class="cta-row rv d2">
-  <a class="cta-big" href="claim.html">🔒 Become a Founding Load Manager · $69</a>
+  <a class="cta-big" href="claim.html">Ready to Win? · $69</a>
  </div>
  <p class="tiny rv d2" style="max-width:560px;margin-left:auto;margin-right:auto"><span style="text-decoration:line-through;opacity:.6">$99</span> <b style="color:var(--ink)">$69 · Founding Load Manager</b> · first 200 leagues · founding price locked for every season you renew · your league locks the moment you claim it. <b>All sales final</b>. This is a data product; once you've seen the intel, it can't be unseen. (Only exception: if someone from your league claimed it first, you're refunded in full.)</p>
  <form class="email rv d3" action="https://formspree.io/f/xdenylpe" method="POST">
