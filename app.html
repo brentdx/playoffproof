@@ -167,8 +167,8 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 </div>
 <div class="pane" id="p-all"><div class="tablewrap"><div class="lgrid" id="list-all"></div></div></div>
 <div class="pane" id="p-avail"><h3>Free agents</h3><div class="tablewrap"><div class="lgrid" id="list-avail"></div></div></div>
-<div class="hint"><b>Score</b> = player quality (what draft kits rank on). <b>Listed games</b> = games scheduled in your playoff weeks.
-<b>Predicted games</b> = how many he's likely to actually play. <b>Motivation</b> = how motivated he is to be there. <b>Trend</b> = which way his playoff value is heading. Tap a column header to sort.</div>
+<div class="hint"><b>Score</b> = total expected playoff value: games × value-per-game × effort. <b>Listed games</b> = games scheduled in your playoff weeks.
+<b>Predicted / Motivation</b> break down that value: how many games he plays and how hard he plays them. <b>Trend</b> = which way his playoff value is heading. Tap a column header to sort.</div>
 </div>
 
 <script src="data.js"></script>
@@ -196,7 +196,7 @@ function card(p){const k=cls(p.w1);const gv=gamesView(p);
       <div class="verdict ${vclass(p.verdict)}">${p.emoji} ${p.verdict}</div></div>
     <div class="scorerow"><div class="score">${p.score}<span class="s100">/100</span></div>
       <div class="wk ${k}-t">${arrow(p.w1)} ${p.w1>0?'+':''}${p.w1}% <span>trend</span></div>${spark(p.spark,88,30)}</div>
-    <div class="slab">Player quality</div>
+    <div class="slab">Playoff value</div>
     <div class="games">
       <div class="gtop"><span class="gl">Likely games, your weeks</span>
         <span class="gn"><b>${gv.lo}-${gv.hi}</b> <span class="of">of ${gv.activeListed}</span> <span class="conf conf-${p.confidence}">${p.confidence}</span></span></div>
