@@ -38,6 +38,23 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 /* recs */
 .teamsum{background:linear-gradient(180deg,rgba(79,139,255,.10),rgba(139,92,246,.06));border:1px solid rgba(79,139,255,.22);border-radius:14px;padding:15px 18px;margin-top:20px;font-size:15px;line-height:1.5;color:var(--ink)}
 .teamsum b{font-weight:800}.teamsum .u{color:var(--up)}.teamsum .d{color:var(--down)}.teamsum .w{color:var(--gold)}
+.cbox{max-width:440px;margin:28px auto;background:linear-gradient(180deg,var(--card),#0d1117);border:1px solid var(--line);border-radius:18px;padding:26px 26px;text-align:center}
+.cbox.mini{padding:22px;color:var(--ink2);font-size:14px}
+.cbox h2{font-size:21px;letter-spacing:-.02em;margin-bottom:6px}
+.cbox p{color:var(--ink2);font-size:13.5px;line-height:1.5;margin-bottom:18px}
+.cbox label{display:block;text-align:left;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.cbox .crow{display:flex;gap:8px}
+.cbox input,.cbox textarea{width:100%;background:#000;border:1px solid var(--line2);border-radius:11px;padding:12px 13px;color:var(--ink);font:inherit;font-size:14px}
+.cbox textarea{min-height:92px;margin-bottom:10px;resize:vertical}
+.cbox button{background:var(--grad);color:#fff;border:0;border-radius:11px;padding:12px 18px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;white-space:nowrap}
+.cbox .crow button{padding:12px 16px}
+.cbox button.ghost{width:100%;background:transparent;border:1px solid var(--line2);color:var(--ink)}
+.cbox .cdiv{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin:16px 0}
+.cbox .cdiv:before,.cbox .cdiv:after{content:'';flex:1;height:1px;background:var(--line)}
+.cbox .cmsg{font-size:12.5px;color:var(--ink2);margin-top:8px;min-height:16px;text-align:left}
+.cbox.mini a,.lgcta a{color:#7fb0ff;text-decoration:none}
+.lgcta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin:14px 0 2px}
+.lgcta span{font-weight:700;color:var(--ink2)}
 .recs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
 @media(max-width:680px){.recs{grid-template-columns:1fr}}
 .rec{background:linear-gradient(180deg,var(--card),#0d1117);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
@@ -148,8 +165,8 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
   <div class="posline">Every player scored for your fantasy playoff weeks (Mar 23–Apr 12), refreshed daily. Green is rising for your title run, red is fading.</div>
   <div class="sub" id="sub"></div>
   <div class="tabs" id="tabs">
-    <button data-t="team" class="on">Your team <span class="ct" id="c-team"></span></button>
-    <button data-t="all">All players <span class="ct" id="c-all"></span></button>
+    <button data-t="team">Your team <span class="ct" id="c-team"></span></button>
+    <button data-t="all" class="on">All players <span class="ct" id="c-all"></span></button>
     <button data-t="avail">Available <span class="ct" id="c-avail"></span></button>
   </div>
   <div class="weekbar" id="weekbar">
@@ -160,13 +177,31 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
     <span class="byehint">Got a first-round bye? Turn off Week 1.</span>
   </div>
 </header>
-<div class="pane on" id="p-team">
-  <div class="teamsum" id="teamsum"></div>
-  <h3>Recommended moves</h3><div class="recs" id="recs"></div>
-  <h3>Your roster</h3><div class="grid" id="roster"></div>
+<div class="pane" id="p-team">
+  <div id="team-connect" class="cbox">
+    <h2>Connect your league</h2>
+    <p>See your roster and free agents ranked for your playoff weeks. We never ask for your password.</p>
+    <label>Sleeper username</label>
+    <div class="crow"><input id="sl-user" placeholder="your Sleeper username" autocapitalize="none"><button id="sl-go">Connect</button></div>
+    <div id="sl-msg" class="cmsg"></div>
+    <div class="cdiv"><span>or paste your roster</span></div>
+    <textarea id="pasteros" placeholder="Nikola Jokic&#10;Tyrese Maxey&#10;Scottie Barnes&#10;..."></textarea>
+    <button id="paste-go">Load my team</button>
+    <div class="cdiv"><span>or</span></div>
+    <button id="demo-go" class="ghost">Try a demo team</button>
+  </div>
+  <div id="team-content" hidden>
+    <div class="teamsum" id="teamsum"></div>
+    <div class="lgcta"><span id="lg-name"></span><a href="#" id="lg-change">change league</a></div>
+    <h3>Recommended moves</h3><div class="recs" id="recs"></div>
+    <h3>Your roster</h3><div class="grid" id="roster"></div>
+  </div>
 </div>
-<div class="pane" id="p-all"><div class="tablewrap"><div class="lgrid" id="list-all"></div></div></div>
-<div class="pane" id="p-avail"><h3>Free agents</h3><div class="tablewrap"><div class="lgrid" id="list-avail"></div></div></div>
+<div class="pane on" id="p-all"><div class="tablewrap"><div class="lgrid" id="list-all"></div></div></div>
+<div class="pane" id="p-avail">
+  <div id="avail-connect" class="cbox mini"><p>Connect your league to see who's available. <a href="#" id="avail-toteam">Connect on the Your team tab →</a></p></div>
+  <div id="avail-content" hidden><h3>Free agents</h3><div class="tablewrap"><div class="lgrid" id="list-avail"></div></div></div>
+</div>
 <div class="hint"><b>Score</b> = total expected playoff value: games × value-per-game × effort. <b>Listed games</b> = games scheduled in your playoff weeks.
 <b>Predicted / Motivation</b> break down that value: how many games he plays and how hard he plays them. <b>Trend</b> = which way his playoff value is heading. Tap a column header to sort.</div>
 </div>
@@ -206,17 +241,18 @@ function card(p){const k=cls(p.w1);const gv=gamesView(p);
     <div class="pillars">${pl('🧠 Mind',p.mind)}${pl('❤️ Heart',p.heart)}${pl('🦵 Body',p.body)}</div>
     <div class="reason"><span class="wtag">Why</span> ${p.reason}</div></div>`;}
 function ownerBadge(p){return p.owner==null?'<span class="badge fa">FA</span>':p.owner===MOCK.leagueName?'<span class="badge you">YOU</span>':`<span class="badge own">${p.owner}</span>`;}
-function renderRecs(){const r=MOCK.recs,out=[];
-  if(r.pickups.length)out.push(`<div class="rec pick"><div class="rh">🟢 Pick up</div>${r.pickups.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">quality ${p.score}, over ${p.insteadOf||'your weakest'}</span><span class="mv up-t">${p.score}</span></div>`).join('')}</div>`);
-  if(r.tradeFor.length)out.push(`<div class="rec trade"><div class="rh">🔵 Trade for (buy low)</div>${r.tradeFor.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">quality ${p.score}, dipping on ${p.owner}</span><span class="mv down-t">${p.w1}%</span></div>`).join('')}</div>`);
+const q=id=>document.getElementById(id);
+function renderRecs(){const r=V.recs,out=[];
+  if(r.pickups.length)out.push(`<div class="rec pick"><div class="rh">🟢 Pick up</div>${r.pickups.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">value ${p.score}, over ${p.insteadOf||'your weakest'}</span><span class="mv up-t">${p.score}</span></div>`).join('')}</div>`);
+  if(r.tradeFor.length)out.push(`<div class="rec trade"><div class="rh">🔵 Trade for (buy low)</div>${r.tradeFor.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">value ${p.score}, dipping</span><span class="mv down-t">${p.w1}%</span></div>`).join('')}</div>`);
   if(r.sellHigh.length)out.push(`<div class="rec sell"><div class="rh">🟡 Sell high</div>${r.sellHigh.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">spiking, shop him while hot</span><span class="mv up-t">+${p.w1}%</span></div>`).join('')}</div>`);
-  if(r.drops.length)out.push(`<div class="rec drop"><div class="rh">🔴 Drop candidates</div>${r.drops.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">weakest quality on your roster</span><span class="mv flat-t">${p.score}</span></div>`).join('')}</div>`);
-  document.getElementById('recs').innerHTML=out.join('')||'<div class="rec"><div class="recitem"><span class="why">No moves to make right now. Your roster is well positioned for the playoffs.</span></div></div>';}
+  if(r.drops.length)out.push(`<div class="rec drop"><div class="rh">🔴 Drop candidates</div>${r.drops.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">weakest value on your roster</span><span class="mv flat-t">${p.score}</span></div>`).join('')}</div>`);
+  q('recs').innerHTML=out.join('')||'<div class="rec"><div class="recitem"><span class="why">No moves to make right now. Your roster is well positioned.</span></div></div>';}
 const COLS=[{k:'score',t:'Score'},{k:'listedGames',t:'Listed'},{k:'expGames',t:'Predicted'},{k:'motiv',t:'Motivation'},{k:'w1',t:'Trend'}];
 const sortState={all:'score',avail:'score'};
-function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);
+function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);const mine=LEAGUE&&LEAGUE.roster.has(p.name);
   return `<div class="lrow"><span class="rk">${rk}</span>
-    <span class="who">${p.emoji} ${p.name} ${p.pos?`<span class="postag">${p.pos}</span>`:''}<small>${p.team}</small> ${ownerBadge(p)}</span>
+    <span class="who">${p.emoji} ${p.name} ${p.pos?`<span class="postag">${p.pos}</span>`:''}<small>${p.team}</small>${mine?' <span class="badge you">YOU</span>':''}</span>
     <span class="num sc">${p.score}</span>
     <span class="num">${gv.activeListed}</span>
     <span class="num pred"><b>${gv.lo}-${gv.hi}</b></span>
@@ -224,34 +260,85 @@ function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);
     <span class="num chg ${k}-t">${arrow(p.w1)} ${p.w1>0?'+':''}${p.w1}%</span></div>`;}
 function renderList(scope){
   const key=sortState[scope];
-  const data=(scope==='all'?MOCK.all:MOCK.available).slice().sort((a,b)=>b[key]-a[key]);
+  const data=(scope==='all'?MOCK.all:V.available).slice().sort((a,b)=>b[key]-a[key]);
   const head=`<div class="lhead"><span></span><span class="pl-h">Player</span>${
     COLS.map(c=>`<span class="s ${key===c.k?'on':''}" data-k="${c.k}">${c.t} ${key===c.k?'▼':'<span class="car">↕</span>'}</span>`).join('')}</div>`;
-  document.getElementById('list-'+scope).innerHTML=head+data.map((p,i)=>lrow(p,i+1)).join('');
+  q('list-'+scope).innerHTML=head+data.map((p,i)=>lrow(p,i+1)).join('');
   document.querySelectorAll('#list-'+scope+' .lhead .s').forEach(el=>el.onclick=()=>{sortState[scope]=el.dataset.k;renderList(scope);});
 }
-function renderSummary(){const s=MOCK.summary;const bits=[];
+function renderSummary(){const s=V.summary; if(!s){q('teamsum').innerHTML='';return;} const bits=[];
   if(s.risers)bits.push(`<b class="u">${s.risers} trending up</b>`);
   if(s.fades)bits.push(`<b class="d">${s.fades} slipping</b>`);
   let line=`<b>Playoff positioning:</b> ${bits.join(' · ')||'steady'}.`;
   if(s.watch.length)line+=` <b class="d">Fading for your title weeks:</b> ${s.watch.map(w=>`${w.name} (${w.gap} games at risk)`).join(', ')}.`;
   if(s.bestAdd)line+=` <b class="w">Top move:</b> add ${s.bestAdd.name} (${s.bestAdd.score}).`;
-  document.getElementById('teamsum').innerHTML=line;}
-function boot(){
-  renderSummary();
-  document.getElementById('sub').textContent=`${MOCK.leagueName} · updated ${MOCK.updated}`;
-  document.getElementById('c-team').textContent=MOCK.roster.length;
-  document.getElementById('c-all').textContent=MOCK.all.length;
-  document.getElementById('c-avail').textContent=MOCK.available.length;
-  renderRecs();document.getElementById('roster').innerHTML=MOCK.roster.map(card).join('');
-  renderList('all');renderList('avail');}
-document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  [...document.querySelectorAll('#tabs button')].forEach(x=>x.classList.toggle('on',x===b));
-  ['team','all','avail'].forEach(t=>document.getElementById('p-'+t).classList.toggle('on',t===b.dataset.t));});
+  q('teamsum').innerHTML=line;}
+
+// ---------- league state ----------
+const NORM=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.'’-]/g,'').replace(/\b(jr|sr|ii|iii|iv)\b/g,'').replace(/\s+/g,' ').trim();
+const byNorm={}; MOCK.all.forEach(p=>byNorm[NORM(p.name)]=p);
+function matchNames(list){const names=[],miss=[];for(const n of list){const p=byNorm[NORM(n)];if(p)names.push(p.name);else if((n||'').trim())miss.push(n.trim());}return{names,miss};}
+let LEAGUE=null, V={roster:[],available:[],recs:{pickups:[],drops:[],tradeFor:[],sellHigh:[]},summary:null};
+function computeViews(){
+  if(!LEAGUE){V={roster:[],available:[],recs:{pickups:[],drops:[],tradeFor:[],sellHigh:[]},summary:null};return;}
+  const all=MOCK.all,mine=LEAGUE.roster,owned=LEAGUE.rostered;
+  const roster=all.filter(p=>mine.has(p.name)).sort((a,b)=>b.score-a.score);
+  const available=all.filter(p=>!owned.has(p.name)).sort((a,b)=>b.score-a.score);
+  const others=all.filter(p=>owned.has(p.name)&&!mine.has(p.name));
+  const weak=[...roster].sort((a,b)=>a.score-b.score), drops=weak.slice(0,3);
+  const pickups=available.filter(p=>p.score>=(((weak[0]||{}).score)||0)+1).slice(0,4).map((p,i)=>({...p,insteadOf:((drops[i]||drops[0])||{}).name}));
+  const tradeFor=others.filter(p=>p.w1<-4&&p.score>=60).sort((a,b)=>b.score-a.score).slice(0,3);
+  const sellHigh=roster.filter(p=>p.w1>6).sort((a,b)=>b.w1-a.w1).slice(0,2);
+  const gapOf=p=>+(p.listedGames-((p.gamesLo+p.gamesHi)/2)).toFixed(1);
+  const summary={fades:roster.filter(p=>p.w1<=-3).length,risers:roster.filter(p=>p.w1>=3).length,
+    watch:[...roster].filter(p=>gapOf(p)>=2.5).sort((a,b)=>gapOf(b)-gapOf(a)).slice(0,2).map(p=>({name:p.name,gap:gapOf(p)})),
+    bestAdd:pickups[0]?{name:pickups[0].name,score:pickups[0].score}:null};
+  V={roster,available,recs:{pickups,drops,tradeFor,sellHigh},summary};
+}
+function persist(){try{localStorage.setItem('pp_league',LEAGUE?JSON.stringify({name:LEAGUE.name,roster:[...LEAGUE.roster],rostered:[...LEAGUE.rostered]}):'');}catch(e){}}
+function loadLeague(){try{const s=JSON.parse(localStorage.getItem('pp_league'));if(s&&s.roster)return{name:s.name,roster:new Set(s.roster),rostered:new Set(s.rostered)};}catch(e){}return null;}
+function showTab(t){document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));['team','all','avail'].forEach(p=>q('p-'+p).classList.toggle('on',p===t));}
+function rerender(){renderList('all');if(LEAGUE){renderSummary();renderRecs();q('roster').innerHTML=V.roster.map(card).join('');renderList('avail');}}
+function renderAll(){const on=!!LEAGUE;
+  q('team-connect').hidden=on;q('team-content').hidden=!on;q('avail-connect').hidden=on;q('avail-content').hidden=!on;
+  q('c-all').textContent=MOCK.all.length;q('c-team').textContent=on?V.roster.length:'';q('c-avail').textContent=on?V.available.length:'';
+  if(on)q('lg-name').textContent=LEAGUE.name;
+  rerender();}
+function setLeague(lg){LEAGUE=lg;persist();computeViews();renderAll();showTab('team');}
+
+// ---------- connect handlers ----------
+q('demo-go').onclick=()=>setLeague({name:MOCK.leagueDemo.name,roster:new Set(MOCK.leagueDemo.rosterNames),rostered:new Set(MOCK.leagueDemo.rosteredNames)});
+q('paste-go').onclick=()=>{const raw=q('pasteros').value.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean);const m=matchNames(raw);
+  if(!m.names.length){q('sl-msg').textContent='Could not match any players — check spelling.';return;}
+  setLeague({name:'My team',roster:new Set(m.names),rostered:new Set(m.names)});
+  if(m.miss.length)q('sl-msg').textContent='Loaded '+m.names.length+'. Not matched: '+m.miss.slice(0,5).join(', ');};
+let _smap;async function sleeperMap(){if(_smap)return _smap;const j=await (await fetch('sleeper-players.json')).json();_smap=j.players||j;return _smap;}
+q('sl-go').onclick=async()=>{const u=q('sl-user').value.trim();if(!u)return;const msg=q('sl-msg');msg.textContent='Looking you up…';
+  try{
+    const user=await (await fetch('https://api.sleeper.app/v1/user/'+encodeURIComponent(u))).json();
+    if(!user||!user.user_id){msg.textContent='No Sleeper user by that name.';return;}
+    const st=await (await fetch('https://api.sleeper.app/v1/state/nba')).json();
+    const lgs=await (await fetch('https://api.sleeper.app/v1/user/'+user.user_id+'/leagues/nba/'+st.season)).json();
+    if(!lgs||!lgs.length){msg.textContent='No NBA leagues for '+st.season+' on this account.';return;}
+    const lg=lgs[0];msg.textContent='Loading '+lg.name+'…';
+    const [rosters,map]=await Promise.all([fetch('https://api.sleeper.app/v1/league/'+lg.league_id+'/rosters').then(r=>r.json()),sleeperMap()]);
+    const nm=id=>{const p=map[id];return p?(p.n||[p.first_name,p.last_name].filter(Boolean).join(' ')):null;};
+    const mine=rosters.find(r=>r.owner_id===user.user_id);
+    const mineNames=matchNames((mine&&mine.players||[]).map(nm).filter(Boolean)).names;
+    const allNames=matchNames(rosters.flatMap(r=>(r.players||[]).map(nm)).filter(Boolean)).names;
+    if(!mineNames.length){msg.textContent='Found the league but no roster for you.';return;}
+    setLeague({name:lg.name,roster:new Set(mineNames),rostered:new Set(allNames)});msg.textContent='';
+  }catch(e){msg.textContent='Could not reach Sleeper from the browser — use paste for now.';}
+};
+q('lg-change').onclick=e=>{e.preventDefault();LEAGUE=null;persist();computeViews();renderAll();showTab('team');};
+q('avail-toteam').onclick=e=>{e.preventDefault();showTab('team');};
+
+// ---------- tabs, weeks, init ----------
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;showTab(b.dataset.t);});
 document.getElementById('weekbar').addEventListener('click',e=>{const b=e.target.closest('.wkbtn');if(!b)return;
-  const i=+b.dataset.w;ACTIVEWEEKS[i]=!ACTIVEWEEKS[i];b.classList.toggle('on',ACTIVEWEEKS[i]);
-  document.getElementById('roster').innerHTML=MOCK.roster.map(card).join('');renderList('all');renderList('avail');});
-boot();
+  const i=+b.dataset.w;ACTIVEWEEKS[i]=!ACTIVEWEEKS[i];b.classList.toggle('on',ACTIVEWEEKS[i]);rerender();});
+document.getElementById('sub').textContent=`${MOCK.leagueName} · updated ${MOCK.updated}`;
+LEAGUE=loadLeague();computeViews();renderAll();
 </script>
 </div><script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
