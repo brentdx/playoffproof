@@ -101,6 +101,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .up-t{color:var(--up)}.down-t{color:var(--down)}.flat-t{color:var(--flat)}
 .hint{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.5}
 
+[hidden]{display:none!important}
 .gatewrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .gatecard{width:100%;max-width:410px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 28px;text-align:center}
 .gatecard .logo{justify-content:center;margin-bottom:20px}
@@ -263,6 +264,7 @@ function show(which){
   $('g-signin').hidden = which!=='signin';
   $('g-unlock').hidden = which!=='unlock';
   $('g-activating').hidden = which!=='activating';
+  if(which==='app') window.scrollTo(0,0);
 }
 async function entitled(session){
   const { data } = await supabase.from('entitlements').select('status').eq('user_id', session.user.id).maybeSingle();
