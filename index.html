@@ -78,7 +78,18 @@ h2{font-size:clamp(36px,6.4vw,80px)}
 .arow .at small{color:var(--muted);font-size:12px;line-height:1.4;display:block}
 .arow .at small .r{display:block;margin-top:5px;color:var(--ink2)}
 .arow .hit{font-size:12px;font-weight:800;color:#2fd575;min-width:34px;text-align:right;font-variant-numeric:tabular-nums;opacity:0;transition:opacity .3s;flex:none}
-.arow.on .hit{opacity:1}
+.arow.on .hit{opacity:1;animation:pop .42s cubic-bezier(.2,.9,.2,1.2)}
+/* interactive-widget flourishes */
+@keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+@keyframes rowFlash{0%{box-shadow:inset 0 0 0 1px rgba(47,213,117,0)}
+  28%{box-shadow:inset 0 0 0 1px rgba(47,213,117,.55),0 0 26px rgba(47,213,117,.22)}
+  100%{box-shadow:inset 0 0 0 1px rgba(47,213,117,0)}}
+@keyframes gradeBump{0%{transform:scale(1)}42%{transform:scale(1.16);text-shadow:0 0 34px rgba(47,213,117,.6)}100%{transform:scale(1);text-shadow:none}}
+.arow{border-radius:12px;transition:background .3s}
+.arow.on{animation:rowFlash .62s ease-out}
+.gr .lt.bump{animation:gradeBump .52s cubic-bezier(.2,.8,.2,1)}
+.gr .dchip.pp{animation:pop .4s cubic-bezier(.2,.9,.2,1.2)}
+.swapbtn:active{transform:scale(.94)}
 .arow .tg{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:2px 8px;vertical-align:2px;margin-left:4px}
 .arow.on .nm{color:#2fd575}
 .arow.on .tg{color:#2fd575;border-color:rgba(47,213,117,.4)}
@@ -125,7 +136,6 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 <nav>
  <div class="logo"><span class="mark">▲</span>PlayoffProof</div>
  <div class="links">
-  <a href="#promise" class="hideM">The promise</a>
   <a href="#how" class="hideM">How it works</a>
   <span style="font-size:12px;color:var(--muted)" class="hideM">Opens Sept 1</span>
   <a class="pill-cta" href="claim.html">Ready to Win?</a>
@@ -136,8 +146,8 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
 <section style="min-height:100vh">
  <div class="kicker rv" style="color:#4f8bff;margin-bottom:16px">For fantasy basketball managers</div>
  <h1 class="rv">You win the regular season.<br><span class="dim">And lose the playoffs.</span></h1>
- <p class="sub rv d1" style="font-size:clamp(19px,2.3vw,26px);color:var(--ink);font-weight:600;margin-top:30px">That's by design.</p>
- <p class="sub rv d2" style="margin-top:12px">Every ranking, every projection, every draft kit you use is built on <b style="color:var(--ink)">season averages</b>, and averages don't win titles.<br>You need to build for the playoffs.</p>
+ <p class="sub rv d1" style="font-size:clamp(19px,2.3vw,26px);color:var(--ink);font-weight:600;margin-top:30px">That's by design. Rankings grade the whole season. Your title is won in three weeks they never check.</p>
+ <p class="sub rv d2" style="margin-top:14px">PlayoffProof shows your <b style="color:var(--ink)">real title odds</b>, and the exact roster moves to raise them, before you draft.</p>
  <div class="rv d3" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:54px;text-align:left">
   <div class="stat-huge" style="font-size:clamp(72px,10vw,140px);line-height:.95;animation:glowPulse 4s ease-in-out infinite">65%</div>
   <div style="width:1px;align-self:stretch;background:rgba(255,255,255,.14)" class="statdiv"></div>
@@ -149,20 +159,9 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  </div>
 </section>
 
-<!-- 3 · WHY -->
-<section>
- <h2 class="rv">The playoffs don't care<br>about your projections.</h2>
- <p class="sub rv d1">Every draft kit averages the season. None of them model the forces that decide the weeks your title is played in.</p>
- <div class="reasons">
-  <div class="reason rv d1"><div class="e">🏢</div><b>Organizational incentives</b><p>Some front offices need March wins. Some are built to lose them. Pick obligations and lottery math decide who's actually trying, and no projection prices it in.</p></div>
-  <div class="reason rv d2"><div class="e">💰</div><b>Player incentives</b><p>Contract years, games-played bonuses, award chases, set against a $300M career bank account. Money quietly decides who plays the stretch run and who shuts it down.</p></div>
-  <div class="reason rv d3"><div class="e">🔒</div><b>An edge everyone has is a tie</b><p>Every site sells the same rankings to your whole league. Real alpha is data your rivals can't get. That's why we only sell it to one of you.</p></div>
- </div>
-</section>
-
-<!-- 3.5 · TRY IT: PLAYOFF GRADE -->
+<!-- 2 · SEE IT: PLAYOFF GRADE -->
 <section id="aha" style="min-height:auto">
- <div class="kicker rv">Try it · ten seconds</div>
+ <div class="kicker rv">Try it</div>
  <h2 class="rv d1" style="font-size:clamp(30px,5vw,60px)">Your draft kit grades<br><span class="grad">the wrong season.</span></h2>
  <p class="sub rv d2" style="margin-top:14px">Every ranking site sees a 72% favorite. Your actual playoff weeks say 15%. Two taps close the gap.</p>
  <div class="aha-card rv d2">
@@ -170,7 +169,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
    <div class="gr"><div class="k2g">Win your regular season</div><div class="lt gA">72%</div><div class="dchip">&nbsp;</div><div class="cap">season averages · every draft kit</div></div>
    <div class="gr"><div class="k2g">Win your playoffs</div><div class="lt gC" id="aprLt">15%</div><div class="dchip" id="aprD">&nbsp;</div><div class="cap">your actual title weeks</div></div>
   </div>
-  <p class="whyline">Same roster. Kawhi and Curry project to sit chunks of your playoff weeks, and this bench can't cover the missing games.</p>
+  <p class="whyline">Same roster. Your stars project to sit big chunks of your playoff weeks, and this bench can't cover the gap.</p>
   <p class="fixk">Now make two moves no ranking site will. You don't only win in the draft:</p>
   <div class="arow" id="swap0">
    <span class="at"><b class="nm">Sam Merrill <span class="tg">bench</span></b><small class="ds">1 of 7 semi/final-week games in your title weeks</small></span>
@@ -178,15 +177,16 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
    <button class="swapbtn">⇄ add him</button>
   </div>
   <div class="arow" id="swap1">
-   <span class="at"><b class="nm">Dru Smith <span class="tg">bench</span></b><small class="ds">February stats, zero playoff-week minutes</small></span>
+   <span class="at"><b class="nm">Zach LaVine <span class="tg">even trade</span></b><small class="ds">Top-30 all season · same draft slot as Herro</small></span>
    <span class="hit">+6</span>
-   <button class="swapbtn">⇄ trade for him</button>
+   <button class="swapbtn">⇄ trade for Herro</button>
   </div>
   <div class="punch" id="aprPunch">
    <p>A waiver claim and a trade. Title odds nearly doubled.<br>Every ranking site still grades both rosters exactly the same.</p>
    <a class="cta-big" href="claim.html">Ready to Win? · $69</a>
   </div>
  </div>
+ <p class="sub rv d2" style="font-size:15px;margin-top:26px">Behind every number: which teams <b style="color:var(--ink)">tank</b>, which players <b style="color:var(--ink)">rest</b>, and whose <b style="color:var(--ink)">contract</b> makes them show up. Scored for every player, so you don't have to.</p>
 </section>
 
 <script>
@@ -196,10 +196,10 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
        n:'Deni Avdija',b:'\u21c4 add him',nd:'off the wire for Sam Merrill \u00b7 5 of 7 playoff-week games'
         +'<span class="r">\ud83c\udfe2 POR has no tank switch: the new owner just paid for a Dame-Ja backcourt and promised wins, so nobody gets shut down in March</span>'
         +'<span class="r">\ud83d\ude91 Morant: 79 games in his last 3 seasons \u00b7 every playoff-week night Ja sits, the offense runs through Deni</span>',p:7},
-      {o:'Dru Smith',od:'February stats, zero playoff-week minutes',
-       n:'Tyler Herro',b:'\u21c4 trade for him',nd:'traded in for Dru Smith \u00b7 plays every playoff-week minute'
-        +'<span class="r">\ud83d\udcb0 $33M expiring, extension unsigned \u00b7 he is pricing his next max in your title weeks</span>'
-        +'<span class="r">\ud83c\udfaf hometown rebuild runs through him: zero rest risk, zero minutes cap</span>',p:6}],
+      {o:'Zach LaVine',od:'Top-30 all season \u00b7 same draft slot as Herro',bt:'even trade',
+       n:'Tyler Herro',b:'\u21c4 trade for Herro',nd:'traded in for Zach LaVine \u00b7 plays every playoff-week minute'
+        +'<span class="r">\ud83d\udcb0 $33M expiring, extension unsigned \u00b7 he is auditioning for his next max in your title weeks</span>'
+        +'<span class="r">\ud83c\udfe2 LaVine\u2019s team is selling by March \u00b7 Herro\u2019s is fighting for a seed. One rests, one plays.</span>',p:6}],
   st=[false,false],
   lt=document.getElementById('aprLt'),
   dc=document.getElementById('aprD'),pn=document.getElementById('aprPunch');
@@ -210,32 +210,48 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
    lt.textContent=v+'%';if(p<1)requestAnimationFrame(step);})(t0);}
  function paint(i){const row=document.getElementById('swap'+i),s=SW[i],on=st[i];
   row.classList.toggle('on',on);
-  row.querySelector('.nm').innerHTML=(on?'\u2713 '+s.n:s.o)+' <span class="tg">'+(on?'playoff-proof':'bench')+'</span>';
+  row.querySelector('.nm').innerHTML=(on?'\u2713 '+s.n:s.o)+' <span class="tg">'+(on?'playoff-proof':(s.bt||'bench'))+'</span>';
   row.querySelector('.ds').innerHTML=on?s.nd:s.od;
   row.querySelector('.swapbtn').textContent=on?'\u21ba undo':s.b;}
+ function retrig(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);}
  function update(){
   const target=BASE+SW.reduce((s,x,i)=>s+(st[i]?x.p:0),0);
+  const rose=target>cur;
   tween(cur,target);cur=target;
   lt.className='lt '+tint(target);
+  if(rose)retrig(lt,'bump');
   const d=target-BASE;
   dc.innerHTML=d?'+'+d+' pts':'&nbsp;';
+  if(d)retrig(dc,'pp');else dc.classList.remove('pp');
   pn.classList.toggle('on',st.every(Boolean));}
  SW.forEach((s,i)=>{document.querySelector('#swap'+i+' .swapbtn').addEventListener('click',()=>{st[i]=!st[i];paint(i);update();});});
 })();
 </script>
 
-<!-- 4 · THE PROMISE -->
-<section id="promise">
- <div class="kicker rv">The promise</div>
- <h2 class="rv d1"><span class="grad">Know your playoffs</span><br>before you draft.</h2>
+<!-- 3 · WHAT YOU GET -->
+<section style="min-height:auto">
+ <div class="kicker rv">What you get</div>
+ <h2 class="rv d1" style="font-size:clamp(30px,5vw,60px)">Your league,<br><span class="grad">playoff-proofed.</span></h2>
  <div class="promise">
-  <div class="row rv d1"><span class="check">✓</span><span><b>Your real title odds</b>, not season points. 1,500 simulated seasons, fought week by week on the actual NBA schedule.</span></div>
-  <div class="row rv d2"><span class="check">✓</span><span><b>Why, for every player</b>: coach rest habits, front-office tank math, contract triggers, career money on the line. Researched, scored, and yours to override.</span></div>
-  <div class="row rv d3"><span class="check">✓</span><span><b>One tap to the fix</b>: "what if he plays?" moves your odds instantly. Then you decide: hold, trade, or handcuff.</span></div>
+  <div class="row rv d1"><span class="check">✓</span><span><b>Your real title odds.</b> 1,500 seasons simulated on your actual playoff weeks, not season averages.</span></div>
+  <div class="row rv d2"><span class="check">✓</span><span><b>Every risk ranked.</b> Who rests, whose team tanks, and whose contract says they'll show up in March.</span></div>
+  <div class="row rv d3"><span class="check">✓</span><span><b>The one-tap fix.</b> The exact add, trade, or hold that raises your odds, for your exact league.</span></div>
  </div>
 </section>
 
-<!-- 6 · GET STARTED -->
+<!-- 4 · FOUNDER -->
+<section style="min-height:auto;padding-top:40px">
+ <div class="founder">
+  <div class="kicker rv">Why this exists</div>
+  <p class="founder-quote rv d1">"I won my regular season almost every year. Then I'd lose in the first round to rosters full of guys resting for the playoffs. I got tired of it, so I built the tool that would have saved my season."</p>
+  <div class="founder-id rv d2">
+   <div class="avatar">▲</div>
+   <div class="who"><b>The Load Manager</b><br><span>Founder, PlayoffProof</span></div>
+  </div>
+ </div>
+</section>
+
+<!-- 5 · GET STARTED -->
 <section id="how" style="min-height:auto;padding-top:40px">
  <h2 class="rv" style="font-size:clamp(28px,4.6vw,56px)">Get started<br><span class="grad">in minutes.</span></h2>
  <div class="rv d1" style="display:flex;gap:clamp(18px,4vw,54px);justify-content:center;flex-wrap:wrap;margin-top:34px;text-align:left">
@@ -246,17 +262,7 @@ footer{padding:50px 24px 70px;text-align:center;font-size:12.5px;color:var(--mut
  <div class="cta-row rv d3"><a class="cta-big" href="claim.html">Ready to Win?</a><span class="tiny" style="align-self:center">one manager per league · founding price $69 · locked the moment you claim</span></div>
 </section>
 
-<section style="min-height:auto;padding-top:70px">
- <h2 class="rv">Own the alpha<br><span class="grad">for your league.</span></h2>
- <p class="sub rv d1" style="margin-top:14px">We score the signal no site captures: how hard each organization will try to win <i>or tank</i> down the stretch, which coaches actually play their guys, whose contract pays him to play in your finals week, and whose body will let him.</p>
- <p class="sub rv d2" style="margin-top:16px;color:var(--ink);font-weight:600">And we sell it once per league. <span class="grad">One manager. Ever.</span> Claim yours and the rest of your league is locked out. Not at launch, not mid-season, not for money.</p>
- <div class="cta-row rv d2" style="margin-top:40px">
-  <a class="cta-big" href="claim.html">Ready to Win?</a>
-  <span class="tiny" style="align-self:center">founding price $69 · locked the moment you claim</span>
- </div>
-</section>
-
-<!-- 7 · CTA -->
+<!-- 6 · CTA -->
 <section style="min-height:70vh">
  <h2 class="rv">Stop drafting for February.</h2>
  <p class="sub rv d1">Their coaches manage the load. Now you do too.</p>
