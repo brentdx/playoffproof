@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PlayoffProof — Your Movers</title>
+<style>
+:root{
+  --bg:#07090d;--bg2:#0c0f15;--card:#11151d;--ink:#f5f6f8;--ink2:#a2a9b6;--muted:#666e7d;
+  --line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.12);
+  --brand:#4f8bff;--brand2:#8b5cf6;--up:#2fd575;--down:#ff5d5d;--flat:#7c8494;--gold:#f5b83d;
+  --grad:linear-gradient(100deg,#4f8bff,#8b5cf6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(1100px 500px at 80% -10%,rgba(79,139,255,.08),transparent 60%),var(--bg);
+  color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,sans-serif;
+  -webkit-font-smoothing:antialiased;padding:0 0 70px;font-variant-numeric:tabular-nums}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header{padding:26px 0 14px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px}
+.mark{width:26px;height:26px;border-radius:8px;background:var(--grad);display:grid;place-items:center;font-size:13px}
+h1{font-size:23px;letter-spacing:-.02em;margin-top:10px}
+h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.posline{color:var(--ink2);font-size:13.5px;margin-top:8px;max-width:620px;line-height:1.5}
+.sub{color:var(--muted);font-size:12px;margin-top:6px}
+.tabs{display:flex;gap:4px;margin-top:18px;border-bottom:1px solid var(--line)}
+.tabs button{background:transparent;border:0;border-bottom:2px solid transparent;color:var(--ink2);font:inherit;font-size:14px;font-weight:700;padding:10px 14px;cursor:pointer;margin-bottom:-1px}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--brand)}
+.tabs button .ct{font-size:11px;color:var(--muted);margin-left:5px}
+.weekbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;color:var(--ink2)}
+.weekbar b{color:var(--ink);font-weight:800;margin-right:2px}
+.wkbtn{border:1px solid var(--line2);border-radius:9px;padding:6px 13px;cursor:pointer;background:var(--bg2);font-weight:700;font-size:12.5px;color:var(--ink2);user-select:none}
+.wkbtn.on{background:linear-gradient(180deg,rgba(79,139,255,.18),rgba(139,92,246,.10));border-color:var(--brand);color:#cfe0ff}
+.byehint{font-size:11px;color:var(--muted);margin-left:auto}
+.wkstrip{display:flex;gap:6px;margin:9px 0 4px}
+.wkc{flex:1;text-align:center;background:#0a0d13;border:1px solid var(--line);border-radius:8px;padding:5px 2px;font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.04em}
+.wkc b{display:block;font-size:15px;color:var(--ink);font-weight:800;margin-top:1px}
+.wkc.off{opacity:.32}.wkc.off b{color:var(--muted)}
+h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:26px 0 12px}
+.pane{display:none}.pane.on{display:block}
+/* recs */
+.teamsum{background:linear-gradient(180deg,rgba(79,139,255,.10),rgba(139,92,246,.06));border:1px solid rgba(79,139,255,.22);border-radius:14px;padding:15px 18px;margin-top:20px;font-size:15px;line-height:1.5;color:var(--ink)}
+.teamsum b{font-weight:800}.teamsum .u{color:var(--up)}.teamsum .d{color:var(--down)}.teamsum .w{color:var(--gold)}
+.recs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+@media(max-width:680px){.recs{grid-template-columns:1fr}}
+.rec{background:linear-gradient(180deg,var(--card),#0d1117);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.rec .rh{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.rec.pick .rh{color:var(--up)}.rec.trade .rh{color:var(--brand)}.rec.sell .rh{color:var(--gold)}.rec.drop .rh{color:var(--down)}
+.recitem{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid var(--line);font-size:13px}
+.recitem:first-of-type{border-top:0}
+.recitem .who{font-weight:700}.recitem .who small{color:var(--muted);font-weight:700;font-size:10px;margin-left:5px}
+.recitem .why{color:var(--ink2);font-size:12px;flex:1;min-width:0}
+.recitem .mv{font-weight:800;font-size:12.5px;white-space:nowrap}
+/* cards */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:680px){.grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,var(--card),#0d1117);border:1px solid var(--line);border-radius:16px;padding:15px 16px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.card.up::before{background:var(--up)}.card.down::before{background:var(--down)}.card.flat::before{background:var(--flat)}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.nm{font-weight:700;font-size:15.5px;letter-spacing:-.01em}.tm{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.05em;margin-top:1px}
+.verdict{font-size:11px;font-weight:900;letter-spacing:.04em;padding:5px 9px;border-radius:8px;white-space:nowrap}
+.v-back{background:rgba(47,213,117,.16);color:var(--up)}.v-over{background:rgba(255,93,93,.16);color:var(--down)}.v-flat{background:rgba(124,132,148,.14);color:var(--flat)}
+.scorerow{display:flex;align-items:baseline;gap:10px;margin:12px 0 3px}
+.score{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1}.score .s100{font-size:14px;font-weight:700;color:var(--muted);margin-left:2px}
+.wk{font-weight:800;font-size:13.5px}.wk span{font-size:9px;opacity:.7;letter-spacing:.06em}
+.spark{margin-left:auto;width:88px;height:30px}
+.slab{font-size:9.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.games{margin:14px 0 12px;background:#0a0d13;border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.gtop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;flex-wrap:wrap;gap:4px}
+.gtop .gl{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.gtop .gn{font-size:13px}.gtop .gn b{font-size:16px;font-weight:800}.gtop .gn .of{color:var(--muted);font-weight:600}
+.conf{font-size:10px;font-weight:800;letter-spacing:.03em;padding:2px 7px;border-radius:6px;margin-left:4px;text-transform:uppercase}
+.conf-high{background:rgba(47,213,117,.14);color:var(--up)}.conf-medium{background:rgba(245,184,61,.14);color:var(--gold)}.conf-low{background:rgba(124,132,148,.16);color:var(--flat)}
+.gbar{height:16px;border-radius:6px;background:repeating-linear-gradient(90deg,rgba(255,93,93,.16) 0 6px,rgba(255,93,93,.08) 6px 12px);position:relative;overflow:hidden;border:1px solid var(--line)}
+.gfill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#2fd575,#26b863);border-radius:5px 0 0 5px}
+.gband{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(45deg,rgba(47,213,117,.30) 0 4px,transparent 4px 8px)}
+.factors{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.fchip{font-size:10.5px;font-weight:700;color:var(--ink2);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:7px;padding:3px 7px}
+.pillars{display:flex;flex-direction:column;gap:5px}
+.pl{display:grid;grid-template-columns:56px 1fr 26px;align-items:center;gap:8px;font-size:11px;color:var(--ink2)}
+.pl .lab{font-weight:700}.track{height:6px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.fill{height:100%;border-radius:99px;background:var(--grad)}.pl .n{text-align:right;font-weight:800;color:var(--ink);font-size:11.5px}
+.reason{font-size:11.5px;color:var(--ink2);line-height:1.45;margin-top:11px;border-top:1px solid var(--line);padding-top:9px}
+.wtag{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 5px;margin-right:5px}
+/* sortable table */
+.tablewrap{overflow-x:auto;margin-top:2px;border:1px solid var(--line);border-radius:14px}
+.lgrid{background:var(--bg2);min-width:600px}
+.lhead,.lrow{display:grid;grid-template-columns:24px minmax(120px,1fr) 54px 58px 82px 96px 64px;align-items:center;gap:10px;padding:9px 13px}
+.lhead{border-bottom:1px solid var(--line2);font-size:11px;letter-spacing:.01em;color:var(--muted);font-weight:800;position:sticky;top:0;background:var(--bg2)}
+.lhead .s{cursor:pointer;text-align:right;user-select:none;white-space:nowrap}.lhead .s:hover{color:var(--ink)}.lhead .s.on{color:var(--brand)}
+.lhead .car{opacity:.35;font-size:9px}
+.lhead .pl-h{text-align:left}
+.postag{font-size:9px;font-weight:800;color:var(--brand2);background:rgba(139,92,246,.14);border-radius:4px;padding:1px 4px;margin-right:5px}
+.lrow{border-top:1px solid var(--line);font-size:13px}.lrow:hover{background:rgba(255,255,255,.03)}
+.lrow .rk{color:var(--muted);font-size:11px;font-weight:700}
+.lrow .who{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600}
+.lrow .who small{color:var(--muted);font-weight:700;font-size:10px;margin-left:5px}
+.badge{font-size:8.5px;font-weight:800;letter-spacing:.03em;padding:2px 5px;border-radius:5px;vertical-align:1px}
+.fa{background:rgba(47,213,117,.16);color:var(--up)}.own{background:rgba(255,255,255,.06);color:var(--muted)}.you{background:rgba(79,139,255,.18);color:#7fb0ff}
+.lrow .num{text-align:right;font-variant-numeric:tabular-nums}
+.lrow .sc{font-weight:800}.lrow .pred b{font-weight:800}.lrow .pred{font-size:12px;color:var(--ink2)}
+.lrow .mot{font-weight:800}.lrow .chg{font-weight:800;font-size:12px}
+.up-t{color:var(--up)}.down-t{color:var(--down)}.flat-t{color:var(--flat)}
+.hint{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.5}
+
+.gatewrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.gatecard{width:100%;max-width:410px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 28px;text-align:center}
+.gatecard .logo{justify-content:center;margin-bottom:20px}
+.gatecard h2{font-size:22px;margin:6px 0 6px;letter-spacing:-.02em}
+.gatecard p{color:var(--ink2);font-size:13.5px;margin-bottom:16px;line-height:1.5}
+.gatecard input{width:100%;background:#000;border:1px solid var(--line2);border-radius:11px;padding:13px 14px;color:var(--ink);font:inherit;font-size:15px;margin-bottom:10px;text-align:center}
+.gatecard button{width:100%;background:var(--grad);color:#fff;border:0;border-radius:11px;padding:13px;font:inherit;font-weight:800;font-size:15px;cursor:pointer;margin-bottom:6px}
+.gatecard button.ghost{background:transparent;border:1px solid var(--line2);color:var(--ink)}
+.gatecard .or{color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0}
+.gatecard .msg{font-size:13px;color:var(--ink2);margin-top:12px;min-height:18px}
+.gatecard a{color:var(--muted);font-size:12px;display:inline-block;margin-top:16px;text-decoration:none}
+</style></head>
+<body><div id="gate" class="gatewrap">
+ <div class="gatecard">
+  <div class="logo"><span class="mark">▲</span>PlayoffProof</div>
+  <div id="g-signin">
+   <h2>Sign in</h2>
+   <p>Enter your email and we'll send a one-tap magic link. No password.</p>
+   <input id="g-email" type="email" placeholder="you@email.com" autocomplete="email">
+   <button id="g-send">Send magic link</button>
+   <div class="msg" id="g-signin-msg"></div>
+  </div>
+  <div id="g-unlock" hidden>
+   <h2>Unlock your board</h2>
+   <p>Founding access for the 2026-27 season. One manager per league, forever.</p>
+   <button id="g-pay">🔒 Become a Founding Load Manager — $69</button>
+   <div class="or">or</div>
+   <input id="g-code" placeholder="have a friend code? paste it">
+   <button id="g-redeem" class="ghost">Unlock with code</button>
+   <div class="msg" id="g-unlock-msg"></div>
+   <a href="#" id="g-signout">sign out</a>
+  </div>
+  <div id="g-activating" hidden>
+   <h2>Activating…</h2>
+   <p>Payment received. Setting up your board, this takes a few seconds.</p>
+   <div class="msg" id="g-act-msg"></div>
+  </div>
+ </div>
+</div>
+<div id="app" hidden><div class="wrap">
+<header>
+  <div class="logo"><span class="mark">▲</span>PlayoffProof</div>
+  <h1>Your <span class="grad">playoff board.</span></h1>
+  <div class="posline">Every player scored for your fantasy playoff weeks (Mar 23–Apr 12), refreshed daily. Green is rising for your title run, red is fading.</div>
+  <div class="sub" id="sub"></div>
+  <div class="tabs" id="tabs">
+    <button data-t="team" class="on">Your team <span class="ct" id="c-team"></span></button>
+    <button data-t="all">All players <span class="ct" id="c-all"></span></button>
+    <button data-t="avail">Available <span class="ct" id="c-avail"></span></button>
+  </div>
+  <div class="weekbar" id="weekbar">
+    <b>Your playoff weeks:</b>
+    <span class="wkbtn on" data-w="0">Week 1</span>
+    <span class="wkbtn on" data-w="1">Week 2</span>
+    <span class="wkbtn on" data-w="2">Week 3</span>
+    <span class="byehint">Got a first-round bye? Turn off Week 1.</span>
+  </div>
+</header>
+<div class="pane on" id="p-team">
+  <div class="teamsum" id="teamsum"></div>
+  <h3>Recommended moves</h3><div class="recs" id="recs"></div>
+  <h3>Your roster</h3><div class="grid" id="roster"></div>
+</div>
+<div class="pane" id="p-all"><div class="tablewrap"><div class="lgrid" id="list-all"></div></div></div>
+<div class="pane" id="p-avail"><h3>Free agents</h3><div class="tablewrap"><div class="lgrid" id="list-avail"></div></div></div>
+<div class="hint"><b>Score</b> = player quality (what draft kits rank on). <b>Listed games</b> = games scheduled in your playoff weeks.
+<b>Predicted games</b> = how many he's likely to actually play. <b>Motivation</b> = how motivated he is to be there. <b>Trend</b> = which way his playoff value is heading. Tap a column header to sort.</div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const cls=v=>v>0.05?'up':v<-0.05?'down':'flat';
+const arrow=v=>v>0.05?'▲':v<-0.05?'▼':'▬';
+const vclass=vt=>({"WE'RE SO BACK":'v-back','RISING':'v-back',"IT'S OVER":'v-over','SLIPPING':'v-over','STEADY':'v-flat'})[vt]||'v-flat';
+const strokeOf=k=>k==='up'?'#2fd575':k==='down'?'#ff5d5d':'#7c8494';
+const motColor=m=>m>=78?'var(--up)':m>=58?'var(--ink)':'var(--muted)';
+function spark(vals,w,h){const k=cls(vals[vals.length-1]-vals[0]),st=strokeOf(k);
+  const mn=Math.min(...vals),mx=Math.max(...vals),sp=(mx-mn)||1;
+  const pts=vals.map((v,i)=>[(i/(vals.length-1))*(w-4)+2,h-2-((v-mn)/sp)*(h-6)]);
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');const l=pts[pts.length-1];
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="${st}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${l[0].toFixed(1)}" cy="${l[1].toFixed(1)}" r="2.6" fill="${st}"/></svg>`;}
+const pl=(lab,v)=>`<div class="pl"><span class="lab">${lab}</span><div class="track"><div class="fill" style="width:${v}%"></div></div><span class="n">${v}</span></div>`;
+function factorChips(f){const c=[];if(f.injury>=0.4)c.push(`🩹 ${f.injury} inj`);if(f.teamRest>=0.4)c.push(`🛌 ${f.teamRest} rest`);if(f.b2b>=0.4)c.push(`⇄ ${f.b2b} B2B`);if(f.travel>=0.4)c.push(`✈️ ${f.travel} travel`);return c.map(x=>`<span class="fchip">${x}</span>`).join('');}
+let ACTIVEWEEKS=[true,true,true];
+function gamesView(p){const wk=p.weeklyGames||[0,0,0];
+  const activeListed=wk.reduce((s,g,i)=>s+(ACTIVEWEEKS[i]?g:0),0);
+  const frac=p.listedGames?activeListed/p.listedGames:0;
+  return {activeListed, lo:Math.round(p.gamesLo*frac), hi:Math.round(p.gamesHi*frac)};}
+function card(p){const k=cls(p.w1);const gv=gamesView(p);
+  return `<div class="card ${k}">
+    <div class="top"><div><div class="nm">${p.name}</div><div class="tm">${p.pos?p.pos+' · ':''}${p.team}</div></div>
+      <div class="verdict ${vclass(p.verdict)}">${p.emoji} ${p.verdict}</div></div>
+    <div class="scorerow"><div class="score">${p.score}<span class="s100">/100</span></div>
+      <div class="wk ${k}-t">${arrow(p.w1)} ${p.w1>0?'+':''}${p.w1}% <span>trend</span></div>${spark(p.spark,88,30)}</div>
+    <div class="slab">Player quality</div>
+    <div class="games">
+      <div class="gtop"><span class="gl">Likely games, your weeks</span>
+        <span class="gn"><b>${gv.lo}-${gv.hi}</b> <span class="of">of ${gv.activeListed}</span> <span class="conf conf-${p.confidence}">${p.confidence}</span></span></div>
+      <div class="wkstrip">${(p.weeklyGames||[0,0,0]).map((g,i)=>`<div class="wkc ${ACTIVEWEEKS[i]?'':'off'}">Week ${i+1}<b>${g}</b></div>`).join('')}</div>
+      <div class="factors">${factorChips(p.gamesFactors)||'<span class="fchip">no red flags for your weeks</span>'}</div>
+    </div>
+    <div class="pillars">${pl('🧠 Mind',p.mind)}${pl('❤️ Heart',p.heart)}${pl('🦵 Body',p.body)}</div>
+    <div class="reason"><span class="wtag">Why</span> ${p.reason}</div></div>`;}
+function ownerBadge(p){return p.owner==null?'<span class="badge fa">FA</span>':p.owner===MOCK.leagueName?'<span class="badge you">YOU</span>':`<span class="badge own">${p.owner}</span>`;}
+function renderRecs(){const r=MOCK.recs,out=[];
+  if(r.pickups.length)out.push(`<div class="rec pick"><div class="rh">🟢 Pick up</div>${r.pickups.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">quality ${p.score}, over ${p.insteadOf||'your weakest'}</span><span class="mv up-t">${p.score}</span></div>`).join('')}</div>`);
+  if(r.tradeFor.length)out.push(`<div class="rec trade"><div class="rh">🔵 Trade for (buy low)</div>${r.tradeFor.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">quality ${p.score}, dipping on ${p.owner}</span><span class="mv down-t">${p.w1}%</span></div>`).join('')}</div>`);
+  if(r.sellHigh.length)out.push(`<div class="rec sell"><div class="rh">🟡 Sell high</div>${r.sellHigh.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">spiking, shop him while hot</span><span class="mv up-t">+${p.w1}%</span></div>`).join('')}</div>`);
+  if(r.drops.length)out.push(`<div class="rec drop"><div class="rh">🔴 Drop candidates</div>${r.drops.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">weakest quality on your roster</span><span class="mv flat-t">${p.score}</span></div>`).join('')}</div>`);
+  document.getElementById('recs').innerHTML=out.join('')||'<div class="rec"><div class="recitem"><span class="why">No moves to make right now. Your roster is well positioned for the playoffs.</span></div></div>';}
+const COLS=[{k:'score',t:'Score'},{k:'listedGames',t:'Listed'},{k:'expGames',t:'Predicted'},{k:'motiv',t:'Motivation'},{k:'w1',t:'Trend'}];
+const sortState={all:'score',avail:'score'};
+function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);
+  return `<div class="lrow"><span class="rk">${rk}</span>
+    <span class="who">${p.emoji} ${p.name} ${p.pos?`<span class="postag">${p.pos}</span>`:''}<small>${p.team}</small> ${ownerBadge(p)}</span>
+    <span class="num sc">${p.score}</span>
+    <span class="num">${gv.activeListed}</span>
+    <span class="num pred"><b>${gv.lo}-${gv.hi}</b></span>
+    <span class="num mot" style="color:${motColor(p.motiv)}">${p.motiv}</span>
+    <span class="num chg ${k}-t">${arrow(p.w1)} ${p.w1>0?'+':''}${p.w1}%</span></div>`;}
+function renderList(scope){
+  const key=sortState[scope];
+  const data=(scope==='all'?MOCK.all:MOCK.available).slice().sort((a,b)=>b[key]-a[key]);
+  const head=`<div class="lhead"><span></span><span class="pl-h">Player</span>${
+    COLS.map(c=>`<span class="s ${key===c.k?'on':''}" data-k="${c.k}">${c.t} ${key===c.k?'▼':'<span class="car">↕</span>'}</span>`).join('')}</div>`;
+  document.getElementById('list-'+scope).innerHTML=head+data.map((p,i)=>lrow(p,i+1)).join('');
+  document.querySelectorAll('#list-'+scope+' .lhead .s').forEach(el=>el.onclick=()=>{sortState[scope]=el.dataset.k;renderList(scope);});
+}
+function renderSummary(){const s=MOCK.summary;const bits=[];
+  if(s.risers)bits.push(`<b class="u">${s.risers} trending up</b>`);
+  if(s.fades)bits.push(`<b class="d">${s.fades} slipping</b>`);
+  let line=`<b>Playoff positioning:</b> ${bits.join(' · ')||'steady'}.`;
+  if(s.watch.length)line+=` <b class="d">Fading for your title weeks:</b> ${s.watch.map(w=>`${w.name} (${w.gap} games at risk)`).join(', ')}.`;
+  if(s.bestAdd)line+=` <b class="w">Top move:</b> add ${s.bestAdd.name} (${s.bestAdd.score}).`;
+  document.getElementById('teamsum').innerHTML=line;}
+function boot(){
+  renderSummary();
+  document.getElementById('sub').textContent=`${MOCK.leagueName} · updated ${MOCK.updated}`;
+  document.getElementById('c-team').textContent=MOCK.roster.length;
+  document.getElementById('c-all').textContent=MOCK.all.length;
+  document.getElementById('c-avail').textContent=MOCK.available.length;
+  renderRecs();document.getElementById('roster').innerHTML=MOCK.roster.map(card).join('');
+  renderList('all');renderList('avail');}
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  [...document.querySelectorAll('#tabs button')].forEach(x=>x.classList.toggle('on',x===b));
+  ['team','all','avail'].forEach(t=>document.getElementById('p-'+t).classList.toggle('on',t===b.dataset.t));});
+document.getElementById('weekbar').addEventListener('click',e=>{const b=e.target.closest('.wkbtn');if(!b)return;
+  const i=+b.dataset.w;ACTIVEWEEKS[i]=!ACTIVEWEEKS[i];b.classList.toggle('on',ACTIVEWEEKS[i]);
+  document.getElementById('roster').innerHTML=MOCK.roster.map(card).join('');renderList('all');renderList('avail');});
+boot();
+</script>
+</div><script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const supabase = createClient('https://lcglavmrtxijzacmebzy.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZ2xhdm1ydHhpanphY21lYnp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxODUyMzcsImV4cCI6MjEwMjc2MTIzN30.dnKhfCYKVx-Bk09aWnRH27ryXcUWbYr4x-np76thiaE');
+const PAYLINK = 'https://buy.stripe.com/cNibIT9kR4uqekO3nk4sE01';
+const $ = id => document.getElementById(id);
+const paid = new URLSearchParams(location.search).get('paid') === '1';
+function show(which){
+  $('gate').hidden = which==='app'; $('app').hidden = which!=='app';
+  $('g-signin').hidden = which!=='signin';
+  $('g-unlock').hidden = which!=='unlock';
+  $('g-activating').hidden = which!=='activating';
+}
+async function entitled(session){
+  const { data } = await supabase.from('entitlements').select('status').eq('user_id', session.user.id).maybeSingle();
+  return data && data.status === 'active';
+}
+async function route(){
+  const { data:{ session } } = await supabase.auth.getSession();
+  if(!session){ show('signin'); return; }
+  if(await entitled(session)){ show('app'); return; }
+  if(paid){ show('activating'); poll(session, 0); return; }   // just paid -> wait for webhook
+  show('unlock');
+}
+function poll(session, n){
+  if(n > 8){ $('g-act-msg').textContent = 'Still working. Refresh in a moment.'; return; }
+  setTimeout(async () => { (await entitled(session)) ? show('app') : poll(session, n+1); }, 2000);
+}
+$('g-send').onclick = async () => {
+  const email = $('g-email').value.trim(); if(!email) return;
+  $('g-send').textContent = 'Sending…';
+  const { error } = await supabase.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.origin + '/app.html' } });
+  $('g-send').textContent = 'Send magic link';
+  $('g-signin-msg').textContent = error ? error.message : 'Check your email and tap the link.';
+};
+$('g-pay').onclick = async () => {
+  const { data:{ session } } = await supabase.auth.getSession(); if(!session) return;
+  const u = session.user;
+  location.href = PAYLINK + '?client_reference_id=' + u.id + '&prefilled_email=' + encodeURIComponent(u.email);
+};
+$('g-redeem').onclick = async () => {
+  const code = $('g-code').value.trim(); if(!code) return;
+  const { data, error } = await supabase.rpc('redeem_code', { p_code: code });
+  const m = { granted:'Unlocked!', invalid_code:'That code is not valid.', code_used_up:'That code is used up.', not_signed_in:'Sign in first.' };
+  $('g-unlock-msg').textContent = error ? error.message : (m[data] || data);
+  if(data==='granted') setTimeout(route, 500);
+};
+$('g-signout').onclick = async e => { e.preventDefault(); await supabase.auth.signOut(); location.href = location.origin + '/app.html'; };
+supabase.auth.onAuthStateChange(() => route());
+route();
+</script></body></html>
