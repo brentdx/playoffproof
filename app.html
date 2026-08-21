@@ -70,6 +70,8 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .tr-anchor h3{margin:0;font-size:18px}
 .tr-chip{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--ink2);border:1px solid var(--line2);border-radius:20px;padding:2px 9px}
 .tr-hint{color:var(--ink2);font-size:12.5px;margin:3px 0 12px}
+.tr-why{color:var(--muted);font-size:11.5px;line-height:1.5;margin:2px 0 10px}
+.tr-why b{color:var(--ink2)}
 .trt{display:grid;grid-template-columns:1fr auto;gap:5px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px;cursor:pointer}
 .trt:hover{border-color:var(--line2)} .trt.on{border-color:#7c5cff}
 .trt .r1{display:flex;align-items:center;gap:8px;min-width:0}
@@ -270,7 +272,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 <div class="pane" id="p-trades">
   <div id="tr-connect" class="cbox mini"><p>Connect your league to get trade and pickup targets for your roster. <a href="#" id="tr-toteam">Connect on the Your team tab →</a></p></div>
   <div id="tr-content" hidden>
-    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
+    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff numbers carry our incentive engine: <b>team posture</b> (tanking, locked seeds resting stars, seeding fights) sets each player's expected games, and <b>player motivation</b> scales his output. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
     <div class="trapp">
       <div class="trpanel"><div class="trlabel">Your team · tap a player</div><div id="tr-roster"></div></div>
       <div id="tr-detail"></div>
@@ -442,14 +444,18 @@ const erf=x=>{const s=x<0?-1:1;x=Math.abs(x);const t=1/(1+0.3275911*x);
   return s*(1-((((1.061405429*t-1.453152027)*t+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x));};
 const PHI=z=>0.5*(1+erf(z/Math.SQRT2));
 // team totals for one week. Counting cats = sum(perGame x games); % cats = volume-weighted (pts proxy).
+// PLAYOFF weeks: counting stats scale by the player's MOTIVATION (same effort curve as the Score) —
+// team posture (tank/contend/seeding) already docks his GAMES via expGames; this docks his output.
+const trEff = p => 0.62 + 0.38*((p.motiv==null?80:p.motiv)/100);
 function trTeamCats(players, wk, po){
   const t={},W={};
   for(const c of TRCATS){t[c.k]=0;W[c.k]=0;}
   for(const p of players){
     const g = po ? trWkExp(p)[wk] : REGWK;
+    const eff = po ? trEff(p) : 1;
     for(const c of TRCATS){
       if(c.rate){const w=(p.proj.pts+5)*g; t[c.k]+=p.proj[c.k]*w; W[c.k]+=w;}
-      else t[c.k]+=p.proj[c.k]*g;
+      else t[c.k]+=p.proj[c.k]*g*eff;
     }
   }
   for(const c of TRCATS) if(c.rate) t[c.k]=W[c.k]?t[c.k]/W[c.k]:0;
@@ -467,9 +473,10 @@ function trOppCats(wk, po){
   for(const c of TRCATS){t[c.k]=0;W[c.k]=0;}
   for(const p of pool){
     const g = po ? trWkExp(p)[wk] : REGWK;
+    const eff = po ? trEff(p) : 1;
     for(const c of TRCATS){
       if(c.rate){const w=(p.proj.pts+5)*g; t[c.k]+=p.proj[c.k]*w; W[c.k]+=w;}
-      else t[c.k]+=p.proj[c.k]*g;
+      else t[c.k]+=p.proj[c.k]*g*eff;
     }
   }
   for(const c of TRCATS) c.rate ? (t[c.k]=W[c.k]?t[c.k]/W[c.k]:0) : (t[c.k]=t[c.k]/Math.max(1,pool.length)*10);
@@ -510,7 +517,7 @@ const trRep=(()=>{let done=null;return()=>{
   if(pool.length<5) pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(110,130);
   const proj={}; for(const c of TRCATS) proj[c.k]=pool.reduce((s,p)=>s+p.proj[c.k],0)/pool.length;
   const wg=[0,1,2].map(w=>pool.reduce((s,p)=>s+trWkExp(p)[w],0)/pool.length);
-  done={name:'(waiver replacement)',proj,weeklyGames:wg.map(g=>+g.toFixed(1)),expGames:trSum(wg),listedGames:trSum(wg),perGame:pool.reduce((s,p)=>s+p.perGame,0)/pool.length};
+  done={name:'(waiver replacement)',proj,weeklyGames:wg.map(g=>+g.toFixed(1)),expGames:trSum(wg),listedGames:trSum(wg),perGame:pool.reduce((s,p)=>s+p.perGame,0)/pool.length,motiv:Math.round(pool.reduce((s,p)=>s+(p.motiv||80),0)/pool.length)};
   return done;};})();
 // evaluate any package: give[] leaves your roster, get[] joins; auto-balance to roster size
 function trEval(give, get){
@@ -559,7 +566,7 @@ function renderTrades(){
     `<div class="trteam">Your playoff run projects <b>${team.po.toFixed(1)} of 3</b> matchup wins</div>`+
     sorted.map(p=>{const w=_warCache[p.name],cl=w.pw>=0.25?'gtxt':w.pw<=0.05?'ltxt':'';
     return `<div class="trc ${p.name===trAnchor?'on':''}" tabindex="0" data-n="${p.name}">
-      <div><div class="nm">${p.name}</div><div class="mt">${p.team} · ${p.weeklyGames.join('-')}</div></div>
+      <div><div class="nm">${p.name}</div><div class="mt">${p.team} · ${p.weeklyGames.join('-')} · <span style="color:${motColor(p.motiv)}">motiv ${p.motiv}</span></div></div>
       <div class="wv"><b class="${cl}">${w.pw.toFixed(2)}</b> <small>PWAR</small><span class="rs">RWAR ${w.rw.toFixed(1)}</span></div></div>`;}).join('');
   document.querySelectorAll('#tr-roster .trc').forEach(el=>{const go=()=>{trAnchor=el.dataset.n;trSwap=null;trGive=[];trGet=[];renderTrades();};
     el.onclick=go;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
@@ -569,14 +576,15 @@ function renderTrDetail(){
   const A=trByName[trAnchor]; if(!A) return;
   const w=_warCache&&_warCache[A.name]||trPlayerWAR(A);
   const cands=trCands(A);
-  let h=`<div class="tr-anchor"><h3>${A.name}</h3><span class="tr-chip">${A.team} · ${A.weeklyGames.join('-')} slate</span><span class="tr-chip">RWAR <b>${w.rw.toFixed(1)}</b></span><span class="tr-chip">PWAR <b>${w.pw.toFixed(2)}</b></span></div>`;
+  let h=`<div class="tr-anchor"><h3>${A.name}</h3><span class="tr-chip">${A.team} · ${A.weeklyGames.join('-')} slate</span><span class="tr-chip">motivation <b style="color:${motColor(A.motiv)}">${A.motiv}</b></span><span class="tr-chip">RWAR <b>${w.rw.toFixed(1)}</b></span><span class="tr-chip">PWAR <b>${w.pw.toFixed(2)}</b></span></div>`;
+  h+=`<p class="tr-why">${A.reason?`Why he reads this way: <b>${A.reason}</b>. `:''}Playoff numbers here bake in team posture (rest, tanking, seeding fights) through his expected games, and his motivation through his output.</p>`;
   h+=`<div class="tr-lam">Playoff weight <input type="range" id="tr-lambda" min="1" max="5" step="1" value="${LAMBDA}"> <b id="tr-lamv">${LAMBDA}×</b> regular season</div>`;
   if(!cands.length){h+=`<div class="tr-none"><b>${A.name} is already well-positioned.</b><br>No comparable-value move meaningfully lifts your playoff odds. Hold, or build a package below.</div>`;}
   else{
     h+=`<p class="tr-hint">Comparable-value moves ranked by title impact (ΔRWAR + ${LAMBDA}×ΔPWAR). Tap one to open the trade builder.</p>`;
     h+=cands.map(o=>{const b=o.B,fa=trOwn(b)==='fa';
       return `<div class="trt ${b.name===trSwap?'on':''}" data-n="${b.name}">
-        <div class="r1"><span class="trbadge ${fa?'pick':'trade'}">${fa?'Pickup':'Trade'}</span><span class="tn">${b.name}</span><span class="tm">${b.team} · ${b.weeklyGames.join('-')}</span></div>
+        <div class="r1"><span class="trbadge ${fa?'pick':'trade'}">${fa?'Pickup':'Trade'}</span><span class="tn">${b.name}</span><span class="tm">${b.team} · ${b.weeklyGames.join('-')} · <span style="color:${motColor(b.motiv)}">m${b.motiv}</span></span></div>
         <div class="pw">${trF(o.dPo,2)}<small>PLAYOFF WINS</small></div>
         <div class="chips">${trChips(A,b)}</div>
         <div class="cost"><span class="${o.dRs<-0.02?'ltxt':o.dRs>0.02?'gtxt':'ztxt'}">${trF(o.dRs,2)} RWAR</span></div></div>`;}).join('');
