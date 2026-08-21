@@ -235,8 +235,8 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
   <div class="posline">Every player scored for your fantasy playoff weeks (Mar 23–Apr 12), refreshed daily. Green is rising for your title run, red is fading.</div>
   <div class="sub" id="sub"></div>
   <div class="tabs" id="tabs">
-    <button data-t="trades" class="movetab">⚡ Moves</button>
-    <button data-t="players" class="on">Players</button>
+    <button data-t="trades" class="movetab on">⚡ Moves</button>
+    <button data-t="players">Players</button>
   </div>
   <div class="weekbar" id="weekbar">
     <b>Your playoff weeks:</b>
@@ -246,7 +246,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
     <span class="byehint">Got a first-round bye? Turn off Week 1.</span>
   </div>
 </header>
-<div class="pane on" id="p-players">
+<div class="pane" id="p-players">
 <div class="pchips" id="pchips">
   <button data-v="team">Your team <span class="ct" id="c-team"></span></button>
   <button data-v="all" class="on">All players <span class="ct" id="c-all"></span></button>
@@ -278,12 +278,12 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 </div>
 <div class="sub on" id="p-all"><div class="tablewrap"><div class="lgrid" id="list-all"></div></div></div>
 <div class="sub" id="p-avail">
-  <div id="avail-connect" class="cbox mini"><p>Connect your league to see who's available. <a href="#" id="avail-toteam">Connect on the Your team tab →</a></p></div>
+  <div id="avail-connect" class="cbox mini"><p>These are the demo league's free agents. <a href="#" id="avail-toteam">Set up your league →</a> to see who's actually available in yours.</p></div>
   <div id="avail-content" hidden><h3>Free agents</h3><div class="tablewrap"><div class="lgrid" id="list-avail"></div></div></div>
 </div>
 </div>
-<div class="pane" id="p-trades">
-  <div id="tr-connect" class="cbox mini"><p>Connect your league to get trade and pickup targets for your roster. <a href="#" id="tr-toteam">Connect on the Your team tab →</a></p></div>
+<div class="pane on" id="p-trades">
+  <div id="tr-connect" class="cbox mini"><p>You're looking at a <b>demo team</b>. <a href="#" id="tr-toteam">Set up your league →</a> (30 seconds) and every move on this page becomes about <b>your</b> roster.</p></div>
   <div id="tr-content" hidden>
     <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
     <div class="trapp">
@@ -348,7 +348,7 @@ function renderRecs(){const r=V.recs,out=[];
   q('recs').innerHTML=out.join('')||'<div class="rec"><div class="recitem"><span class="why">No moves to make right now. Your roster is well positioned.</span></div></div>';}
 const COLS=[{k:'score',t:'Score'},{k:'listedGames',t:'Listed'},{k:'expGames',t:'Predicted'},{k:'motiv',t:'Effort'},{k:'w1',t:'Trend'}];
 const sortState={all:'score',avail:'score'};
-function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);const mine=LEAGUE&&LEAGUE.roster.has(p.name);
+function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);const mine=LG().roster.has(p.name);
   return `<div class="lrow"><span class="rk">${rk}</span>
     <span class="who">${p.emoji} ${p.name} ${p.pos?`<span class="postag">${p.pos}</span>`:''}<small>${p.team}</small>${mine?' <span class="badge you">YOU</span>':''}</span>
     <span class="num sc">${p.score}</span>
@@ -378,8 +378,7 @@ const byNorm={}; MOCK.all.forEach(p=>byNorm[NORM(p.name)]=p);
 function matchNames(list){const names=[],miss=[];for(const n of list){const p=byNorm[NORM(n)];if(p)names.push(p.name);else if((n||'').trim())miss.push(n.trim());}return{names,miss};}
 let LEAGUE=null, V={roster:[],available:[],recs:{pickups:[],drops:[],tradeFor:[],sellHigh:[]},summary:null};
 function computeViews(){
-  if(!LEAGUE){V={roster:[],available:[],recs:{pickups:[],drops:[],tradeFor:[],sellHigh:[]},summary:null};return;}
-  const all=MOCK.all,mine=LEAGUE.roster,owned=LEAGUE.rostered;
+  const all=MOCK.all,mine=LG().roster,owned=LG().rostered;
   const roster=all.filter(p=>mine.has(p.name)).sort((a,b)=>b.score-a.score);
   const available=all.filter(p=>!owned.has(p.name)).sort((a,b)=>b.score-a.score);
   const others=all.filter(p=>owned.has(p.name)&&!mine.has(p.name));
@@ -395,14 +394,16 @@ function computeViews(){
 }
 function persist(){try{localStorage.setItem('pp_league',LEAGUE?JSON.stringify({name:LEAGUE.name,roster:[...LEAGUE.roster],rostered:[...LEAGUE.rostered]}):'');}catch(e){}}
 function loadLeague(){try{const s=JSON.parse(localStorage.getItem('pp_league'));if(s&&s.roster)return{name:s.name,roster:new Set(s.roster),rostered:new Set(s.rostered)};}catch(e){}return null;}
+const DEMO={name:MOCK.leagueDemo.name+' (demo)',roster:new Set(MOCK.leagueDemo.rosterNames),rostered:new Set(MOCK.leagueDemo.rosteredNames)};
+const LG=()=>LEAGUE||DEMO;
 function showTab(t){document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));['players','trades'].forEach(p=>q('p-'+p).classList.toggle('on',p===t));}
 function showPView(v){document.querySelectorAll('#pchips button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));['team','all','avail'].forEach(p=>q('p-'+p).classList.toggle('on',p===v));}
-function rerender(){renderList('all');if(LEAGUE){renderSummary();q('roster').innerHTML=V.roster.map(card).join('');renderList('avail');}}
-function renderAll(){const on=!!LEAGUE;
-  q('team-connect').hidden=on;q('team-content').hidden=!on;q('avail-connect').hidden=on;q('avail-content').hidden=!on;
-  q('tr-connect').hidden=on;q('tr-content').hidden=!on;if(on)renderTrades();
-  q('c-all').textContent=MOCK.all.length;q('c-team').textContent=on?V.roster.length:'';q('c-avail').textContent=on?V.available.length:'';
-  if(on)q('lg-name').textContent=LEAGUE.name;
+function rerender(){renderList('all');renderSummary();q('roster').innerHTML=V.roster.map(card).join('');renderList('avail');}
+function renderAll(){const on=!!LEAGUE;   // no league -> run everything on the demo, on-ramps visible
+  q('team-connect').hidden=on;q('team-content').hidden=false;q('avail-connect').hidden=on;q('avail-content').hidden=false;
+  q('tr-connect').hidden=on;q('tr-content').hidden=false;renderTrades();
+  q('c-all').textContent=MOCK.all.length;q('c-team').textContent=V.roster.length;q('c-avail').textContent=V.available.length;
+  q('lg-name').textContent=LG().name;
   rerender();}
 function setLeague(lg){LEAGUE=lg;persist();computeViews();renderAll();showTab('trades');}
 
@@ -462,7 +463,7 @@ const trSum = a => a.reduce((x,y)=>x+y,0);
 const TRCATS=[{k:'pts',l:'Points',s:'pts'},{k:'reb',l:'Rebounds',s:'reb'},{k:'ast',l:'Assists',s:'ast'},{k:'stl',l:'Steals',s:'stl'},{k:'blk',l:'Blocks',s:'blk'},{k:'fg3m',l:'Threes',s:'3pm'},{k:'fg_pct',l:'FG%',s:'fg%',rate:1},{k:'ft_pct',l:'FT%',s:'ft%',rate:1},{k:'turnover',l:'Turnovers',s:'to',inv:1}];
 const trGood=(c,d)=>c.inv?d<0:d>0;
 const trF=(v,d=1)=>(v>0?'+':'')+v.toFixed(d);
-const trOwn = p => LEAGUE ? (LEAGUE.roster.has(p.name)?'you':(LEAGUE.rostered.has(p.name)?'opp':'fa')) : 'fa';
+const trOwn = p => LG().roster.has(p.name)?'you':(LG().rostered.has(p.name)?'opp':'fa');
 const erf=x=>{const s=x<0?-1:1;x=Math.abs(x);const t=1/(1+0.3275911*x);
   return s*(1-((((1.061405429*t-1.453152027)*t+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x));};
 const PHI=z=>0.5*(1+erf(z/Math.SQRT2));
@@ -486,9 +487,8 @@ function trTeamCats(players, wk, po){
 }
 // average opponent in YOUR league: per-player mean over other rostered players x 10 starters
 function trOppPool(){
-  if(!LEAGUE) return [];
-  let pool=TRP.filter(p=>LEAGUE.rostered.has(p.name)&&!LEAGUE.roster.has(p.name));
-  if(pool.length<20) pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(0,120).filter(p=>!LEAGUE.roster.has(p.name));
+  let pool=TRP.filter(p=>LG().rostered.has(p.name)&&!LG().roster.has(p.name));
+  if(pool.length<20) pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(0,120).filter(p=>!LG().roster.has(p.name));
   return pool;
 }
 function trOppCats(wk, po){
@@ -534,8 +534,8 @@ function trExpWins(players){
   return {po,rs};
 }
 // replacement player = median FA (or ~rank-120) cat vector with league-median playoff games
-const trRep=(()=>{let done=null;return()=>{
-  if(done)return done;
+const trRep=(()=>{let done=null,key=null;return()=>{
+  const k=LG().name; if(done&&key===k)return done; key=k;
   let pool=TRP.filter(p=>trOwn(p)==='fa').sort((a,b)=>b.perGame-a.perGame).slice(2,15);
   if(pool.length<5) pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(110,130);
   const proj={}; for(const c of TRCATS) proj[c.k]=pool.reduce((s,p)=>s+p.proj[c.k],0)/pool.length;
@@ -544,7 +544,7 @@ const trRep=(()=>{let done=null;return()=>{
   return done;};})();
 // evaluate any package: give[] leaves your roster, get[] joins; auto-balance to roster size
 function trEval(give, get){
-  const roster=TRP.filter(p=>LEAGUE.roster.has(p.name));
+  const roster=TRP.filter(p=>LG().roster.has(p.name));
   let after=roster.filter(p=>!give.includes(p.name)).concat(get.map(n=>trByName[n]).filter(Boolean));
   const moves=[];
   const fas=TRP.filter(p=>trOwn(p)==='fa'&&!get.includes(p.name)).sort((a,b)=>b.perGame-a.perGame);
@@ -557,7 +557,7 @@ function trEval(give, get){
 }
 // per-player WAR = team expected wins lost if he's replaced by a waiver guy
 function trPlayerWAR(p){
-  const roster=TRP.filter(pl=>LEAGUE.roster.has(pl.name));
+  const roster=TRP.filter(pl=>LG().roster.has(pl.name));
   const base=trExpWins(roster);
   const swapped=roster.map(pl=>pl.name===p.name?trRep():pl);
   const alt=trExpWins(swapped);
@@ -586,13 +586,12 @@ function trChips(A,B){
     .map(o=>`<span class="${trGood(o.c,o.d)?'gtxt':'ltxt'}">${trF(o.d)} ${o.c.s}</span>`).join('');
 }
 function renderTrades(){
-  if(!LEAGUE) return;
   _oppCache={}; _warCache=null;
-  const roster=TRP.filter(p=>LEAGUE.roster.has(p.name));
+  const roster=TRP.filter(p=>LG().roster.has(p.name));
   if(!roster.length){q('tr-roster').innerHTML='<div class="tr-none">None of your players matched our pool.</div>';q('tr-detail').innerHTML='';return;}
   if(!_warCache){_warCache={};roster.forEach(p=>_warCache[p.name]=trPlayerWAR(p));}
   const sorted=[...roster].sort((a,b)=>_warCache[b.name].pw-_warCache[a.name].pw);
-  if(!trAnchor||!LEAGUE.roster.has(trAnchor)) trAnchor=sorted[sorted.length-1].name;   // weakest playoff link first
+  if(!trAnchor||!LG().roster.has(trAnchor)) trAnchor=sorted[sorted.length-1].name;   // weakest playoff link first
   const team=trExpWins(roster);
   q('tr-roster').innerHTML=
     `<div class="trteam">Your playoff run projects <b>${team.po.toFixed(1)} of 3</b> matchup wins</div>`+
@@ -644,7 +643,7 @@ function renderTrBuilder(){
   const balance=r.moves.map(m=>m.t==='add'?`pick up <b>${m.n}</b> from waivers`:`drop <b>${m.n}</b>`).join(', ');
   let s=`<button class="tr-back" id="tr-back">&larr; back to targets</button>`;
   s+=`<div class="tr-sec">Trade builder</div>`;
-  const rosterOpts=TRP.filter(p=>LEAGUE.roster.has(p.name)&&!trGive.includes(p.name)).sort((a,b)=>b.perGame-a.perGame);
+  const rosterOpts=TRP.filter(p=>LG().roster.has(p.name)&&!trGive.includes(p.name)).sort((a,b)=>b.perGame-a.perGame);
   const getOpts=[...TRP.filter(p=>trOwn(p)!=='you'&&!trGet.includes(p.name))].sort((a,b)=>b.perGame-a.perGame).slice(0,160);
   s+=`<div class="trbuild"><div class="trside"><div class="trside-l ltxt">You give</div>${
     trGive.map(n=>`<span class="trpill" data-side="give" data-n="${n}">${n} ×</span>`).join('')}${
