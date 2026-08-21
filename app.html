@@ -54,6 +54,14 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .cbox .cmsg{font-size:12.5px;color:var(--ink2);margin-top:8px;min-height:16px;text-align:left}
 .cbox.mini a,.lgcta a,.cbox .chelp a{color:#7fb0ff;text-decoration:none;font-size:12.5px}
 .cbox .chelp{margin-top:12px}
+/* IA: Moves tab prominent; Players sub-chips */
+.movetab{border:1px solid rgba(124,92,255,.5)!important;color:#b3a2ff!important}
+.movetab.on{background:linear-gradient(90deg,rgba(124,92,255,.25),rgba(77,124,255,.18))!important;color:#fff!important}
+.pchips{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap}
+.pchips button{background:transparent;border:1px solid var(--line2);border-radius:18px;color:var(--ink2);font:inherit;font-size:12px;font-weight:700;padding:6px 13px;cursor:pointer}
+.pchips button.on{background:var(--bg2);color:#fff;border-color:#7c5cff}
+.pchips .ct{color:var(--muted);font-weight:500;font-size:10.5px}
+.sub{display:none}.sub.on{display:block}
 /* trades tab */
 .trdef{color:var(--muted);font-size:12px;line-height:1.55;margin:2px 0 16px;max-width:74ch;border-left:2px solid var(--line2);padding-left:11px}
 .trdef b{color:#b3a2ff}
@@ -227,10 +235,8 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
   <div class="posline">Every player scored for your fantasy playoff weeks (Mar 23–Apr 12), refreshed daily. Green is rising for your title run, red is fading.</div>
   <div class="sub" id="sub"></div>
   <div class="tabs" id="tabs">
-    <button data-t="team">Your team <span class="ct" id="c-team"></span></button>
-    <button data-t="all" class="on">All players <span class="ct" id="c-all"></span></button>
-    <button data-t="avail">Available <span class="ct" id="c-avail"></span></button>
-    <button data-t="trades">Trades</button>
+    <button data-t="trades" class="movetab">⚡ Moves</button>
+    <button data-t="players" class="on">Players</button>
   </div>
   <div class="weekbar" id="weekbar">
     <b>Your playoff weeks:</b>
@@ -240,7 +246,13 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
     <span class="byehint">Got a first-round bye? Turn off Week 1.</span>
   </div>
 </header>
-<div class="pane" id="p-team">
+<div class="pane on" id="p-players">
+<div class="pchips" id="pchips">
+  <button data-v="team">Your team <span class="ct" id="c-team"></span></button>
+  <button data-v="all" class="on">All players <span class="ct" id="c-all"></span></button>
+  <button data-v="avail">Available <span class="ct" id="c-avail"></span></button>
+</div>
+<div class="sub" id="p-team">
   <div id="team-connect" class="cbox">
     <h2>Connect your league</h2>
     <p>See your roster and free agents ranked for your playoff weeks. We never ask for your password.</p>
@@ -260,27 +272,28 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
   <div id="team-content" hidden>
     <div class="teamsum" id="teamsum"></div>
     <div class="lgcta"><span id="lg-name"></span><a href="#" id="lg-change">change league</a></div>
-    <h3>Recommended moves</h3><div class="recs" id="recs"></div>
+    <div class="cbox mini" style="margin:14px 0"><p>Your ranked pickups, drops, and trades live on <a href="#" id="team-tomoves">the ⚡ Moves tab →</a></p></div>
     <h3>Your roster</h3><div class="grid" id="roster"></div>
   </div>
 </div>
-<div class="pane on" id="p-all"><div class="tablewrap"><div class="lgrid" id="list-all"></div></div></div>
-<div class="pane" id="p-avail">
+<div class="sub on" id="p-all"><div class="tablewrap"><div class="lgrid" id="list-all"></div></div></div>
+<div class="sub" id="p-avail">
   <div id="avail-connect" class="cbox mini"><p>Connect your league to see who's available. <a href="#" id="avail-toteam">Connect on the Your team tab →</a></p></div>
   <div id="avail-content" hidden><h3>Free agents</h3><div class="tablewrap"><div class="lgrid" id="list-avail"></div></div></div>
+</div>
 </div>
 <div class="pane" id="p-trades">
   <div id="tr-connect" class="cbox mini"><p>Connect your league to get trade and pickup targets for your roster. <a href="#" id="tr-toteam">Connect on the Your team tab →</a></p></div>
   <div id="tr-content" hidden>
-    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff numbers carry our incentive engine: <b>team posture</b> (tanking, locked seeds resting stars, seeding fights) sets each player's expected games, and <b>player motivation</b> scales his output. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
+    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
     <div class="trapp">
       <div class="trpanel"><div class="trlabel">Your team · tap a player</div><div id="tr-roster"></div></div>
       <div id="tr-detail"></div>
     </div>
   </div>
 </div>
-<div class="hint"><b>Score</b> = total expected playoff value: games × value-per-game × effort. <b>Listed games</b> = games scheduled in your playoff weeks.
-<b>Predicted / Motivation</b> break down that value: how many games he plays and how hard he plays them. <b>Trend</b> = which way his playoff value is heading. Tap a column header to sort.
+<div class="hint"><b>Score</b> = total expected playoff value: games × production × effort. <b>Listed games</b> = games scheduled in your playoff weeks.
+<b>Predicted / Effort</b> are the two dials behind that value: how many games he'll actually play, and how hard he plays the ones he's in. <b>Trend</b> = which way his playoff value is heading. Tap a column header to sort.
 All numbers here are projections for entertainment purposes only. They are not professional, legal, or financial advice.</div>
 </div>
 
@@ -297,7 +310,12 @@ function spark(vals,w,h){const k=cls(vals[vals.length-1]-vals[0]),st=strokeOf(k)
   const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');const l=pts[pts.length-1];
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="${st}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${l[0].toFixed(1)}" cy="${l[1].toFixed(1)}" r="2.6" fill="${st}"/></svg>`;}
 const pl=(lab,v)=>`<div class="pl"><span class="lab">${lab}</span><div class="track"><div class="fill" style="width:${v}%"></div></div><span class="n">${v}</span></div>`;
-function factorChips(f){const c=[];if(f.injury>=0.4)c.push(`🩹 ${f.injury} inj`);if(f.teamRest>=0.4)c.push(`🛌 ${f.teamRest} rest`);if(f.b2b>=0.4)c.push(`⇄ ${f.b2b} B2B`);if(f.travel>=0.4)c.push(`✈️ ${f.travel} travel`);return c.map(x=>`<span class="fchip">${x}</span>`).join('');}
+function factorChips(p){const f=p.gamesFactors,c=[];
+  if(f.injury>=0.4)c.push(`🩹 −${f.injury}g injury risk`);
+  if(f.teamRest>=0.4)c.push(`🛌 −${f.teamRest}g team rest`);
+  if(p.b2bs>0)c.push(`⇄ ${p.b2bs} B2B${p.b2bs>1?'s':''} in window${f.b2b>=0.4?` · −${f.b2b}g`:''}`);
+  if(f.travel>=0.4)c.push(`✈️ −${f.travel}g travel`);
+  return c.map(x=>`<span class="fchip">${x}</span>`).join('');}
 let ACTIVEWEEKS=[true,true,true];
 function gamesView(p){const wk=p.weeklyGames||[0,0,0];
   const activeListed=wk.reduce((s,g,i)=>s+(ACTIVEWEEKS[i]?g:0),0);
@@ -314,7 +332,9 @@ function card(p){const k=cls(p.w1);const gv=gamesView(p);
       <div class="gtop"><span class="gl">Likely games, your weeks</span>
         <span class="gn"><b>${gv.lo}-${gv.hi}</b> <span class="of">of ${gv.activeListed}</span> <span class="conf conf-${p.confidence}">${p.confidence}</span></span></div>
       <div class="wkstrip">${(p.weeklyGames||[0,0,0]).map((g,i)=>`<div class="wkc ${ACTIVEWEEKS[i]?'':'off'}">Week ${i+1}<b>${g}</b></div>`).join('')}</div>
-      <div class="factors">${factorChips(p.gamesFactors)||'<span class="fchip">no red flags for your weeks</span>'}</div>
+      <div class="factors">${factorChips(p)||'<span class="fchip">no red flags for your weeks</span>'}</div>
+      <div class="gtop" style="margin-top:9px;border-top:1px solid var(--line);padding-top:8px"><span class="gl">Effort in the games he plays</span>
+        <span class="gn"><b style="color:${motColor(p.motiv)}">${p.motiv}%</b></span></div>
     </div>
     <div class="pillars">${pl('🧠 Mind',p.mind)}${pl('❤️ Heart',p.heart)}${pl('🦵 Body',p.body)}</div>
     <div class="reason"><span class="wtag">Why</span> ${p.reason}</div></div>`;}
@@ -326,7 +346,7 @@ function renderRecs(){const r=V.recs,out=[];
   if(r.sellHigh.length)out.push(`<div class="rec sell"><div class="rh">🟡 Sell high</div>${r.sellHigh.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">spiking, shop him while hot</span><span class="mv up-t">+${p.w1}%</span></div>`).join('')}</div>`);
   if(r.drops.length)out.push(`<div class="rec drop"><div class="rh">🔴 Drop candidates</div>${r.drops.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">weakest value on your roster</span><span class="mv flat-t">${p.score}</span></div>`).join('')}</div>`);
   q('recs').innerHTML=out.join('')||'<div class="rec"><div class="recitem"><span class="why">No moves to make right now. Your roster is well positioned.</span></div></div>';}
-const COLS=[{k:'score',t:'Score'},{k:'listedGames',t:'Listed'},{k:'expGames',t:'Predicted'},{k:'motiv',t:'Motivation'},{k:'w1',t:'Trend'}];
+const COLS=[{k:'score',t:'Score'},{k:'listedGames',t:'Listed'},{k:'expGames',t:'Predicted'},{k:'motiv',t:'Effort'},{k:'w1',t:'Trend'}];
 const sortState={all:'score',avail:'score'};
 function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);const mine=LEAGUE&&LEAGUE.roster.has(p.name);
   return `<div class="lrow"><span class="rk">${rk}</span>
@@ -375,15 +395,16 @@ function computeViews(){
 }
 function persist(){try{localStorage.setItem('pp_league',LEAGUE?JSON.stringify({name:LEAGUE.name,roster:[...LEAGUE.roster],rostered:[...LEAGUE.rostered]}):'');}catch(e){}}
 function loadLeague(){try{const s=JSON.parse(localStorage.getItem('pp_league'));if(s&&s.roster)return{name:s.name,roster:new Set(s.roster),rostered:new Set(s.rostered)};}catch(e){}return null;}
-function showTab(t){document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));['team','all','avail','trades'].forEach(p=>q('p-'+p).classList.toggle('on',p===t));}
-function rerender(){renderList('all');if(LEAGUE){renderSummary();renderRecs();q('roster').innerHTML=V.roster.map(card).join('');renderList('avail');}}
+function showTab(t){document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));['players','trades'].forEach(p=>q('p-'+p).classList.toggle('on',p===t));}
+function showPView(v){document.querySelectorAll('#pchips button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));['team','all','avail'].forEach(p=>q('p-'+p).classList.toggle('on',p===v));}
+function rerender(){renderList('all');if(LEAGUE){renderSummary();q('roster').innerHTML=V.roster.map(card).join('');renderList('avail');}}
 function renderAll(){const on=!!LEAGUE;
   q('team-connect').hidden=on;q('team-content').hidden=!on;q('avail-connect').hidden=on;q('avail-content').hidden=!on;
   q('tr-connect').hidden=on;q('tr-content').hidden=!on;if(on)renderTrades();
   q('c-all').textContent=MOCK.all.length;q('c-team').textContent=on?V.roster.length:'';q('c-avail').textContent=on?V.available.length:'';
   if(on)q('lg-name').textContent=LEAGUE.name;
   rerender();}
-function setLeague(lg){LEAGUE=lg;persist();computeViews();renderAll();showTab('team');}
+function setLeague(lg){LEAGUE=lg;persist();computeViews();renderAll();showTab('trades');}
 
 // ---------- connect handlers ----------
 q('demo-go').onclick=()=>setLeague({name:MOCK.leagueDemo.name,roster:new Set(MOCK.leagueDemo.rosterNames),rostered:new Set(MOCK.leagueDemo.rosteredNames)});
@@ -420,9 +441,11 @@ q('sl-go').onclick=async()=>{const u=q('sl-user').value.trim();if(!u)return;cons
     msg.querySelectorAll('.lgpick').forEach(b=>b.onclick=()=>loadSleeperLeague(lgs[+b.dataset.i],user.user_id));
   }catch(e){msg.textContent='Could not reach Sleeper from the browser — use paste for now.';}
 };
-q('lg-change').onclick=e=>{e.preventDefault();LEAGUE=null;persist();computeViews();renderAll();showTab('team');};
-q('avail-toteam').onclick=e=>{e.preventDefault();showTab('team');};
-q('tr-toteam').onclick=e=>{e.preventDefault();showTab('team');};
+q('lg-change').onclick=e=>{e.preventDefault();LEAGUE=null;persist();computeViews();renderAll();showTab('players');showPView('team');};
+q('avail-toteam').onclick=e=>{e.preventDefault();showTab('players');showPView('team');};
+q('tr-toteam').onclick=e=>{e.preventDefault();showTab('players');showPView('team');};
+q('team-tomoves').onclick=e=>{e.preventDefault();showTab('trades');};
+q('pchips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;showPView(b.dataset.v);});
 
 // ---------- Trades tab: RWAR / PWAR via the category-win sim ----------
 // One engine for everything: your team's weekly 9-cat totals vs an average opponent in YOUR
@@ -566,7 +589,7 @@ function renderTrades(){
     `<div class="trteam">Your playoff run projects <b>${team.po.toFixed(1)} of 3</b> matchup wins</div>`+
     sorted.map(p=>{const w=_warCache[p.name],cl=w.pw>=0.25?'gtxt':w.pw<=0.05?'ltxt':'';
     return `<div class="trc ${p.name===trAnchor?'on':''}" tabindex="0" data-n="${p.name}">
-      <div><div class="nm">${p.name}</div><div class="mt">${p.team} · ${p.weeklyGames.join('-')} · <span style="color:${motColor(p.motiv)}">motiv ${p.motiv}</span></div></div>
+      <div><div class="nm">${p.name}</div><div class="mt">${p.team} · ${p.weeklyGames.join('-')} · <span style="color:${motColor(p.motiv)}">effort ${p.motiv}%</span></div></div>
       <div class="wv"><b class="${cl}">${w.pw.toFixed(2)}</b> <small>PWAR</small><span class="rs">RWAR ${w.rw.toFixed(1)}</span></div></div>`;}).join('');
   document.querySelectorAll('#tr-roster .trc').forEach(el=>{const go=()=>{trAnchor=el.dataset.n;trSwap=null;trGive=[];trGet=[];renderTrades();};
     el.onclick=go;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
@@ -576,15 +599,15 @@ function renderTrDetail(){
   const A=trByName[trAnchor]; if(!A) return;
   const w=_warCache&&_warCache[A.name]||trPlayerWAR(A);
   const cands=trCands(A);
-  let h=`<div class="tr-anchor"><h3>${A.name}</h3><span class="tr-chip">${A.team} · ${A.weeklyGames.join('-')} slate</span><span class="tr-chip">motivation <b style="color:${motColor(A.motiv)}">${A.motiv}</b></span><span class="tr-chip">RWAR <b>${w.rw.toFixed(1)}</b></span><span class="tr-chip">PWAR <b>${w.pw.toFixed(2)}</b></span></div>`;
-  h+=`<p class="tr-why">${A.reason?`Why he reads this way: <b>${A.reason}</b>. `:''}Playoff numbers here bake in team posture (rest, tanking, seeding fights) through his expected games, and his motivation through his output.</p>`;
+  let h=`<div class="tr-anchor"><h3>${A.name}</h3><span class="tr-chip">${A.team} · ${A.weeklyGames.join('-')} slate</span><span class="tr-chip">effort <b style="color:${motColor(A.motiv)}">${A.motiv}%</b></span><span class="tr-chip">RWAR <b>${w.rw.toFixed(1)}</b></span><span class="tr-chip">PWAR <b>${w.pw.toFixed(2)}</b></span></div>`;
+  h+=`<p class="tr-why">${A.reason?`Why he reads this way: <b>${A.reason}</b>. `:''}Two dials set his playoff numbers: Games (health, team rest policy, B2Bs, travel decide how many he plays) and Effort (incentives decide how hard he plays them).</p>`;
   h+=`<div class="tr-lam">Playoff weight <input type="range" id="tr-lambda" min="1" max="5" step="1" value="${LAMBDA}"> <b id="tr-lamv">${LAMBDA}×</b> regular season</div>`;
   if(!cands.length){h+=`<div class="tr-none"><b>${A.name} is already well-positioned.</b><br>No comparable-value move meaningfully lifts your playoff odds. Hold, or build a package below.</div>`;}
   else{
     h+=`<p class="tr-hint">Comparable-value moves ranked by title impact (ΔRWAR + ${LAMBDA}×ΔPWAR). Tap one to open the trade builder.</p>`;
     h+=cands.map(o=>{const b=o.B,fa=trOwn(b)==='fa';
       return `<div class="trt ${b.name===trSwap?'on':''}" data-n="${b.name}">
-        <div class="r1"><span class="trbadge ${fa?'pick':'trade'}">${fa?'Pickup':'Trade'}</span><span class="tn">${b.name}</span><span class="tm">${b.team} · ${b.weeklyGames.join('-')} · <span style="color:${motColor(b.motiv)}">m${b.motiv}</span></span></div>
+        <div class="r1"><span class="trbadge ${fa?'pick':'trade'}">${fa?'Pickup':'Trade'}</span><span class="tn">${b.name}</span><span class="tm">${b.team} · ${b.weeklyGames.join('-')} · <span style="color:${motColor(b.motiv)}">e${b.motiv}</span></span></div>
         <div class="pw">${trF(o.dPo,2)}<small>PLAYOFF WINS</small></div>
         <div class="chips">${trChips(A,b)}</div>
         <div class="cost"><span class="${o.dRs<-0.02?'ltxt':o.dRs>0.02?'gtxt':'ztxt'}">${trF(o.dRs,2)} RWAR</span></div></div>`;}).join('');
