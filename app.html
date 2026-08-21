@@ -285,7 +285,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 <div class="pane" id="p-trades">
   <div id="tr-connect" class="cbox mini"><p>Connect your league to get trade and pickup targets for your roster. <a href="#" id="tr-toteam">Connect on the Your team tab →</a></p></div>
   <div id="tr-content" hidden>
-    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
+    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
     <div class="trapp">
       <div class="trpanel"><div class="trlabel">Your team · tap a player</div><div id="tr-roster"></div></div>
       <div id="tr-detail"></div>
@@ -564,9 +564,18 @@ function trPlayerWAR(p){
   return {pw:base.po-alt.po, rw:base.rs-alt.rs};
 }
 let trAnchor=null, trSwap=null, trGive=[], trGet=[], _warCache=null;
+// MARKET-VALUE GUARDRAIL: trades must be fair by ADP (what managers actually pay), never by our
+// z-scores alone — 9-cat math can rate an ADP-90 specialist near an ADP-15 star, and suggesting
+// that swap torches trust. Pickups are free, so only playoff impact matters there.
+function adpFair(A,B){
+  if(!A.adp||!B.adp) return Math.abs(B.perGame-A.perGame)<=0.08*A.perGame;  // no ADP -> tight stat band
+  return Math.abs(A.adp-B.adp)<=Math.max(12,0.30*Math.min(A.adp,B.adp));
+}
 function trCands(A){
-  const band=0.12*A.perGame;
-  return TRP.filter(B=>B.name!==A.name && trOwn(B)!=='you' && Math.abs(B.perGame-A.perGame)<=band)
+  return TRP.filter(B=>{
+      if(B.name===A.name||trOwn(B)==='you')return false;
+      return trOwn(B)==='fa' ? B.perGame>=A.perGame-0.15*A.perGame : adpFair(A,B);
+    })
     .map(B=>({B,...trEval([A.name],[B.name])}))
     .filter(o=>o.dPo>0.015)
     .sort((x,y)=>y.title-x.title).slice(0,7);
@@ -599,7 +608,7 @@ function renderTrDetail(){
   const A=trByName[trAnchor]; if(!A) return;
   const w=_warCache&&_warCache[A.name]||trPlayerWAR(A);
   const cands=trCands(A);
-  let h=`<div class="tr-anchor"><h3>${A.name}</h3><span class="tr-chip">${A.team} · ${A.weeklyGames.join('-')} slate</span><span class="tr-chip">effort <b style="color:${motColor(A.motiv)}">${A.motiv}%</b></span><span class="tr-chip">RWAR <b>${w.rw.toFixed(1)}</b></span><span class="tr-chip">PWAR <b>${w.pw.toFixed(2)}</b></span></div>`;
+  let h=`<div class="tr-anchor"><h3>${A.name}</h3><span class="tr-chip">${A.team} · ${A.weeklyGames.join('-')} slate</span><span class="tr-chip">ADP <b>${A.adp?Math.round(A.adp):"—"}</b></span><span class="tr-chip">effort <b style="color:${motColor(A.motiv)}">${A.motiv}%</b></span><span class="tr-chip">RWAR <b>${w.rw.toFixed(1)}</b></span><span class="tr-chip">PWAR <b>${w.pw.toFixed(2)}</b></span></div>`;
   h+=`<p class="tr-why">${A.reason?`Why he reads this way: <b>${A.reason}</b>. `:''}Two dials set his playoff numbers: Games (health, team rest policy, B2Bs, travel decide how many he plays) and Effort (incentives decide how hard he plays them).</p>`;
   h+=`<div class="tr-lam">Playoff weight <input type="range" id="tr-lambda" min="1" max="5" step="1" value="${LAMBDA}"> <b id="tr-lamv">${LAMBDA}×</b> regular season</div>`;
   if(!cands.length){h+=`<div class="tr-none"><b>${A.name} is already well-positioned.</b><br>No comparable-value move meaningfully lifts your playoff odds. Hold, or build a package below.</div>`;}
@@ -607,7 +616,7 @@ function renderTrDetail(){
     h+=`<p class="tr-hint">Comparable-value moves ranked by title impact (ΔRWAR + ${LAMBDA}×ΔPWAR). Tap one to open the trade builder.</p>`;
     h+=cands.map(o=>{const b=o.B,fa=trOwn(b)==='fa';
       return `<div class="trt ${b.name===trSwap?'on':''}" data-n="${b.name}">
-        <div class="r1"><span class="trbadge ${fa?'pick':'trade'}">${fa?'Pickup':'Trade'}</span><span class="tn">${b.name}</span><span class="tm">${b.team} · ${b.weeklyGames.join('-')} · <span style="color:${motColor(b.motiv)}">e${b.motiv}</span></span></div>
+        <div class="r1"><span class="trbadge ${fa?'pick':'trade'}">${fa?'Pickup':'Trade'}</span><span class="tn">${b.name}</span><span class="tm">${b.team} · ${b.weeklyGames.join('-')} · ADP ${b.adp?Math.round(b.adp):"—"} · <span style="color:${motColor(b.motiv)}">e${b.motiv}</span></span></div>
         <div class="pw">${trF(o.dPo,2)}<small>PLAYOFF WINS</small></div>
         <div class="chips">${trChips(A,b)}</div>
         <div class="cost"><span class="${o.dRs<-0.02?'ltxt':o.dRs>0.02?'gtxt':'ztxt'}">${trF(o.dRs,2)} RWAR</span></div></div>`;}).join('');
