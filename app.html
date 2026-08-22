@@ -122,6 +122,17 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .tr-balance{font-size:11.5px;color:var(--ink2);margin:2px 0 10px;font-family:ui-monospace,Menlo,monospace}
 .tr-balance b{color:var(--ink)}
 .tr-disc{font-size:10.5px;color:var(--muted);margin-top:14px;font-family:ui-monospace,Menlo,monospace}
+.catprof{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 15px;margin:0 0 14px}
+.cph{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-bottom:10px}
+.cph b{font-family:ui-monospace,Menlo,monospace}
+.cpgrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px}
+.cpc .cpl{font-family:ui-monospace,Menlo,monospace;font-size:8.5px;color:var(--muted);letter-spacing:.05em}
+.cpv{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:700;white-space:nowrap}
+.cpv span{font-size:10px}
+.cpb{height:4px;border-radius:2px;background:#191d27;margin-top:3px;overflow:hidden}
+.cpb i{display:block;height:100%;border-radius:2px}
+.cpb i.lock{background:#34d399}.cpb i.flip{background:#fbbf24}.cpb i.punt{background:#f87171}
+@media(max-width:700px){.cpgrid{grid-template-columns:repeat(3,1fr);gap:10px 8px}}
 @media(max-width:700px){.trapp{grid-template-columns:1fr}.trbuild{grid-template-columns:1fr}}
 .lgcta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin:14px 0 2px}
 .lgcta span{font-weight:700;color:var(--ink2)}
@@ -286,6 +297,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
   <div id="tr-connect" class="cbox mini"><p>You're looking at a <b>demo team</b>. <a href="#" id="tr-toteam">Set up your league →</a> (30 seconds) and every move on this page becomes about <b>your</b> roster.</p></div>
   <div id="tr-content" hidden>
     <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
+    <div id="catprof"></div>
     <div class="trapp">
       <div class="trpanel"><div class="trlabel">Your team · tap a player</div><div id="tr-roster"></div></div>
       <div id="tr-detail"></div>
@@ -563,6 +575,21 @@ function trPlayerWAR(p){
   const alt=trExpWins(swapped);
   return {pw:base.po-alt.po, rw:base.rs-alt.rs};
 }
+// 3-playoff-week average win probability per category — the team's category composition
+function trCatProfile(players){const o={};for(const c of TRCATS)o[c.k]=0;
+  for(let w=0;w<3;w++){const cp=trCatWinP(players,w,true);for(const c of TRCATS)o[c.k]+=cp[c.k]/3;}return o;}
+// locks (>=65%), coin-flips (35-65%), punts (<35%) — you need 5 of 9; the flips decide it
+function renderCatProfile(now, after, oddsNow, oddsAfter){
+  const cls=p=>p>=0.65?'lock':p>=0.35?'flip':'punt';
+  const n={lock:0,flip:0,punt:0}; TRCATS.forEach(c=>n[cls(now[c.k])]++);
+  const odds=`Odds you win a playoff matchup: <b>${Math.round(oddsNow*100)}%</b>`+
+    (after?` &rarr; <b class="${oddsAfter>=oddsNow?'gtxt':'ltxt'}">${Math.round(oddsAfter*100)}%</b> with this move`:'');
+  const cells=TRCATS.map(c=>{const p=now[c.k],a=after?after[c.k]:null,d=a!=null?a-p:0;
+    return `<div class="cpc"><div class="cpl">${c.s.toUpperCase()}</div>
+      <div class="cpv">${Math.round(p*100)}%${a!=null&&Math.abs(d)>=0.02?` <span class="${d>0?'gtxt':'ltxt'}">&rarr;${Math.round(a*100)}</span>`:''}</div>
+      <div class="cpb"><i class="${cls(a!=null?a:p)}" style="width:${(a!=null?a:p)*100}%"></i></div></div>`;}).join('');
+  q('catprof').innerHTML=`<div class="catprof"><div class="cph">${odds} · <b class="gtxt">${n.lock}</b> locks · <b style="color:#fbbf24">${n.flip}</b> coin-flips · <b class="ltxt">${n.punt}</b> punts. First to 5 categories wins the week — the flips decide it.</div><div class="cpgrid">${cells}</div></div>`;
+}
 let trAnchor=null, trSwap=null, trGive=[], trGet=[], _warCache=null;
 // MARKET-VALUE GUARDRAIL: trades must be fair by ADP (what managers actually pay), never by our
 // z-scores alone — 9-cat math can rate an ADP-90 specialist near an ADP-15 star, and suggesting
@@ -593,6 +620,7 @@ function renderTrades(){
   const sorted=[...roster].sort((a,b)=>_warCache[b.name].pw-_warCache[a.name].pw);
   if(!trAnchor||!LG().roster.has(trAnchor)) trAnchor=sorted[sorted.length-1].name;   // weakest playoff link first
   const team=trExpWins(roster);
+  renderCatProfile(trCatProfile(roster), null, team.po/3, null);
   q('tr-roster').innerHTML=
     `<div class="trteam">Your playoff run projects <b>${team.po.toFixed(1)} of 3</b> matchup wins</div>`+
     sorted.map(p=>{const w=_warCache[p.name],cl=w.pw>=0.25?'gtxt':w.pw<=0.05?'ltxt':'';
@@ -635,8 +663,8 @@ function renderTrBuilder(){
     :r.title<-0.08?['Not worth it for your title.','ltxt']:['A wash.','ztxt'];
   // category flips: playoff win% before vs after, biggest movers
   const roster=r.roster, after=r.after;
-  const pAvg=pl=>{const o={};for(const c of TRCATS)o[c.k]=0;for(let w2=0;w2<3;w2++){const cp=trCatWinP(pl,w2,true);for(const c of TRCATS)o[c.k]+=cp[c.k]/3;}return o;};
-  const before=pAvg(roster), now=pAvg(after);
+  const before=trCatProfile(roster), now=trCatProfile(after);
+  renderCatProfile(before, now, r.basePo/3, r.nowPo/3);
   const flips=TRCATS.map(c=>({c,b:before[c.k],a:now[c.k],d:now[c.k]-before[c.k]})).sort((x,y)=>Math.abs(y.d)-Math.abs(x.d));
   const flipTxt=flips.filter(f=>Math.abs(f.d)>=0.04).slice(0,2)
     .map(f=>`${f.c.l} ${Math.round(f.b*100)}%&rarr;<span class="${f.d>0?'gtxt':'ltxt'}">${Math.round(f.a*100)}%</span>`).join(' · ');
