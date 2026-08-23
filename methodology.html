@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Why trust PlayoffProof</title>
+<style>
+:root{--bg:#0a0b0f;--card:#12141b;--line:#242835;--line2:#2f3442;--ink:#e7e9f0;--ink2:#aeb4c4;--muted:#727a90;--acc:#7c5cff;--gain:#2fd47a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:38px 22px 90px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+.logomark{height:1.35em;image-rendering:pixelated;vertical-align:-.22em}
+h1{font-size:29px;letter-spacing:-.02em;margin:24px 0 10px;text-wrap:balance}
+.lede{color:var(--ink2);font-size:15.5px;max-width:64ch}
+h2{font-size:19px;letter-spacing:-.01em;margin:38px 0 8px}
+p{color:var(--ink2);font-size:14.5px;max-width:66ch}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0 6px}
+.stat{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 17px}
+.stat .v{font-family:ui-monospace,Menlo,monospace;font-size:22px;font-weight:700;color:var(--gain)}
+.stat .l{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.note{background:rgba(124,92,255,.08);border:1px solid var(--line2);border-radius:12px;padding:14px 17px;font-size:13.5px;color:var(--ink2);margin:16px 0;max-width:none}
+.note b{color:var(--ink)}
+.foot{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;line-height:1.7}
+.foot a{color:var(--ink2);text-decoration:none;margin-right:16px}
+</style></head>
+<body><div class="wrap">
+<a class="logo" href="/"><img class="logomark" src="logo.svg" alt="">PlayoffProof</a>
+<h1>Why trust PlayoffProof</h1>
+<p class="lede">Fantasy is full of tools that hand you a number and ask you to believe it. We hold ourselves to a different standard: every probability this product shows has been scored against a complete historical season, and the headline results are published, including how often we were wrong.</p>
+
+<h2>What we do</h2>
+<p>PlayoffProof answers one question: what will your players actually be worth during your fantasy playoff weeks, when NBA teams stop behaving normally. Championship rosters rest their stars. Eliminated teams shut down veterans and hand the keys to their young players. Schedules bunch and thin in ways per-game averages never show. We model those forces and price every roster decision, every pickup, drop, trade, and lineup call, in the currency that decides titles: expected playoff matchup wins.</p>
+
+<h2>How we validate</h2>
+<p>Before launch, the engine replayed the complete 2025-26 season record: tens of thousands of real game logs, with every prediction made using only information available at the time. Then we compared what it said to what happened.</p>
+<div class="stats">
+<div class="stat"><div class="v">+10%</div><div class="l">more actual playoff matchup wins than identical rosters managed conventionally, in full-season replay</div></div>
+<div class="stat"><div class="v">±2pp</div><div class="l">stated win probabilities matched observed frequencies within two points, across 11,616 scored matchups</div></div>
+<div class="stat"><div class="v">56 / 22 / 22</div><div class="l">percent of simulated rosters that improved, tied, and declined. We publish all three numbers.</div></div>
+</div>
+<p>When validation found the engine overconfident, we recalibrated it on the evidence and shipped the correction. When a signal failed testing, it was cut. The validation suite is part of our codebase and runs before any change ships, and the whole framework gets re-scored against 2026-27 as this season completes.</p>
+<div class="note"><b>What we won't publish:</b> the specific signals, weights, and adjustments the engine trades on. That's the product. What we will always publish is how well it performs, wins and losses both.</div>
+
+<h2>Who builds this</h2>
+<p>PlayoffProof is built by a team whose measurement and decision systems have directed billions of dollars in digital advertising spend, where a probability that's wrong costs real money the same day, and "trust me" is not an accepted methodology. We brought that discipline here: calibrated predictions, honest error bars, and receipts.</p>
+
+<h2>Limitations, stated plainly</h2>
+<p>Backtests are one season of evidence, run in simulated leagues against modeled opponents. Injuries and front-office decisions will always produce outcomes no model can call. Nothing here is a guarantee of future results, and no fantasy tool that promises certainty deserves your trust.</p>
+
+<div class="foot">
+<a href="/">Home</a><a href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a><br><br>
+All figures from PlayoffProof's internal validation suite against 2025-26 historical data. Projections and simulations are for entertainment purposes only. Not professional, legal, or financial advice.
+</div>
+</div></body></html>
