@@ -1,5 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>PlayoffProof — Your Movers</title>
 <style>
 :root{
@@ -198,6 +201,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .lrow .mot{font-weight:800}.lrow .chg{font-weight:800;font-size:12px}
 .up-t{color:var(--up)}.down-t{color:var(--down)}.flat-t{color:var(--flat)}
 .hint{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.5}
+.logomark{height:1.35em;image-rendering:pixelated;vertical-align:-.22em}
 
 [hidden]{display:none!important}
 .gatewrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -214,7 +218,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 </style></head>
 <body><div id="gate" class="gatewrap">
  <div class="gatecard">
-  <div class="logo"><span class="mark">▲</span>PlayoffProof</div>
+  <div class="logo"><img class="logomark" src="logo.svg" alt="">PlayoffProof</div>
   <div id="g-signin">
    <h2>Sign in</h2>
    <p>Enter your email and we'll send a one-tap magic link. No password.</p>
@@ -241,7 +245,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 </div>
 <div id="app" hidden><div class="wrap">
 <header>
-  <div class="logo"><span class="mark">▲</span>PlayoffProof</div>
+  <div class="logo"><img class="logomark" src="logo.svg" alt="">PlayoffProof</div>
   <h1>Your <span class="grad">playoff board.</span></h1>
   <div class="posline">Every player scored for your fantasy playoff weeks (Mar 23–Apr 12), refreshed daily. Green is rising for your title run, red is fading.</div>
   <div class="sub" id="sub"></div>
