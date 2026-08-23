@@ -125,6 +125,11 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .tr-balance{font-size:11.5px;color:var(--ink2);margin:2px 0 10px;font-family:ui-monospace,Menlo,monospace}
 .tr-balance b{color:var(--ink)}
 .tr-disc{font-size:10.5px;color:var(--muted);margin-top:14px;font-family:ui-monospace,Menlo,monospace}
+.lgset{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);margin:0 0 10px}
+.lgset select{background:#0c0e15;border:1px solid var(--line2);border-radius:7px;color:var(--ink);font:inherit;padding:3px 6px}
+.lgset .lgs-l{letter-spacing:.08em;text-transform:uppercase;font-size:9.5px}
+.lgset .catch{background:transparent;border:1px solid var(--line2);border-radius:14px;color:var(--muted);font:inherit;font-size:10.5px;padding:3px 9px;cursor:pointer}
+.lgset .catch.on{color:var(--ink);border-color:#7c5cff;background:rgba(124,92,255,.12)}
 .catprof{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 15px;margin:0 0 14px}
 .cph{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-bottom:10px}
 .cph b{font-family:ui-monospace,Menlo,monospace}
@@ -300,7 +305,8 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 <div class="pane on" id="p-trades">
   <div id="tr-connect" class="cbox mini"><p>You're looking at a <b>demo team</b>. <a href="#" id="tr-toteam">Set up your league →</a> (30 seconds) and every move on this page becomes about <b>your</b> roster.</p></div>
   <div id="tr-content" hidden>
-    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning <b>5 of 9 categories</b>, so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
+    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across your final six regular-season weeks. A matchup = winning the <b>majority of your league's categories</b> (5 of 9 standard — set yours below), so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
+    <div class="lgset" id="lgset"></div>
     <div id="catprof"></div>
     <div class="trapp">
       <div class="trpanel"><div class="trlabel">Your team · tap a player</div><div id="tr-roster"></div></div>
@@ -439,6 +445,9 @@ q('paste-go').onclick=()=>{const mine=extractPlayers(q('pasteros').value);
   q('sl-msg').textContent='Loaded '+mine.length+' on your team.'+(availText?' Free agents set from your paste.':' Tip: paste your free-agent list too for exact Available.');};
 let _smap;async function sleeperMap(){if(_smap)return _smap;const j=await (await fetch('sleeper-players.json')).json();_smap=j.players||j;return _smap;}
 async function loadSleeperLeague(lg,userId){const msg=q('sl-msg');msg.textContent='Loading '+lg.name+'…';
+  if(lg.total_rosters>=4) SET.teams=lg.total_rosters;
+  if(Array.isArray(lg.roster_positions)){const st=lg.roster_positions.filter(x=>x&&x!=='BN'&&!/IL|IR|TAXI/.test(x)).length; if(st>=5) SET.starters=st;}
+  saveSet();
   const [rosters,map]=await Promise.all([fetch('https://api.sleeper.app/v1/league/'+lg.league_id+'/rosters').then(r=>r.json()),sleeperMap()]);
   const nm=id=>{const p=map[id];return p?(p.n||[p.first_name,p.last_name].filter(Boolean).join(' ')):null;};
   const mine=rosters.find(r=>r.owner_id===userId);
@@ -465,68 +474,76 @@ q('team-tomoves').onclick=e=>{e.preventDefault();showTab('trades');};
 q('pchips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;showPView(b.dataset.v);});
 
 // ---------- Trades tab: RWAR / PWAR via the category-win sim ----------
-// One engine for everything: your team's weekly 9-cat totals vs an average opponent in YOUR
-// league -> P(win each cat) -> P(win the matchup) = P(taking >=5 of 9). PWAR = expected playoff
-// matchup wins (of 3, championship run). RWAR = expected wins over the final 6 regular-season
-// weeks. A move's value = how much it shifts those. This is why stacking a category you already
-// win adds ~nothing and fixing a coin-flip category adds a lot. All numbers are projections.
+// One engine for everything: your team's weekly cat totals vs an average opponent in YOUR
+// league -> P(win each cat) -> P(win the matchup) = P(winning the majority of your cats).
+// STARTERS-aware (bench counts at a configurable discount, not zero), real per-week schedules for BOTH the playoff window
+// and the final six regular-season weeks (incl. the 1-game All-Star week), and FG%/FT% from
+// real made/attempted volume. All numbers are projections.
 const REGWK=3.4, RSWEEKS=6;
 let LAMBDA=+(localStorage.getItem('pp_lambda')||3);
+// league settings — user-configurable (clients outside Sleeper); Sleeper prefills what it can
+const SET=Object.assign({teams:10,starters:10,bench:30,cats:{pts:1,reb:1,ast:1,stl:1,blk:1,fg3m:1,fg_pct:1,ft_pct:1,turnover:1}},
+  (()=>{try{return JSON.parse(localStorage.getItem('pp_set'))||{}}catch(e){return{}}})());
+function saveSet(){try{localStorage.setItem('pp_set',JSON.stringify(SET));}catch(e){}}
 const TRP = MOCK.all.filter(p=>p.proj);
 const trByName = Object.fromEntries(TRP.map(p=>[p.name,p]));
 const trWkExp = p => p.weeklyGames.map(g=>g*(p.expGames/Math.max(1,p.listedGames)));
 const trSum = a => a.reduce((x,y)=>x+y,0);
 const TRCATS=[{k:'pts',l:'Points',s:'pts'},{k:'reb',l:'Rebounds',s:'reb'},{k:'ast',l:'Assists',s:'ast'},{k:'stl',l:'Steals',s:'stl'},{k:'blk',l:'Blocks',s:'blk'},{k:'fg3m',l:'Threes',s:'3pm'},{k:'fg_pct',l:'FG%',s:'fg%',rate:1},{k:'ft_pct',l:'FT%',s:'ft%',rate:1},{k:'turnover',l:'Turnovers',s:'to',inv:1}];
+const AC=()=>TRCATS.filter(c=>SET.cats[c.k]);
 const trGood=(c,d)=>c.inv?d<0:d>0;
 const trF=(v,d=1)=>(v>0?'+':'')+v.toFixed(d);
 const trOwn = p => LG().roster.has(p.name)?'you':(LG().rostered.has(p.name)?'opp':'fa');
 const erf=x=>{const s=x<0?-1:1;x=Math.abs(x);const t=1/(1+0.3275911*x);
   return s*(1-((((1.061405429*t-1.453152027)*t+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x));};
 const PHI=z=>0.5*(1+erf(z/Math.SQRT2));
-// team totals for one week. Counting cats = sum(perGame x games); % cats = volume-weighted (pts proxy).
-// PLAYOFF weeks: counting stats scale by the player's MOTIVATION (same effort curve as the Score) —
-// team posture (tank/contend/seeding) already docks his GAMES via expGames; this docks his output.
 const trEff = p => 0.62 + 0.38*((p.motiv==null?80:p.motiv)/100);
+// games in a given week: playoff = rest/injury-adjusted; regular season = REAL team schedule
+const gamesOf=(p,wk,po)=> po ? trWkExp(p)[wk] : ((p.rsWeeks&&p.rsWeeks[wk]!=null)?p.rsWeeks[wk]:REGWK);
+// accumulate one week of team cats over a set of players (no starter cut here)
+function trAccumInto(t,W,p,g,eff){
+  for(const c of TRCATS){
+    if(c.rate){
+      const fga=c.k==='fg_pct', att=p.att?(fga?p.att.fga:p.att.fta):0, made=p.att?(fga?p.att.fgm:p.att.ftm):0;
+      if(att){t[c.k]+=made*g; W[c.k]+=att*g;}
+      else{const w=(p.proj.pts+5)*g; t[c.k]+=p.proj[c.k]/100*w; W[c.k]+=w;}
+    } else t[c.k]+=p.proj[c.k]*g*eff;
+  }
+}
+// YOUR team's week: top-N starters count in full; bench players count at SET.bench%
+// (less than starters, not zero — they start on off-nights and cover injuries)
 function trTeamCats(players, wk, po){
+  const ranked=[...players].sort((a,b)=>b.perGame*gamesOf(b,wk,po)-a.perGame*gamesOf(a,wk,po));
   const t={},W={};
   for(const c of TRCATS){t[c.k]=0;W[c.k]=0;}
-  for(const p of players){
-    const g = po ? trWkExp(p)[wk] : REGWK;
-    const eff = po ? trEff(p) : 1;
-    for(const c of TRCATS){
-      if(c.rate){const w=(p.proj.pts+5)*g; t[c.k]+=p.proj[c.k]*w; W[c.k]+=w;}
-      else t[c.k]+=p.proj[c.k]*g*eff;
-    }
-  }
-  for(const c of TRCATS) if(c.rate) t[c.k]=W[c.k]?t[c.k]/W[c.k]:0;
+  ranked.forEach((p,i)=>{const bw=i<SET.starters?1:SET.bench/100; if(!bw)return;
+    trAccumInto(t,W,p,gamesOf(p,wk,po)*bw, po?trEff(p):1);});
+  for(const c of TRCATS) if(c.rate) t[c.k]=W[c.k]?t[c.k]/W[c.k]*100:0;
   return t;
 }
-// average opponent in YOUR league: per-player mean over other rostered players x 10 starters
 function trOppPool(){
   let pool=TRP.filter(p=>LG().rostered.has(p.name)&&!LG().roster.has(p.name));
-  if(pool.length<20) pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(0,120).filter(p=>!LG().roster.has(p.name));
-  return pool;
+  if(pool.length<20) pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(0,160).filter(p=>!LG().roster.has(p.name));
+  return [...pool].sort((a,b)=>b.perGame-a.perGame);
 }
+// average opponent = total weighted production of opposing rosters (their starters in full,
+// their benches at the same bench weight) divided across the other teams
 function trOppCats(wk, po){
-  const pool=trOppPool(), t={}, W={};
+  const benchN=Math.max(0,(LG().roster.size||SET.starters+4)-SET.starters);
+  const nS=(SET.teams-1)*SET.starters, nB=(SET.teams-1)*benchN;
+  const pool=trOppPool().slice(0,nS+nB), t={},W={};
   for(const c of TRCATS){t[c.k]=0;W[c.k]=0;}
-  for(const p of pool){
-    const g = po ? trWkExp(p)[wk] : REGWK;
-    const eff = po ? trEff(p) : 1;
-    for(const c of TRCATS){
-      if(c.rate){const w=(p.proj.pts+5)*g; t[c.k]+=p.proj[c.k]*w; W[c.k]+=w;}
-      else t[c.k]+=p.proj[c.k]*g*eff;
-    }
-  }
-  for(const c of TRCATS) c.rate ? (t[c.k]=W[c.k]?t[c.k]/W[c.k]:0) : (t[c.k]=t[c.k]/Math.max(1,pool.length)*10);
+  pool.forEach((p,i)=>{const bw=i<nS?1:SET.bench/100; if(!bw)return;
+    trAccumInto(t,W,p,gamesOf(p,wk,po)*bw, po?trEff(p):1);});
+  for(const c of TRCATS) c.rate ? (t[c.k]=W[c.k]?t[c.k]/W[c.k]*100:0) : (t[c.k]=t[c.k]/Math.max(1,SET.teams-1));
   return t;
 }
 let _oppCache={};
 const trOpp=(wk,po)=>{const k=wk+':'+po;return _oppCache[k]||(_oppCache[k]=trOppCats(wk,po));};
-// P(win each cat) for a roster in one week; sigma: counting ~ sqrt(1.6*(you+opp)), % fixed
+// P(win each ACTIVE cat) for a roster in one week
 function trCatWinP(players, wk, po){
   const you=trTeamCats(players,wk,po), opp=trOpp(wk,po), out={};
-  for(const c of TRCATS){
+  for(const c of AC()){
     let m,sd;
     if(c.rate){m=you[c.k]-opp[c.k]; sd=c.k==='fg_pct'?2.2:3.5;}
     else{m=you[c.k]-opp[c.k]; sd=Math.sqrt(1.6*(you[c.k]+opp[c.k]))||1;}
@@ -535,25 +552,27 @@ function trCatWinP(players, wk, po){
   }
   return out;
 }
-// P(win >=5 of 9) from independent cat win probabilities
+// P(win the majority of your league's categories)
 function trMatchupP(catP){
+  const cats=AC();
   let dp=[1];
-  for(const c of TRCATS){const p=catP[c.k],nd=new Array(dp.length+1).fill(0);
+  for(const c of cats){const p=catP[c.k],nd=new Array(dp.length+1).fill(0);
     for(let k=0;k<dp.length;k++){nd[k]+=dp[k]*(1-p);nd[k+1]+=dp[k]*p;}
     dp=nd;}
-  return dp.slice(5).reduce((a,b)=>a+b,0);
+  const need=Math.floor(cats.length/2)+1;
+  return dp.slice(need).reduce((a,b)=>a+b,0);
 }
-// expected wins: playoffs = sum of the 3 playoff weeks; regular season = 6 identical weeks
+// expected wins: playoffs = the 3 playoff weeks; regular season = the REAL final 6 weeks
 function trExpWins(players){
   let po=0; for(let w=0;w<3;w++) po+=trMatchupP(trCatWinP(players,w,true));
-  const rs=RSWEEKS*trMatchupP(trCatWinP(players,0,false));
+  let rs=0; for(let w=0;w<RSWEEKS;w++) rs+=trMatchupP(trCatWinP(players,w,false));
   return {po,rs};
 }
 // replacement player = median FA (or ~rank-120) cat vector with league-median playoff games
 const trRep=(()=>{let done=null,key=null;return()=>{
-  const k=LG().name; if(done&&key===k)return done; key=k;
+  const k=LG().name+'|'+JSON.stringify(SET); if(done&&key===k)return done; key=k;
   let pool=TRP.filter(p=>trOwn(p)==='fa').sort((a,b)=>b.perGame-a.perGame).slice(2,15);
-  if(pool.length<5) pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(110,130);
+  if(pool.length<5){const r=Math.min(TRP.length-10,SET.teams*(SET.starters+2));pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(Math.max(0,r-8),r+8);}
   const proj={}; for(const c of TRCATS) proj[c.k]=pool.reduce((s,p)=>s+p.proj[c.k],0)/pool.length;
   const wg=[0,1,2].map(w=>pool.reduce((s,p)=>s+trWkExp(p)[w],0)/pool.length);
   done={name:'(waiver replacement)',proj,weeklyGames:wg.map(g=>+g.toFixed(1)),expGames:trSum(wg),listedGames:trSum(wg),perGame:pool.reduce((s,p)=>s+p.perGame,0)/pool.length,motiv:Math.round(pool.reduce((s,p)=>s+(p.motiv||80),0)/pool.length)};
@@ -580,19 +599,20 @@ function trPlayerWAR(p){
   return {pw:base.po-alt.po, rw:base.rs-alt.rs};
 }
 // 3-playoff-week average win probability per category — the team's category composition
-function trCatProfile(players){const o={};for(const c of TRCATS)o[c.k]=0;
-  for(let w=0;w<3;w++){const cp=trCatWinP(players,w,true);for(const c of TRCATS)o[c.k]+=cp[c.k]/3;}return o;}
+function trCatProfile(players){const o={};for(const c of AC())o[c.k]=0;
+  for(let w=0;w<3;w++){const cp=trCatWinP(players,w,true);for(const c of AC())o[c.k]+=cp[c.k]/3;}return o;}
 // locks (>=65%), coin-flips (35-65%), punts (<35%) — you need 5 of 9; the flips decide it
 function renderCatProfile(now, after, oddsNow, oddsAfter){
   const cls=p=>p>=0.65?'lock':p>=0.35?'flip':'punt';
-  const n={lock:0,flip:0,punt:0}; TRCATS.forEach(c=>n[cls(now[c.k])]++);
+  const cats=AC(), need=Math.floor(cats.length/2)+1;
+  const n={lock:0,flip:0,punt:0}; cats.forEach(c=>n[cls(now[c.k])]++);
   const odds=`Odds you win a playoff matchup: <b>${Math.round(oddsNow*100)}%</b>`+
     (after?` &rarr; <b class="${oddsAfter>=oddsNow?'gtxt':'ltxt'}">${Math.round(oddsAfter*100)}%</b> with this move`:'');
-  const cells=TRCATS.map(c=>{const p=now[c.k],a=after?after[c.k]:null,d=a!=null?a-p:0;
+  const cells=cats.map(c=>{const p=now[c.k],a=after?after[c.k]:null,d=a!=null?a-p:0;
     return `<div class="cpc"><div class="cpl">${c.s.toUpperCase()}</div>
       <div class="cpv">${Math.round(p*100)}%${a!=null&&Math.abs(d)>=0.02?` <span class="${d>0?'gtxt':'ltxt'}">&rarr;${Math.round(a*100)}</span>`:''}</div>
       <div class="cpb"><i class="${cls(a!=null?a:p)}" style="width:${(a!=null?a:p)*100}%"></i></div></div>`;}).join('');
-  q('catprof').innerHTML=`<div class="catprof"><div class="cph">${odds} · <b class="gtxt">${n.lock}</b> locks · <b style="color:#fbbf24">${n.flip}</b> coin-flips · <b class="ltxt">${n.punt}</b> punts. First to 5 categories wins the week — the flips decide it.</div><div class="cpgrid">${cells}</div></div>`;
+  q('catprof').innerHTML=`<div class="catprof"><div class="cph">${odds} · <b class="gtxt">${n.lock}</b> locks · <b style="color:#fbbf24">${n.flip}</b> coin-flips · <b class="ltxt">${n.punt}</b> punts. First to ${need} categories wins the week — the flips decide it.</div><div class="cpgrid" style="grid-template-columns:repeat(${cats.length},minmax(0,1fr))">${cells}</div></div>`;
 }
 let trAnchor=null, trSwap=null, trGive=[], trGet=[], _warCache=null;
 // MARKET-VALUE GUARDRAIL: trades must be fair by ADP (what managers actually pay), never by our
@@ -616,8 +636,23 @@ function trChips(A,B){
     .filter(o=>Math.abs(o.d)>=0.4).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d)).slice(0,3)
     .map(o=>`<span class="${trGood(o.c,o.d)?'gtxt':'ltxt'}">${trF(o.d)} ${o.c.s}</span>`).join('');
 }
+function renderSettings(){
+  const el=q('lgset'); if(!el) return;
+  const sel=(id,lo,hi,v)=>`<select id="${id}">${Array.from({length:hi-lo+1},(_,i)=>`<option ${lo+i===v?'selected':''}>${lo+i}</option>`).join('')}</select>`;
+  const selB=`<select id="set-bench">${[0,10,20,30,40,50,60].map(v=>`<option value="${v}" ${v===SET.bench?'selected':''}>${v}%</option>`).join('')}</select>`;
+  el.innerHTML=`<span class="lgs-l">Your league:</span> ${sel('set-teams',6,20,SET.teams)} teams · starts ${sel('set-starters',5,15,SET.starters)} · bench counts ${selB} ·
+    <span class="lgs-l">categories:</span> ${TRCATS.map(c=>`<button class="catch ${SET.cats[c.k]?'on':''}" data-k="${c.k}">${c.s}</button>`).join('')}`;
+  q('set-teams').onchange=e=>{SET.teams=+e.target.value;setChanged();};
+  q('set-starters').onchange=e=>{SET.starters=+e.target.value;setChanged();};
+  q('set-bench').onchange=e=>{SET.bench=+e.target.value;setChanged();};
+  el.querySelectorAll('.catch').forEach(b=>b.onclick=()=>{const k=b.dataset.k;
+    if(SET.cats[k]&&AC().length<=4)return;   // keep at least 4 scoring cats
+    SET.cats[k]=SET.cats[k]?0:1;setChanged();});
+}
+function setChanged(){saveSet();renderTrades();}
 function renderTrades(){
   _oppCache={}; _warCache=null;
+  renderSettings();
   const roster=TRP.filter(p=>LG().roster.has(p.name));
   if(!roster.length){q('tr-roster').innerHTML='<div class="tr-none">None of your players matched our pool.</div>';q('tr-detail').innerHTML='';return;}
   if(!_warCache){_warCache={};roster.forEach(p=>_warCache[p.name]=trPlayerWAR(p));}
@@ -669,7 +704,7 @@ function renderTrBuilder(){
   const roster=r.roster, after=r.after;
   const before=trCatProfile(roster), now=trCatProfile(after);
   renderCatProfile(before, now, r.basePo/3, r.nowPo/3);
-  const flips=TRCATS.map(c=>({c,b:before[c.k],a:now[c.k],d:now[c.k]-before[c.k]})).sort((x,y)=>Math.abs(y.d)-Math.abs(x.d));
+  const flips=AC().map(c=>({c,b:before[c.k],a:now[c.k],d:now[c.k]-before[c.k]})).sort((x,y)=>Math.abs(y.d)-Math.abs(x.d));
   const flipTxt=flips.filter(f=>Math.abs(f.d)>=0.04).slice(0,2)
     .map(f=>`${f.c.l} ${Math.round(f.b*100)}%&rarr;<span class="${f.d>0?'gtxt':'ltxt'}">${Math.round(f.a*100)}%</span>`).join(' · ');
   const balance=r.moves.map(m=>m.t==='add'?`pick up <b>${m.n}</b> from waivers`:`drop <b>${m.n}</b>`).join(', ');
@@ -686,8 +721,9 @@ function renderTrBuilder(){
   if(balance) s+=`<div class="tr-balance">Roster balance: you'd also ${balance}.</div>`;
   s+=`<div class="tr-verdict"><h4><span class="${lead[1]}">${lead[0]}</span> Your playoff run goes <b>${r.basePo.toFixed(1)} &rarr; ${r.nowPo.toFixed(1)}</b> of 3 expected matchup wins${flipTxt?`. ${flipTxt}`:''}.</h4></div>`;
   // sacrifice-vs-triumph chart from team value deltas
-  const rsD=r.dRs/RSWEEKS, poW=[0,1,2].map(w2=>trMatchupP(trCatWinP(after,w2,true))-trMatchupP(trCatWinP(roster,w2,true)));
-  const net=[...Array(6).fill(rsD),...poW.map(v=>v*3)];   // scale playoff win-prob deltas for visibility
+  const rsW=[0,1,2,3,4,5].map(w2=>trMatchupP(trCatWinP(after,w2,false))-trMatchupP(trCatWinP(roster,w2,false)));
+  const poW=[0,1,2].map(w2=>trMatchupP(trCatWinP(after,w2,true))-trMatchupP(trCatWinP(roster,w2,true)));
+  const net=[...rsW.map(v=>v*3),...poW.map(v=>v*3)];   // win-prob deltas, scaled for visibility
   s+=`<div class="tr-sec">Sacrifice vs. triumph (win probability by week)</div>`;
   s+=`<div class="tr-chart">${trChartSVG(net)}</div>`;
   s+=`<div class="tr-sec">Category ledger · chance you win each, playoff weeks</div>`;
