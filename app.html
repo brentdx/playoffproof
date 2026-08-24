@@ -125,6 +125,22 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .tr-balance{font-size:11.5px;color:var(--ink2);margin:2px 0 10px;font-family:ui-monospace,Menlo,monospace}
 .tr-balance b{color:var(--ink)}
 .tr-disc{font-size:10.5px;color:var(--muted);margin-top:14px;font-family:ui-monospace,Menlo,monospace}
+.wkodds{display:inline-flex;gap:0;flex-wrap:wrap;align-items:center}
+.wko{margin-right:4px} .wko b{color:var(--muted);font-weight:600;font-size:10.5px;letter-spacing:.03em;text-transform:uppercase}
+.tr-save{background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.4);border-radius:9px;color:var(--up,#34d399);font:inherit;font-weight:700;font-size:12.5px;cursor:pointer;padding:4px 11px;margin-left:8px}
+#tr-plan:empty{display:none}
+.planbox{background:linear-gradient(180deg,rgba(124,92,255,.1),var(--card));border:1px solid #3a2d6b;border-radius:14px;padding:13px 15px;margin:0 0 16px}
+.planh{font-size:12px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.planclr{margin-left:auto;background:none;border:1px solid var(--line2);border-radius:7px;color:var(--muted);font:inherit;font-size:10.5px;cursor:pointer;padding:2px 8px;text-transform:none;letter-spacing:0}
+.planrow{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;margin-bottom:9px}
+.planside{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.12em}
+.planpill{display:inline-block;background:#0c0e15;border:1px solid var(--line2);border-radius:14px;padding:3px 9px;font-family:var(--f,inherit);font-size:12px;font-weight:700;letter-spacing:0;margin:0 4px 5px 2px;cursor:pointer;color:var(--ink)}
+.planpill:hover{border-color:#f87171}
+.plansum{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink2);border-top:1px solid var(--line);padding-top:9px}
+.plansum b{font-size:13.5px}
+.lrow{cursor:pointer} .lrow.exp{background:var(--bg2)}
+.lrow-exp{padding:2px 0 12px;border-bottom:1px solid var(--line)}
+.lrow-exp .card{max-width:440px;margin:4px auto}
 .lgset{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);margin:0 0 10px}
 .lgset select{background:#0c0e15;border:1px solid var(--line2);border-radius:7px;color:var(--ink);font:inherit;padding:3px 6px}
 .lgset .lgs-l{letter-spacing:.08em;text-transform:uppercase;font-size:9.5px}
@@ -310,6 +326,7 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
     <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across the entire regular season, week by week on the real schedule (playoff weeks excluded). A matchup = winning the <b>majority of your league's categories</b> (5 of 9 standard — set yours below), so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
     <div class="lgset" id="lgset"></div>
     <div id="catprof"></div>
+    <div id="tr-plan"></div>
     <div class="trapp">
       <div class="trpanel"><div class="trlabel">Your team · tap a player</div><div id="tr-roster"></div></div>
       <div id="tr-detail"></div>
@@ -373,7 +390,7 @@ function renderRecs(){const r=V.recs,out=[];
 const COLS=[{k:'score',t:'Score'},{k:'listedGames',t:'Listed'},{k:'expGames',t:'Predicted'},{k:'motiv',t:'Effort'},{k:'w1',t:'Trend'}];
 const sortState={all:'score',avail:'score'};
 function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);const mine=LG().roster.has(p.name);
-  return `<div class="lrow"><span class="rk">${rk}</span>
+  return `<div class="lrow" data-n="${p.name}" tabindex="0"><span class="rk">${rk}</span>
     <span class="who">${p.emoji} ${p.name} ${p.pos?`<span class="postag">${p.pos}</span>`:''}<small>${p.team}</small>${mine?' <span class="badge you">YOU</span>':''}</span>
     <span class="num sc">${p.score}</span>
     <span class="num">${gv.activeListed}</span>
@@ -386,7 +403,14 @@ function renderList(scope){
   const head=`<div class="lhead"><span></span><span class="pl-h">Player</span>${
     COLS.map(c=>`<span class="s ${key===c.k?'on':''}" data-k="${c.k}">${c.t} ${key===c.k?'▼':'<span class="car">↕</span>'}</span>`).join('')}</div>`;
   q('list-'+scope).innerHTML=head+data.map((p,i)=>lrow(p,i+1)).join('');
+  const bn={}; data.forEach(p=>bn[p.name]=p);
   document.querySelectorAll('#list-'+scope+' .lhead .s').forEach(el=>el.onclick=()=>{sortState[scope]=el.dataset.k;renderList(scope);});
+  document.querySelectorAll('#list-'+scope+' .lrow').forEach(el=>{const go=()=>{
+    const nx=el.nextElementSibling;
+    if(nx&&nx.classList.contains('lrow-exp')){nx.remove();el.classList.remove('exp');return;}
+    const p=bn[el.dataset.n]; if(!p)return;
+    const d=document.createElement('div'); d.className='lrow-exp'; d.innerHTML=card(p); el.after(d); el.classList.add('exp');};
+    el.onclick=go; el.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go();}};});
 }
 function renderSummary(){const s=V.summary; if(!s){q('teamsum').innerHTML='';return;} const bits=[];
   if(s.risers)bits.push(`<b class="u">${s.risers} trending up</b>`);
@@ -488,7 +512,7 @@ q('pchips').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 const REGWK=3.4;
 let LAMBDA=+(localStorage.getItem('pp_lambda')||3);
 // league settings — user-configurable (clients outside Sleeper); Sleeper prefills what it can
-const SET=Object.assign({teams:10,starters:10,bench:30,slots:{PG:1,SG:1,SF:1,PF:1,C:1,G:1,F:1,UTIL:3},cats:{pts:1,reb:1,ast:1,stl:1,blk:1,fg3m:1,fg_pct:1,ft_pct:1,turnover:1}},
+const SET=Object.assign({teams:10,starters:10,bench:30,benchN:4,slots:{PG:1,SG:1,SF:1,PF:1,C:1,G:1,F:1,UTIL:3},cats:{pts:1,reb:1,ast:1,stl:1,blk:1,fg3m:1,fg_pct:1,ft_pct:1,turnover:1}},
   (()=>{try{return JSON.parse(localStorage.getItem('pp_set'))||{}}catch(e){return{}}})());
 function saveSet(){try{localStorage.setItem('pp_set',JSON.stringify(SET));}catch(e){}}
 const TRP = MOCK.all.filter(p=>p.proj);
@@ -536,7 +560,7 @@ function trOppPool(){
 // average opponent = total weighted production of opposing rosters (their starters in full,
 // their benches at the same bench weight) divided across the other teams
 function trOppCats(wk, po){
-  const benchN=Math.max(0,(LG().roster.size||SET.starters+4)-SET.starters);
+  const benchN=SET.benchN!=null?SET.benchN:Math.max(0,(LG().roster.size||SET.starters+4)-SET.starters);
   const nS=(SET.teams-1)*SET.starters, nB=(SET.teams-1)*benchN;
   const pool=trOppPool().slice(0,nS+nB), t={},W={};
   for(const c of TRCATS){t[c.k]=0;W[c.k]=0;}
@@ -636,12 +660,14 @@ function trPlayerWAR(p){
 function trCatProfile(players){const o={};for(const c of AC())o[c.k]=0;
   for(let w=0;w<3;w++){const cp=trCatWinP(players,w,true);for(const c of AC())o[c.k]+=cp[c.k]/3;}return o;}
 // locks (>=65%), coin-flips (35-65%), punts (<35%) — you need 5 of 9; the flips decide it
-function renderCatProfile(now, after, oddsNow, oddsAfter){
+function renderCatProfile(now, after, wkNow, wkAfter){
   const cls=p=>p>=0.65?'lock':p>=0.35?'flip':'punt';
   const cats=AC(), need=Math.floor(cats.length/2)+1;
   const n={lock:0,flip:0,punt:0}; cats.forEach(c=>n[cls(now[c.k])]++);
-  const odds=`Odds you win a playoff matchup: <b>${Math.round(oddsNow*100)}%</b>`+
-    (after?` &rarr; <b class="${oddsAfter>=oddsNow?'gtxt':'ltxt'}">${Math.round(oddsAfter*100)}%</b> with this move`:'');
+  const LB=['Week 1','Week 2','Finals'];
+  const wcell=(i)=>{const a=wkNow[i],b=wkAfter?wkAfter[i]:null,d=b!=null?b-a:0;
+    return `<span class="wko"><b>${LB[i]}</b> ${Math.round(a*100)}%${b!=null&&Math.abs(d)>=0.005?` <span class="${d>0?'gtxt':'ltxt'}">&rarr;${Math.round(b*100)}%</span>`:''}</span>`;};
+  const odds=`<span class="wkodds">Your title-week odds &nbsp; ${[0,1,2].map(wcell).join(' · ')}</span>`;
   const cells=cats.map(c=>{const p=now[c.k],a=after?after[c.k]:null,d=a!=null?a-p:0;
     return `<div class="cpc"><div class="cpl">${c.s.toUpperCase()}</div>
       <div class="cpv">${Math.round(p*100)}%${a!=null&&Math.abs(d)>=0.02?` <span class="${d>0?'gtxt':'ltxt'}">&rarr;${Math.round(a*100)}</span>`:''}</div>
@@ -649,6 +675,7 @@ function renderCatProfile(now, after, oddsNow, oddsAfter){
   q('catprof').innerHTML=`<div class="catprof"><div class="cph">${odds} · <b class="gtxt">${n.lock}</b> locks · <b style="color:#fbbf24">${n.flip}</b> coin-flips · <b class="ltxt">${n.punt}</b> punts. First to ${need} categories wins the week — the flips decide it.</div><div class="cpgrid" style="grid-template-columns:repeat(${cats.length},minmax(0,1fr))">${cells}</div></div>`;
 }
 let trAnchor=null, trSwap=null, trGive=[], trGet=[], _warCache=null;
+let PLAN=loadPlan();
 // MARKET-VALUE GUARDRAIL: trades must be fair by ADP (what managers actually pay), never by our
 // z-scores alone — 9-cat math can rate an ADP-90 specialist near an ADP-15 star, and suggesting
 // that swap torches trust. Pickups are free, so only playoff impact matters there.
@@ -674,12 +701,14 @@ function renderSettings(){
   const el=q('lgset'); if(!el) return;
   const sel=(id,lo,hi,v)=>`<select id="${id}">${Array.from({length:hi-lo+1},(_,i)=>`<option ${lo+i===v?'selected':''}>${lo+i}</option>`).join('')}</select>`;
   const selB=`<select id="set-bench">${[0,10,20,30,40,50,60].map(v=>`<option value="${v}" ${v===SET.bench?'selected':''}>${v}%</option>`).join('')}</select>`;
-  const slotSel=k=>`<select class="slotsel" data-k="${k}">${[0,1,2,3,4].map(v=>`<option ${v===(SET.slots[k]||0)?'selected':''}>${v}</option>`).join('')}</select>`;
-  el.innerHTML=`<span class="lgs-l">Your league:</span> ${sel('set-teams',6,20,SET.teams)} teams · bench counts ${selB} ·
+  const slotSel=k=>`<select class="slotsel" data-k="${k}">${[0,1,2,3,4,5,6].map(v=>`<option ${v===(SET.slots[k]||0)?'selected':''}>${v}</option>`).join('')}</select>`;
+  const selBN=`<select id="set-benchn">${[0,1,2,3,4,5,6,7,8].map(v=>`<option value="${v}" ${v===SET.benchN?'selected':''}>${v}</option>`).join('')}</select>`;
+  el.innerHTML=`<span class="lgs-l">Your league:</span> ${sel('set-teams',6,20,SET.teams)} teams · ${selBN} bench spots at ${selB} weight ·
     <span class="lgs-l">categories:</span> ${TRCATS.map(c=>`<button class="catch ${SET.cats[c.k]?'on':''}" data-k="${c.k}">${c.s}</button>`).join('')}
-    <span class="lgs-brk"></span><span class="lgs-l">lineup slots:</span> ${SLOT_ORDER.map(k=>`${k} ${slotSel(k)}`).join(' ')} <span class="lgs-l">= ${SET.starters} starters</span>`;
+    <span class="lgs-brk"></span><span class="lgs-l">lineup slots:</span> ${SLOT_ORDER.map(k=>`${k} ${slotSel(k)}`).join(' ')} <span class="lgs-l">= ${SET.starters} starters + ${SET.benchN} bench</span>`;
   q('set-teams').onchange=e=>{SET.teams=+e.target.value;setChanged();};
   q('set-bench').onchange=e=>{SET.bench=+e.target.value;setChanged();};
+  q('set-benchn').onchange=e=>{SET.benchN=+e.target.value;setChanged();};
   el.querySelectorAll('.slotsel').forEach(x=>x.onchange=()=>{SET.slots[x.dataset.k]=+x.value;
     SET.starters=Math.max(5,Object.values(SET.slots).reduce((a,b)=>a+(+b||0),0));setChanged();});
   el.querySelectorAll('.catch').forEach(b=>b.onclick=()=>{const k=b.dataset.k;
@@ -696,7 +725,9 @@ function renderTrades(){
   const sorted=[...roster].sort((a,b)=>_warCache[b.name].pw-_warCache[a.name].pw);
   if(!trAnchor||!LG().roster.has(trAnchor)) trAnchor=sorted[sorted.length-1].name;   // weakest playoff link first
   const team=trExpWins(roster);
-  renderCatProfile(trCatProfile(roster), null, team.po/3, null);
+  const wkNow=[0,1,2].map(w=>trMatchupP(trCatWinP(roster,w,true)));
+  renderCatProfile(trCatProfile(roster), null, wkNow, null);
+  renderPlan();
   q('tr-roster').innerHTML=
     `<div class="trteam">Your playoff run projects <b>${team.po.toFixed(1)} of 3</b> matchup wins</div>`+
     sorted.map(p=>{const w=_warCache[p.name],cl=w.pw>=0.25?'gtxt':w.pw<=0.05?'ltxt':'';
@@ -740,12 +771,14 @@ function renderTrBuilder(){
   // category flips: playoff win% before vs after, biggest movers
   const roster=r.roster, after=r.after;
   const before=trCatProfile(roster), now=trCatProfile(after);
-  renderCatProfile(before, now, r.basePo/3, r.nowPo/3);
+  const wkB=[0,1,2].map(w=>trMatchupP(trCatWinP(roster,w,true)));
+  const wkA=[0,1,2].map(w=>trMatchupP(trCatWinP(after,w,true)));
+  renderCatProfile(before, now, wkB, wkA);
   const flips=AC().map(c=>({c,b:before[c.k],a:now[c.k],d:now[c.k]-before[c.k]})).sort((x,y)=>Math.abs(y.d)-Math.abs(x.d));
   const flipTxt=flips.filter(f=>Math.abs(f.d)>=0.04).slice(0,2)
     .map(f=>`${f.c.l} ${Math.round(f.b*100)}%&rarr;<span class="${f.d>0?'gtxt':'ltxt'}">${Math.round(f.a*100)}%</span>`).join(' · ');
   const balance=r.moves.map(m=>m.t==='add'?`pick up <b>${m.n}</b> from waivers`:`drop <b>${m.n}</b>`).join(', ');
-  let s=`<button class="tr-back" id="tr-back">&larr; back to targets</button>`;
+  let s=`<button class="tr-back" id="tr-back">&larr; back to targets</button> <button class="tr-save" id="tr-save">＋ Save move to plan</button>`;
   s+=`<div class="tr-sec">Trade builder</div>`;
   const rosterOpts=TRP.filter(p=>LG().roster.has(p.name)&&!trGive.includes(p.name)).sort((a,b)=>b.perGame-a.perGame);
   const getOpts=[...TRP.filter(p=>trOwn(p)!=='you'&&!trGet.includes(p.name))].sort((a,b)=>b.perGame-a.perGame).slice(0,160);
@@ -778,6 +811,29 @@ function renderTrBuilder(){
     renderTrDetail();});
   const ag=document.getElementById('tr-addgive'); if(ag)ag.onchange=()=>{if(ag.value){trGive.push(ag.value);renderTrDetail();}};
   const at=document.getElementById('tr-addget'); if(at)at.onchange=()=>{if(at.value){trGet.push(at.value.replace(' (FA)',''));renderTrDetail();}};
+  const sv=document.getElementById('tr-save'); if(sv)sv.onclick=()=>{ addToPlan(trGive,trGet); trSwap=null;trGive=[];trGet=[]; renderTrades(); q('tr-plan').scrollIntoView({behavior:'smooth',block:'nearest'}); };
+}
+// ---- plan cart: stage multiple moves, see cumulative effect (trEval handles multi give/get) ----
+function loadPlan(){try{const p=JSON.parse(localStorage.getItem('pp_plan'));if(p&&p.give)return p;}catch(e){}return{give:[],get:[]};}
+function savePlan(){try{localStorage.setItem('pp_plan',JSON.stringify(PLAN));}catch(e){}}
+function addToPlan(give,get){for(const n of give)if(!PLAN.give.includes(n))PLAN.give.push(n);
+  for(const n of get)if(!PLAN.get.includes(n))PLAN.get.push(n);savePlan();}
+function renderPlan(){
+  const el=q('tr-plan'); if(!el) return;
+  // keep only players still valid for the connected league
+  PLAN.give=PLAN.give.filter(n=>LG().roster.has(n)); PLAN.get=PLAN.get.filter(n=>trByName[n]&&!LG().roster.has(n));
+  if(!PLAN.give.length&&!PLAN.get.length){el.innerHTML='';return;}
+  const r=trEval(PLAN.give,PLAN.get);
+  const wkB=[0,1,2].map(w=>trMatchupP(trCatWinP(r.roster,w,true)));
+  const wkA=[0,1,2].map(w=>trMatchupP(trCatWinP(r.after,w,true)));
+  const LB=['W1','W2','FIN'];
+  const wk=[0,1,2].map(i=>`${LB[i]} ${Math.round(wkB[i]*100)}&rarr;<b class="${wkA[i]>=wkB[i]?'gtxt':'ltxt'}">${Math.round(wkA[i]*100)}%</b>`).join(' · ');
+  el.innerHTML=`<div class="planbox"><div class="planh">Your plan <span class="ztxt">(${PLAN.give.length+PLAN.get.length} move${PLAN.give.length+PLAN.get.length>1?'s':''} staged)</span> <button class="planclr" id="plan-clear">clear</button></div>
+    <div class="planrow"><span class="planside ltxt">OUT ${PLAN.give.map(n=>`<span class="planpill" data-s="give" data-n="${n}">${n} ×</span>`).join('')||'—'}</span>
+    <span class="planside gtxt">IN ${PLAN.get.map(n=>`<span class="planpill" data-s="get" data-n="${n}">${n} ×</span>`).join('')||'—'}</span></div>
+    <div class="plansum"><b class="${r.dPo>0.01?'gtxt':r.dPo<-0.01?'ltxt':'ztxt'}">${trF(r.dPo,2)} playoff wins</b> if you make it all · ${wk}</div></div>`;
+  q('plan-clear').onclick=()=>{PLAN={give:[],get:[]};savePlan();renderTrades();};
+  el.querySelectorAll('.planpill').forEach(x=>x.onclick=()=>{const a=x.dataset.s==='give'?PLAN.give:PLAN.get;const i=a.indexOf(x.dataset.n);if(i>=0)a.splice(i,1);savePlan();renderTrades();});
 }
 function trChartSVG(net){
   const W=860,H=200,mL=6,mR=6,mT=15,mB=22,ph=H-mT-mB,pw=W-mL-mR;
