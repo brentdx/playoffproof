@@ -207,8 +207,40 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .reason{font-size:11.5px;color:var(--ink2);line-height:1.45;margin-top:11px;border-top:1px solid var(--line);padding-top:9px}
 .wtag{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 5px;margin-right:5px}
 /* sortable table */
-.tablewrap{overflow-x:auto;margin-top:2px;border:1px solid var(--line);border-radius:14px}
-.lgrid{background:var(--bg2);min-width:600px}
+.tablewrap{margin-top:2px}
+.lgrid{background:transparent;min-width:0}
+/* ---- the data grid (Basketball Monster density) ---- */
+.glegend{font-size:11.5px;color:var(--muted);margin:2px 2px 8px;line-height:1.7}
+.glegend b{color:var(--brand)}
+.gwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg2)}
+table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.gt thead th{position:sticky;top:0;background:#211c14;color:var(--muted);font-family:var(--sans);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;z-index:3}
+.gt thead th.us{color:var(--brand);text-decoration:underline dotted rgba(203,166,83,.5);text-underline-offset:3px}
+.gt thead th.on{color:var(--gold)}
+.gt thead th.rk,.gt thead th.nm{text-align:left}
+.gt th.nm,.gt td.nm{position:sticky;left:0;background:var(--bg2)}
+.gt td.nm{z-index:1}
+.gt thead th.nm{z-index:4;background:#211c14}
+.gt td{padding:6px 10px;border-bottom:1px solid rgba(240,232,214,.05);text-align:right;color:var(--ink2)}
+.gt td.rk{color:var(--muted);text-align:left;font-size:11px}
+.gt td.nm{text-align:left;font-family:var(--sans);min-width:186px;cursor:pointer}
+.gt td.nm b{color:var(--ink);font-weight:600;font-size:13px}
+.gt td.nm .tp{color:var(--muted);font-size:11px;margin-left:8px}
+.gt .gmine{color:var(--brand);font-size:8px;vertical-align:2px}
+.gt tbody tr.grow{cursor:pointer}
+.gt tbody tr.grow:hover td{background:rgba(240,232,214,.04)}
+.gt tbody tr.grow:hover td.nm{background:#241f16}
+.gt tr.gx td{white-space:normal;text-align:left;background:var(--card);cursor:default;position:static}
+.gt tr.sel td{background:rgba(203,166,83,.09)}
+.gt tr.sel td.nm{background:#26200f}
+.gsplit{display:flex;gap:14px;align-items:flex-start}
+.gsplit .gwrap{flex:1;min-width:0}
+.gside{width:440px;flex:none;position:sticky;top:10px;max-height:calc(100vh - 20px);overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.gside .card{max-width:none;margin:0;border:0;background:transparent;padding:2px}
+.gside .card::before{display:none}
+.gside-x{float:right;background:none;border:0;color:var(--muted);font-size:20px;line-height:1;cursor:pointer;padding:2px 6px}
+.gside-x:hover{color:var(--ink)}
+@media(max-width:999px){.gside{display:none}}
 .lhead,.lrow{display:grid;grid-template-columns:24px minmax(120px,1fr) 54px 58px 82px 96px 64px;align-items:center;gap:10px;padding:9px 13px}
 .lhead{border-bottom:1px solid var(--line2);font-size:11px;letter-spacing:.01em;color:var(--muted);font-weight:800;position:sticky;top:0;background:var(--bg2)}
 .lhead .s{cursor:pointer;text-align:right;user-select:none;white-space:nowrap}.lhead .s:hover{color:var(--ink)}.lhead .s.on{color:var(--brand)}
@@ -390,7 +422,26 @@ function renderRecs(){const r=V.recs,out=[];
   if(r.drops.length)out.push(`<div class="rec drop"><div class="rh">🔴 Drop candidates</div>${r.drops.map(p=>`<div class="recitem"><span class="who">${p.name}<small>${p.team}</small></span><span class="why">weakest value on your roster</span><span class="mv flat-t">${p.score}</span></div>`).join('')}</div>`);
   q('recs').innerHTML=out.join('')||'<div class="rec"><div class="recitem"><span class="why">No moves to make right now. Your roster is well positioned.</span></div></div>';}
 const COLS=[{k:'score',t:'Score'},{k:'listedGames',t:'Listed'},{k:'expGames',t:'Predicted'},{k:'motiv',t:'Effort'},{k:'w1',t:'Trend'}];
-const sortState={all:'score',avail:'score'};
+// ---- the data grid (Basketball Monster density) ----
+const GCOLS=[
+ {k:'score',t:'Score',us:1,d:"PlayoffProof's overall playoff-value composite: per-game production x games he'll actually play x effort, scaled 1-99 across the field.",v:p=>p.score,f:(p,v)=>v},
+ {k:'rw',t:'RWAR',us:1,d:"Regular-season wins above replacement: extra weekly matchups a league-average team wins with him in a starter slot instead of a waiver pickup, over the real regular-season schedule.",gw:'rw',f:(p,v)=>v.toFixed(1)},
+ {k:'pw',t:'PWAR',us:1,d:"Playoff wins above replacement: the same swap, measured only across your three title weeks: rest, shutdowns, back-to-backs and effort priced in.",gw:'pw',f:(p,v)=>v.toFixed(2)},
+ {k:'sw',t:'Δ Swing',us:1,swing:1,d:"Rank movement from the regular-season board to the playoff board, across the whole pool. Positive = he climbs the rankings when your title is on the line; negative = he slides. Measured vs the field, not vs himself.",gw:'sw',f:(p,v)=>(v>0?'+':'')+v},
+ {k:'g',t:'Plf G',us:1,d:"Games he is projected to actually play in your playoff weeks, after rest, injuries, back-to-backs and travel.",v:p=>p.expGames,f:(p,v)=>Number.isInteger(v)?v:v.toFixed(1)},
+ {k:'eff',t:'Effort',us:1,d:"How motivated he is to play hard in your title weeks: contract incentives, team stakes, tank vs contend.",v:p=>p.motiv==null?80:p.motiv,f:(p,v)=>v+'%'},
+ {k:'adp',t:'ADP',noheat:1,firstAsc:1,d:"Average draft position (market value). Trade suggestions are held to this so comps stay fair.",v:p=>p.adp||9999,f:(p,v)=>p.adp?Math.round(p.adp*10)/10:'—'},
+ {k:'pts',t:'PTS',d:"Projected points per game.",v:p=>p.proj.pts,f:(p,v)=>v.toFixed(1)},
+ {k:'reb',t:'REB',d:"Rebounds per game.",v:p=>p.proj.reb,f:(p,v)=>v.toFixed(1)},
+ {k:'ast',t:'AST',d:"Assists per game.",v:p=>p.proj.ast,f:(p,v)=>v.toFixed(1)},
+ {k:'stl',t:'STL',d:"Steals per game.",v:p=>p.proj.stl,f:(p,v)=>v.toFixed(1)},
+ {k:'blk',t:'BLK',d:"Blocks per game.",v:p=>p.proj.blk,f:(p,v)=>v.toFixed(1)},
+ {k:'fg3m',t:'3PM',d:"Threes made per game.",v:p=>p.proj.fg3m,f:(p,v)=>v.toFixed(1)},
+ {k:'fgp',t:'FG%',d:"Field-goal percentage.",v:p=>p.proj.fg_pct,f:(p,v)=>v.toFixed(1)},
+ {k:'ftp',t:'FT%',d:"Free-throw percentage.",v:p=>p.proj.ft_pct,f:(p,v)=>v.toFixed(1)},
+ {k:'to',t:'TO',inv:1,d:"Turnovers per game (fewer is better).",v:p=>p.proj.turnover,f:(p,v)=>v.toFixed(1)}
+];
+const sortState={all:{k:'pw',asc:false},avail:{k:'pw',asc:false}};
 function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);const mine=LG().roster.has(p.name);
   return `<div class="lrow" data-n="${p.name}" tabindex="0"><span class="rk">${rk}</span>
     <span class="who">${p.emoji} ${p.name} ${p.pos?`<span class="postag">${p.pos}</span>`:''}<small>${p.team}</small>${mine?' <span class="badge you">YOU</span>':''}</span>
@@ -400,20 +451,67 @@ function lrow(p,rk){const k=cls(p.w1);const gv=gamesView(p);const mine=LG().rost
     <span class="num mot" style="color:${motColor(p.motiv)}">${p.motiv}</span>
     <span class="num chg ${k}-t">${arrow(p.w1)} ${p.w1>0?'+':''}${p.w1}%</span></div>`;}
 function renderList(scope){
-  const key=sortState[scope];
-  const data=(scope==='all'?MOCK.all:V.available).slice().sort((a,b)=>b[key]-a[key]);
-  const head=`<div class="lhead"><span></span><span class="pl-h">Player</span>${
-    COLS.map(c=>`<span class="s ${key===c.k?'on':''}" data-k="${c.k}">${c.t} ${key===c.k?'▼':'<span class="car">↕</span>'}</span>`).join('')}</div>`;
-  q('list-'+scope).innerHTML=head+data.map((p,i)=>lrow(p,i+1)).join('');
+  const GWD=gridWar();
+  const st=sortState[scope];
+  const col=GCOLS.find(c=>c.k===st.k)||GCOLS[2];
+  const val=(c,p)=>c.gw?GWD[p.name][c.gw]:c.v(p);
+  const data=(scope==='all'?MOCK.all:V.available).filter(p=>p.proj&&GWD[p.name]).slice()
+    .sort((a,b)=>(val(col,b)-val(col,a))*(st.asc?-1:1));
+  // heat shading: percentile within the visible pool, green above the median, red below
+  // (flipped for TO); Δ Swing shades by sign and size. ADP stays neutral — it's the market, not us.
+  const sorted={}; for(const c of GCOLS){ if(c.noheat||c.swing) continue;
+    sorted[c.k]=data.map(p=>val(c,p)).sort((x,y)=>x-y); }
+  const maxSw=Math.max(12,...data.map(p=>Math.abs(GWD[p.name].sw)));
+  const heat=(c,v)=>{
+    if(c.noheat) return '';
+    let ctr;
+    if(c.swing){ ctr=Math.max(-1,Math.min(1,v/maxSw)); }
+    else{ const a=sorted[c.k]; let lo=0,hi=a.length-1;
+      while(lo<hi){const m=(lo+hi)>>1; if(a[m]<v)lo=m+1; else hi=m;}
+      ctr=a.length>1?(lo/(a.length-1)-.5)*2:0; if(c.inv)ctr=-ctr; }
+    const al=Math.abs(ctr)*.42; if(al<.03) return '';
+    return `background:rgba(${ctr>0?'92,190,134':'214,104,95'},${al.toFixed(2)})`;
+  };
+  const legend=`<div class="glegend"><b>RWAR</b> wins added across the regular season · <b>PWAR</b> wins added in your title weeks, vs the playoff field · <b>Δ Swing</b> = spots he moves between the two boards (green climbs, red slides) · <b>Plf G</b> games he'll actually play · <b>Effort</b> motivation. Hover any underlined header for the full definition; click a row for the why.</div>`;
+  const head=`<thead><tr><th class="rk">#</th><th class="nm">Player</th>${GCOLS.map(c=>
+    `<th class="${c.us?'us ':''}${st.k===c.k?'on':''}" data-k="${c.k}" title="${c.d}">${c.t}${st.k===c.k?(st.asc?' ▲':' ▼'):''}</th>`).join('')}</tr></thead>`;
+  const rows=data.map((p,i)=>{
+    const mine=LG().roster.has(p.name);
+    return `<tr class="grow" data-n="${p.name}" tabindex="0"><td class="rk">${i+1}</td><td class="nm">${mine?'<span class="gmine" title="on your roster">●</span> ':''}<b>${p.name}</b><span class="tp">${p.team}${p.pos?' · '+p.pos:''}</span></td>${
+      GCOLS.map(c=>{const v=val(c,p);return `<td style="${heat(c,v)}">${c.f(p,v)}</td>`;}).join('')}</tr>`;}).join('');
+  q('list-'+scope).innerHTML=legend+`<div class="gsplit"><div class="gwrap"><table class="gt">${head}<tbody>${rows}</tbody></table></div><aside class="gside" id="gside-${scope}" hidden></aside></div>`;
   const bn={}; data.forEach(p=>bn[p.name]=p);
-  document.querySelectorAll('#list-'+scope+' .lhead .s').forEach(el=>el.onclick=()=>{sortState[scope]=el.dataset.k;renderList(scope);});
-  document.querySelectorAll('#list-'+scope+' .lrow').forEach(el=>{const go=()=>{
+  document.querySelectorAll('#list-'+scope+' .gt th[data-k]').forEach(el=>el.onclick=()=>{
+    const k=el.dataset.k, c=GCOLS.find(x=>x.k===k);
+    sortState[scope]= st.k===k ? {k,asc:!st.asc} : {k,asc:!!c.firstAsc};
+    renderList(scope);});
+  // player detail: wide screens get a side inspector (non-blocking — the grid stays live);
+  // narrow screens keep the inline drawer under the row.
+  const aside=q('gside-'+scope), wide=()=>window.innerWidth>=1000;
+  const closeSide=()=>{aside.hidden=true;aside.innerHTML='';selState[scope]=null;
+    document.querySelectorAll('#list-'+scope+' .gt tr.sel').forEach(r=>r.classList.remove('sel'));};
+  const openSide=el=>{const p=bn[el.dataset.n]; if(!p)return;
+    document.querySelectorAll('#list-'+scope+' .gt tr.sel').forEach(r=>r.classList.remove('sel'));
+    el.classList.add('sel'); selState[scope]=p.name;
+    aside.innerHTML=`<button class="gside-x" aria-label="close">×</button>${card(p)}`;
+    aside.hidden=false;
+    aside.querySelector('.gside-x').onclick=closeSide;};
+  document.querySelectorAll('#list-'+scope+' .gt tr.grow').forEach(el=>{const go=()=>{
+    if(wide()){ if(selState[scope]===el.dataset.n){closeSide();return;} openSide(el); return; }
     const nx=el.nextElementSibling;
-    if(nx&&nx.classList.contains('lrow-exp')){nx.remove();el.classList.remove('exp');return;}
+    if(nx&&nx.classList.contains('gx')){nx.remove();el.classList.remove('exp');return;}
     const p=bn[el.dataset.n]; if(!p)return;
-    const d=document.createElement('div'); d.className='lrow-exp'; d.innerHTML=card(p); el.after(d); el.classList.add('exp');};
+    const tr=document.createElement('tr'); tr.className='gx';
+    tr.innerHTML=`<td colspan="${GCOLS.length+2}"><div class="lrow-exp">${card(p)}</div></td>`;
+    el.after(tr); el.classList.add('exp');};
     el.onclick=go; el.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go();}};});
+  // keep the inspector open across re-sorts
+  if(selState[scope]&&bn[selState[scope]]&&wide()){
+    const el=document.querySelector(`#list-${scope} .gt tr.grow[data-n="${CSS.escape(selState[scope])}"]`);
+    if(el) openSide(el); else closeSide();
+  }
 }
+const selState={all:null,avail:null};
 function renderSummary(){const s=V.summary; if(!s){q('teamsum').innerHTML='';return;} const bits=[];
   if(s.risers)bits.push(`<b class="u">${s.risers} trending up</b>`);
   if(s.fades)bits.push(`<b class="d">${s.fades} slipping</b>`);
@@ -658,6 +756,31 @@ function trPlayerWAR(p){
   const alt=trExpWins(swapped);
   return {pw:base.po-alt.po, rw:base.rs-alt.rs};
 }
+// FIELD-WIDE WAR (the data grid): every player priced in the SAME neutral context —
+// one starter slot on a league-average lineup, vs handing that slot to the waiver
+// replacement. Roster-free, so all rows are comparable and sortable. (The trade tab's
+// trPlayerWAR is the roster-specific version of the same engine.)
+const gridWar=(()=>{let done=null,key=null;return()=>{
+  const k=LG().name+'|'+JSON.stringify(SET); if(done&&key===k)return done; key=k;
+  const nS=Math.min(SET.teams*SET.starters,TRP.length);
+  const pool=[...TRP].sort((a,b)=>b.perGame-a.perGame).slice(0,nS);
+  const avg={name:'(league-average starter)',proj:{},att:{fgm:0,fga:0,ftm:0,fta:0},
+    weeklyGames:[0,1,2].map(w=>+(pool.reduce((s,p)=>s+trWkExp(p)[w],0)/pool.length).toFixed(2)),
+    perGame:pool.reduce((s,p)=>s+p.perGame,0)/pool.length,
+    motiv:Math.round(pool.reduce((s,p)=>s+(p.motiv==null?80:p.motiv),0)/pool.length)};
+  for(const c of TRCATS) avg.proj[c.k]=pool.reduce((s,p)=>s+p.proj[c.k],0)/pool.length;
+  for(const a of ['fgm','fga','ftm','fta']) avg.att[a]=pool.reduce((s,p)=>s+(p.att?p.att[a]:0),0)/pool.length;
+  avg.expGames=trSum(avg.weeklyGames); avg.listedGames=avg.expGames;
+  const fill=Array(Math.max(1,SET.starters-1)).fill(avg);
+  const base=trExpWins([...fill,trRep()]);
+  const out={};
+  for(const p of TRP){const w=trExpWins([...fill,p]); out[p.name]={pw:w.po-base.po, rw:w.rs-base.rs};}
+  // swing = rank movement between the two boards, across the whole pool
+  const byRw=[...TRP].sort((a,b)=>out[b.name].rw-out[a.name].rw);
+  const byPw=[...TRP].sort((a,b)=>out[b.name].pw-out[a.name].pw);
+  const rkR={},rkP={}; byRw.forEach((p,i)=>rkR[p.name]=i); byPw.forEach((p,i)=>rkP[p.name]=i);
+  for(const p of TRP) out[p.name].sw=rkR[p.name]-rkP[p.name];
+  done=out; return done;};})();
 // 3-playoff-week average win probability per category — the team's category composition
 function trCatProfile(players){const o={};for(const c of AC())o[c.k]=0;
   for(let w=0;w<3;w++){const cp=trCatWinP(players,w,true);for(const c of AC())o[c.k]+=cp[c.k]/3;}return o;}
@@ -717,7 +840,7 @@ function renderSettings(){
     if(SET.cats[k]&&AC().length<=4)return;   // keep at least 4 scoring cats
     SET.cats[k]=SET.cats[k]?0:1;setChanged();});
 }
-function setChanged(){saveSet();renderTrades();}
+function setChanged(){saveSet();_oppCache={};renderTrades();renderList('all');renderList('avail');}
 function renderTrades(){
   _oppCache={}; _warCache=null;
   renderSettings();
