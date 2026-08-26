@@ -241,6 +241,66 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
 .gside-x{float:right;background:none;border:0;color:var(--muted);font-size:20px;line-height:1;cursor:pointer;padding:2px 6px}
 .gside-x:hover{color:var(--ink)}
 @media(max-width:999px){.gside{display:none}}
+/* ---- the no-sync upgrade finder ---- */
+.upg{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.upghead{font-family:var(--serif);font-weight:600;font-size:16px;color:var(--ink);margin-bottom:2px}
+.upglab{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:12px 0 4px}
+.upgrow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:8px 10px;margin:4px -2px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.upgrow:hover{border-color:rgba(203,166,83,.4)}
+.upgnm b{color:var(--ink);font-size:13.5px;font-weight:600}
+.upgnm span{display:block;color:var(--muted);font-size:10.5px;margin-top:1px}
+.upgd{text-align:right;font-family:ui-monospace,Menlo,monospace;font-size:15px;font-weight:700;color:var(--up)}
+.upgd em{display:block;font-style:normal;font-family:var(--sans);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.upgw{grid-column:1/-1;display:flex;gap:10px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--muted)}
+.upgw .g{color:var(--up)}.upgw .r{color:var(--down)}
+.upgnone{font-size:12.5px;color:var(--ink2);line-height:1.5;margin:8px 0}
+.upgfine{font-size:10px;color:var(--muted);line-height:1.5;margin-top:10px}
+.upgnm{display:flex;align-items:center;gap:8px}
+.upgnm .ubust{flex:none;line-height:0}
+.upgnm .utxt b{display:block}
+/* ---- package select + docked action bar ---- */
+.pksel{width:15px;height:15px;padding:0;margin-right:7px;background:var(--bg);border:1px solid var(--muted);border-radius:2px;cursor:pointer;vertical-align:-2px;image-rendering:pixelated}
+.pksel:hover{border-color:var(--brand)}
+.pksel.on{background:var(--brand);border-color:var(--brand);box-shadow:inset 0 0 0 3px var(--bg2)}
+.pksel.get{background:var(--up);border-color:var(--up);box-shadow:inset 0 0 0 3px var(--bg2)}
+.pkgchip.getc{border-color:rgba(92,190,134,.5)}
+.pkgarrow{color:var(--muted);font-size:15px;padding:0 2px}
+.pkghint{color:var(--muted);font-size:10.5px;padding:4px 2px;white-space:nowrap}
+.pkghost{background:none;border:0;color:var(--muted);font-size:10.5px;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer;white-space:nowrap;padding:0 2px}
+.pkghost:hover{color:var(--ink)}
+.pkgbtn[disabled]{opacity:.45;cursor:default}
+.tg .tgverd{display:flex;align-items:baseline;gap:10px;margin:8px 0 4px}
+.tg .tgpill{border:1px solid;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:900;letter-spacing:.12em}
+.tg .tgnet{font-family:ui-monospace,Menlo,monospace;font-size:24px;font-weight:700}
+.tg .tgnetl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.tg .piece.getp{border-color:rgba(92,190,134,.4)}
+.pkgbar{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:40;display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid rgba(203,166,83,.45);border-radius:14px;padding:10px 12px;box-shadow:0 12px 34px rgba(0,0,0,.5);max-width:min(94vw,640px)}
+.pkgbar .chips{display:flex;gap:8px;flex-wrap:wrap}
+.pkgchip{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:4px 8px 4px 5px;font-size:11.5px;color:var(--ink)}
+.pkgchip svg{display:block}
+.pkgchip .x{color:var(--muted);cursor:pointer;padding:0 2px;font-size:13px}
+.pkgchip .x:hover{color:var(--ink)}
+.pkgbtn{background:linear-gradient(100deg,var(--gold),var(--brand2));color:#140f08;border:0;border-radius:9px;padding:10px 14px;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.pkgbtn:hover{filter:brightness(1.08)}
+.pkgclear{background:none;border:0;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 4px}
+.pkgclear:hover{color:var(--ink)}
+/* ---- consolidation results ---- */
+.pkg .pieces{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
+.pkg .piece{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:10.5px;color:var(--ink2);min-width:74px}
+.pkg .piece b{color:var(--ink);font-size:11px;text-align:center}
+.pkg .pkgsum{font-size:11.5px;color:var(--muted);margin:2px 0 10px}
+.pkg .pkgsum b{color:var(--ink)}
+.pktar{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:10px 11px;margin:7px 0;cursor:pointer}
+.pktar:hover{border-color:rgba(203,166,83,.4)}
+.pktar .top{display:flex;align-items:center;gap:10px}
+.pktar .top b{color:var(--ink);font-size:14px}
+.pktar .top span{color:var(--muted);font-size:10.5px;display:block;margin-top:1px}
+.pktar .net{margin-left:auto;text-align:right;font-family:ui-monospace,Menlo,monospace;font-size:16px;font-weight:700;color:var(--up)}
+.pktar .net.neg{color:var(--down)}
+.pktar .net em{display:block;font-style:normal;font-family:var(--sans);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.pktar .math{font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.55}
+.pktar .math b{color:var(--ink2)}
+.pktar .upgw{margin-top:5px}
 .lhead,.lrow{display:grid;grid-template-columns:24px minmax(120px,1fr) 54px 58px 82px 96px 64px;align-items:center;gap:10px;padding:9px 13px}
 .lhead{border-bottom:1px solid var(--line2);font-size:11px;letter-spacing:.01em;color:var(--muted);font-weight:800;position:sticky;top:0;background:var(--bg2)}
 .lhead .s{cursor:pointer;text-align:right;user-select:none;white-space:nowrap}.lhead .s:hover{color:var(--ink)}.lhead .s.on{color:var(--brand)}
@@ -477,7 +537,7 @@ function renderList(scope){
     `<th class="${c.us?'us ':''}${st.k===c.k?'on':''}" data-k="${c.k}" title="${c.d}">${c.t}${st.k===c.k?(st.asc?' ▲':' ▼'):''}</th>`).join('')}</tr></thead>`;
   const rows=data.map((p,i)=>{
     const mine=LG().roster.has(p.name);
-    return `<tr class="grow" data-n="${p.name}" tabindex="0"><td class="rk">${i+1}</td><td class="nm">${mine?'<span class="gmine" title="on your roster">●</span> ':''}<b>${p.name}</b><span class="tp">${p.team}${p.pos?' · '+p.pos:''}</span></td>${
+    return `<tr class="grow" data-n="${p.name}" tabindex="0"><td class="rk"><button class="pksel${pkgSel.has(p.name)?' on':''}" data-n="${p.name}" title="select for a package" aria-label="select ${p.name}"></button>${i+1}</td><td class="nm">${mine?'<span class="gmine" title="on your roster">●</span> ':''}<b>${p.name}</b><span class="tp">${p.team}${p.pos?' · '+p.pos:''}</span></td>${
       GCOLS.map(c=>{const v=val(c,p);return `<td style="${heat(c,v)}">${c.f(p,v)}</td>`;}).join('')}</tr>`;}).join('');
   q('list-'+scope).innerHTML=legend+`<div class="gsplit"><div class="gwrap"><table class="gt">${head}<tbody>${rows}</tbody></table></div><aside class="gside" id="gside-${scope}" hidden></aside></div>`;
   const bn={}; data.forEach(p=>bn[p.name]=p);
@@ -490,28 +550,262 @@ function renderList(scope){
   const aside=q('gside-'+scope), wide=()=>window.innerWidth>=1000;
   const closeSide=()=>{aside.hidden=true;aside.innerHTML='';selState[scope]=null;
     document.querySelectorAll('#list-'+scope+' .gt tr.sel').forEach(r=>r.classList.remove('sel'));};
-  const openSide=el=>{const p=bn[el.dataset.n]; if(!p)return;
+  const showPlayer=name=>{const p=trByName[name]; if(!p)return;
     document.querySelectorAll('#list-'+scope+' .gt tr.sel').forEach(r=>r.classList.remove('sel'));
-    el.classList.add('sel'); selState[scope]=p.name;
-    aside.innerHTML=`<button class="gside-x" aria-label="close">×</button>${card(p)}`;
+    const el=document.querySelector(`#list-${scope} .gt tr.grow[data-n="${CSS.escape(name)}"]`);
+    if(el) el.classList.add('sel');
+    selState[scope]=name;
+    aside.innerHTML=`<button class="gside-x" aria-label="close">×</button>${card(p)}${upgradesFor(p)}`;
     aside.hidden=false;
-    aside.querySelector('.gside-x').onclick=closeSide;};
+    aside.querySelector('.gside-x').onclick=closeSide;
+    aside.querySelectorAll('.upgrow').forEach(r=>r.onclick=()=>{showPlayer(r.dataset.n);aside.scrollTop=0;});};
+  const showHtml=html=>{
+    document.querySelectorAll('#list-'+scope+' .gt tr.sel').forEach(r=>r.classList.remove('sel'));
+    selState[scope]=null;
+    aside.innerHTML=`<button class="gside-x" aria-label="close">×</button>${html}`;
+    aside.hidden=false;
+    aside.querySelector('.gside-x').onclick=closeSide;
+    aside.querySelectorAll('.pktar,.upgrow').forEach(r=>r.onclick=()=>{showPlayer(r.dataset.n);aside.scrollTop=0;});
+    aside.scrollTop=0;};
+  paneShow[scope]={showPlayer,showHtml,closeSide};
+  document.querySelectorAll('#list-'+scope+' .pksel').forEach(b=>b.onclick=e=>{
+    e.stopPropagation(); togglePkg(b.dataset.n);});
   document.querySelectorAll('#list-'+scope+' .gt tr.grow').forEach(el=>{const go=()=>{
-    if(wide()){ if(selState[scope]===el.dataset.n){closeSide();return;} openSide(el); return; }
+    if(wide()){ if(selState[scope]===el.dataset.n){closeSide();return;} showPlayer(el.dataset.n); return; }
     const nx=el.nextElementSibling;
     if(nx&&nx.classList.contains('gx')){nx.remove();el.classList.remove('exp');return;}
     const p=bn[el.dataset.n]; if(!p)return;
     const tr=document.createElement('tr'); tr.className='gx';
-    tr.innerHTML=`<td colspan="${GCOLS.length+2}"><div class="lrow-exp">${card(p)}</div></td>`;
-    el.after(tr); el.classList.add('exp');};
+    tr.innerHTML=`<td colspan="${GCOLS.length+2}"><div class="lrow-exp">${card(p)}${upgradesFor(p)}</div></td>`;
+    el.after(tr); el.classList.add('exp');
+    tr.querySelectorAll('.upgrow').forEach(r=>r.onclick=ev=>{ev.stopPropagation();
+      const n2=r.dataset.n; tr.remove(); el.classList.remove('exp');
+      const el2=document.querySelector(`#list-${scope} .gt tr.grow[data-n="${CSS.escape(n2)}"]`);
+      if(el2){el2.click(); el2.scrollIntoView({block:'center'});}});};
     el.onclick=go; el.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go();}};});
   // keep the inspector open across re-sorts
-  if(selState[scope]&&bn[selState[scope]]&&wide()){
-    const el=document.querySelector(`#list-${scope} .gt tr.grow[data-n="${CSS.escape(selState[scope])}"]`);
-    if(el) openSide(el); else closeSide();
+  if(selState[scope]&&wide()){
+    if(trByName[selState[scope]]) showPlayer(selState[scope]); else closeSide();
   }
 }
 const selState={all:null,avail:null};
+const paneShow={all:null,avail:null};
+// ---- package selection (the docked bar): GIVE side always; GET side once the user
+// switches to grading a specific offer. A player lives on at most one side. ----
+const pkgSel=new Set();      // give side
+const pkgGet=new Set();      // their side (grade-a-trade mode)
+let pkgMode='give';
+function syncSelClasses(n){
+  document.querySelectorAll(`.pksel[data-n="${CSS.escape(n)}"]`).forEach(b=>{
+    b.classList.toggle('on',pkgSel.has(n));
+    b.classList.toggle('get',pkgGet.has(n));});
+}
+function togglePkg(n){
+  if(pkgSel.has(n)) pkgSel.delete(n);
+  else if(pkgGet.has(n)) pkgGet.delete(n);
+  else if(pkgMode==='get'){ if(pkgGet.size>=3) return; pkgGet.add(n); }
+  else{ if(pkgSel.size>=3) return; pkgSel.add(n); }
+  syncSelClasses(n);
+  renderPkgBar();
+}
+function activeScope(){return document.querySelector('#p-avail.on')?'avail':'all';}
+function renderPkgBar(){
+  let bar=document.getElementById('pkgbar');
+  if(!pkgSel.size&&!pkgGet.size){ pkgMode='give'; if(bar) bar.remove(); return; }
+  if(!bar){ bar=document.createElement('div'); bar.id='pkgbar'; bar.className='pkgbar'; document.body.appendChild(bar); }
+  const chip=(n,cls)=>{const p=trByName[n];
+    return `<span class="pkgchip ${cls}">${pixBust(n,p?p.team:'',18)} ${n.split(' ').slice(-1)[0]} <span class="x" data-n="${n}" role="button" aria-label="remove ${n}">×</span></span>`;};
+  const give=[...pkgSel].map(n=>chip(n,'')).join('');
+  const get=[...pkgGet].map(n=>chip(n,'getc')).join('');
+  const grading=pkgMode==='get'||pkgGet.size>0;
+  let mid='', label, ghost='';
+  if(grading){
+    mid=`<span class="pkgarrow" title="give for get">⇄</span><div class="chips">${get||'<span class="pkghint">tap rows to add their side</span>'}</div>`;
+    label='Grade this trade';
+  }else{
+    label=pkgSel.size===1?'Find his playoff upgrade':`Find the ${pkgSel.size}-for-1`;
+    ghost=`<button class="pkghost">grade an offer instead</button>`;
+  }
+  bar.innerHTML=`<div class="chips">${give||'<span class="pkghint">your side</span>'}</div>${mid}${ghost}<button class="pkgbtn"${grading&&(!pkgSel.size||!pkgGet.size)?' disabled':''}>${label}</button><button class="pkgclear" title="clear selection">×</button>`;
+  bar.querySelectorAll('.pkgchip .x').forEach(x=>x.onclick=()=>togglePkg(x.dataset.n));
+  const gh=bar.querySelector('.pkghost'); if(gh) gh.onclick=()=>{pkgMode='get';renderPkgBar();};
+  bar.querySelector('.pkgclear').onclick=()=>{
+    [...pkgSel].forEach(n=>{pkgSel.delete(n);syncSelClasses(n);});
+    [...pkgGet].forEach(n=>{pkgGet.delete(n);syncSelClasses(n);});
+    pkgMode='give'; renderPkgBar();};
+  bar.querySelector('.pkgbtn').onclick=()=>{
+    const api=paneShow[activeScope()]; if(!api) return;
+    const showIn=html=>{               // panel on wide screens, inline above the grid on narrow
+      if(window.innerWidth>=1000){ api.showHtml(html); return; }
+      const host=q('list-'+activeScope());
+      let d=document.getElementById('pkg-inline'); if(d) d.remove();
+      d=document.createElement('div'); d.id='pkg-inline'; d.className='gside';
+      d.style.cssText='display:block;width:auto;position:static;margin-bottom:12px';
+      d.innerHTML=`<button class="gside-x" aria-label="close">×</button>${html}`;
+      host.prepend(d);
+      d.querySelector('.gside-x').onclick=()=>d.remove();
+      d.scrollIntoView({block:'start'});};
+    if(grading){
+      if(!pkgSel.size||!pkgGet.size) return;
+      const t=tradeEval([...pkgSel],[...pkgGet]); if(!t) return;
+      showIn(renderTradeGrade(t)); return;
+    }
+    if(pkgSel.size===1){ api.showPlayer([...pkgSel][0]); return; }
+    const u=packageData([...pkgSel]); if(!u) return;
+    showIn(renderPackage(u));
+  };
+}
+function renderPackage(u){
+  const fmt=v=>(v>0?'+':'')+v.toFixed(2);
+  const pieces=u.pieces.map(p=>`<div class="piece">${pixBust(p.name,p.team,40)}<b>${p.name}</b><span>${p.team} · ADP ${p.adp?Math.round(p.adp):'ud'}</span></div>`).join('');
+  const kick=u.kickers.map(k=>k.name).join(' + ');
+  const tar=t=>`<div class="pktar" data-n="${t.name}" role="button" tabindex="0">
+    <div class="top">${pixBust(t.name,t.team,34)}<div><b>${t.name}</b><span>${t.team}${t.pos?' · '+t.pos:''} · ADP ${Math.round(t.adp)}</span></div>
+    <div class="net${t.net<0?' neg':''}">${fmt(t.net)}<em>net title wins</em></div></div>
+    <div class="math">he adds <b>${fmt(t.pw)}</b>${u.kickers.length?` · open slot${u.kickers.length>1?'s':''} refill${u.kickers.length>1?'':'s'}: <b>${kick}</b> (${fmt(u.kickPw)})`:''} · you give <b>−${u.pkgPw.toFixed(2)}</b></div>
+    <div class="upgw">${['W1','W2','FIN'].map((L,i)=>`<span class="${t.netW[i]>0.004?'g':t.netW[i]<-0.004?'r':''}">${L} ${fmt(t.netW[i])}</span>`).join('')}</div></div>`;
+  let h=`<div class="upg pkg" style="border-top:0;padding-top:2px"><div class="upghead">The ${u.pieces.length}-for-1</div>
+    <div class="pieces">${pieces}</div>
+    <div class="pkgsum">Package gives up <b>${u.pkgPw.toFixed(2)}</b> title wins · W1 ${u.pkgW[0].toFixed(2)} · W2 ${u.pkgW[1].toFixed(2)} · FIN ${u.pkgW[2].toFixed(2)}</div>`;
+  if(!u.targets.length){
+    h+=`<p class="upgnone"><b style="color:var(--gold)">Verdict: keep the depth.</b> No fair ${u.pieces.length}-for-1 nets out positive in your title weeks: two rostered contributors out-earn one star plus a waiver refill. Depth is playoff value.</p>`;
+    if(u.closest.length) h+=`<div class="upglab">The closest calls · still net losses</div>`+u.closest.map(tar).join('');
+  }
+  else h+=`<div class="upglab">Trade them for · fair by ADP</div>`+u.targets.map(tar).join('');
+  h+=`<p class="upgfine">Net = him + best waiver refill${u.kickers.length>1?'s':''} − your package, in expected title-week matchup wins, same neutral lineup. Availability varies by league.</p></div>`;
+  return h;
+}
+// GRADE A SPECIFIC OFFER: give side vs get side, N-for-M. Slot math both ways —
+// giving more than you get opens slots (waiver refills credited); getting more than
+// you give forces a drop, assumed replacement-level without a synced roster.
+function tradeEval(giveN,getN){
+  const GWD=gridWar();
+  const G=giveN.map(n=>trByName[n]).filter(p=>p&&GWD[p.name]);
+  const R=getN.map(n=>trByName[n]).filter(p=>p&&GWD[p.name]);
+  if(!G.length||!R.length) return null;
+  if(G.some(p=>getN.includes(p.name))) return null;
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  const side=ps=>({pieces:ps.map(p=>({name:p.name,team:p.team,pos:p.pos,adp:p.adp||0,pw:GWD[p.name].pw,pwW:GWD[p.name].pwW})),
+    pw:+sum(ps.map(p=>GWD[p.name].pw)).toFixed(3),
+    pwW:[0,1,2].map(i=>+sum(ps.map(p=>GWD[p.name].pwW[i])).toFixed(3))});
+  const gv=side(G), gt=side(R);
+  const opened=G.length-R.length;
+  const excl=new Set([...giveN,...getN]);
+  const kickers=opened>0?TRP.filter(B=>!excl.has(B.name)&&GWD[B.name]&&(!B.adp||B.adp>=110))
+    .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,opened)
+    .map(k=>({name:k.name,team:k.team,pw:GWD[k.name].pw,pwW:GWD[k.name].pwW})):[];
+  const kickPw=+sum(kickers.map(k=>k.pw)).toFixed(3);
+  const kickW=[0,1,2].map(i=>+sum(kickers.map(k=>k.pwW[i])).toFixed(3));
+  const net=+(gt.pw+kickPw-gv.pw).toFixed(3);
+  const netW=[0,1,2].map(i=>+(gt.pwW[i]+kickW[i]-gv.pwW[i]).toFixed(3));
+  const gate=+Math.max(0.01,0.05*Math.max(gv.pw,gt.pw)).toFixed(3);
+  const verdict=net>=gate?'ACCEPT':net<=-gate?'DECLINE':'TOSS-UP';
+  // the better ask for the same give side, to counter with
+  let alt=null;
+  if(giveN.length>=2){const p=packageData(giveN); if(p&&p.targets.length) alt={name:p.targets[0].name,gain:p.targets[0].net};}
+  else{const u=upgradeData(trByName[giveN[0]]); if(u&&u.trades.length) alt={name:u.trades[0].name,gain:u.trades[0].d};}
+  if(alt&&getN.includes(alt.name)) alt=null;
+  return {give:gv,get:gt,kickers,kickPw,net,netW,gate,verdict,opened,alt};
+}
+function renderTradeGrade(t){
+  const fmt=v=>(v>0?'+':'')+v.toFixed(2);
+  const vcol=t.verdict==='ACCEPT'?'var(--up)':t.verdict==='DECLINE'?'var(--down)':'var(--muted)';
+  const pieceCard=(p,cls)=>`<div class="piece ${cls}">${pixBust(p.name,p.team,40)}<b>${p.name}</b><span>${p.team} · ADP ${p.adp?Math.round(p.adp):'ud'}</span></div>`;
+  let h=`<div class="upg pkg tg" style="border-top:0;padding-top:2px">
+    <div class="upghead">The offer</div>
+    <div class="tgverd"><span class="tgpill" style="border-color:${vcol};color:${vcol}">${t.verdict}</span>
+      <span class="tgnet" style="color:${vcol}">${fmt(t.net)}</span><span class="tgnetl">net title wins for you</span></div>
+    <div class="upglab">You give</div><div class="pieces">${t.give.pieces.map(p=>pieceCard(p,'')).join('')}</div>
+    <div class="upglab" style="color:var(--up)">You get</div><div class="pieces">${t.get.pieces.map(p=>pieceCard(p,'getp')).join('')}</div>
+    <div class="math" style="font-size:11px;color:var(--muted);line-height:1.6">you get <b>${fmt(t.get.pw)}</b>${t.kickers.length?` · opened slot${t.kickers.length>1?'s':''} refill: <b>${t.kickers.map(k=>k.name).join(' + ')}</b> (${fmt(t.kickPw)})`:''} · you give <b>−${t.give.pw.toFixed(2)}</b>${t.opened<0?` · you'll drop an end-of-bench player to fit (assumed replacement level)`:''}</div>
+    <div class="upgw" style="margin-top:7px">${['W1','W2','FIN'].map((L,i)=>`<span class="${t.netW[i]>0.004?'g':t.netW[i]<-0.004?'r':''}">${L} ${fmt(t.netW[i])}</span>`).join('')}</div>`;
+  if(t.verdict!=='ACCEPT'&&t.alt&&t.alt.gain>t.net)
+    h+=`<p class="upgnone" style="margin-top:12px">Counter with <b style="color:var(--gold)">${t.alt.name}</b> instead: nets ${fmt(t.alt.gain)} for the same side.</p>`;
+  h+=`<p class="upgfine">Verdict gates at ±${t.gate.toFixed(2)} title wins (below that it's a genuine toss-up). Same neutral-lineup pricing as the board. Availability varies by league.</p></div>`;
+  return h;
+}
+// NO-SYNC UPGRADE FINDER: for any selected player, who does more for the title weeks?
+// Trades honor the ADP market-value guardrail (never stat-similarity — the Thompson/Pritchard
+// lesson); free agents are approximated as waiver tier (ADP 110+ or undrafted) since without
+// a synced league we can't know who's actually available.
+// the BACKEND: pure data — who upgrades this player, and by how much, per week.
+// (Rendering lives in upgradesFor; harnesses call this directly.)
+function upgradeData(p){
+  const GWD=gridWar(); const mine=GWD[p.name]; if(!mine) return null;
+  const cands=TRP.filter(B=>B.name!==p.name&&GWD[B.name]);
+  const pack=B=>{const g=GWD[B.name];return {name:B.name,team:B.team,pos:B.pos,adp:B.adp||0,
+    d:+(g.pw-mine.pw).toFixed(3), dW:g.pwW.map((v,i)=>+(v-mine.pwW[i]).toFixed(3))};};
+  // tiers are exclusive: a TRADE target is a market asset (drafted, above waiver tier);
+  // waiver-tier players (ADP 110+/undrafted) only ever appear as ADDS — otherwise the
+  // no-ADP fairness fallback leaks them into stars' trade lists and double-lists them.
+  // MINU: an upgrade must be MEANINGFUL relative to the player — never surface a
+  // noise-level delta on a big asset as advice.
+  const MINU=Math.max(0.01,0.12*mine.pw);
+  const trades=cands.filter(B=>B.adp>0&&B.adp<110&&adpFair(p,B)&&GWD[B.name].pw>mine.pw+MINU)
+    .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,4).map(pack);
+  const adds=cands.filter(B=>(!B.adp||B.adp>=110)&&GWD[B.name].pw>mine.pw+MINU)
+    .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,3).map(pack);
+  return {name:p.name,adp:p.adp||0,pw:mine.pw,pwW:mine.pwW,trades,adds};
+}
+// PACKAGE backend: consolidate 2-3 players into one better asset. The honest math our
+// WAR currency makes possible: trading N-for-1 opens N-1 roster slots, and the best
+// waiver adds fill them — so net = target + kickers − what you gave. Fairness = the
+// same ADP guardrail, applied against your best piece (you're trading up, not sideways).
+function packageData(names){
+  const GWD=gridWar();
+  const pieces=names.map(n=>trByName[n]).filter(p=>p&&GWD[p.name]);
+  if(pieces.length<2) return null;
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  const pkgPw=+sum(pieces.map(p=>GWD[p.name].pw)).toFixed(3);
+  const pkgW=[0,1,2].map(i=>+sum(pieces.map(p=>GWD[p.name].pwW[i])).toFixed(3));
+  const inPkg=new Set(names);
+  const best=pieces.reduce((a,b)=>(a.adp&&(!b.adp||a.adp<b.adp))?a:b);
+  // open-slot kickers: top waiver-tier adds NOT in the package, one per opened slot
+  const kickers=TRP.filter(B=>!inPkg.has(B.name)&&GWD[B.name]&&(!B.adp||B.adp>=110))
+    .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,pieces.length-1);
+  const kickPw=+sum(kickers.map(k=>GWD[k.name].pw)).toFixed(3);
+  const kickW=[0,1,2].map(i=>+sum(kickers.map(k=>GWD[k.name].pwW[i])).toFixed(3));
+  // package fairness runs on DRAFT CAPITAL, not the best piece alone: v = 1/sqrt(ADP)
+  // (steep at the top, like real pick value), lesser pieces count at 55% (the market's
+  // 2-for-1 discount), and the target must sit in a two-sided band of the package's
+  // combined value — two good pieces can buy an elite, but never a Jokic for role guys.
+  const vAdp=a=>a>0?1/Math.sqrt(a):0;
+  const vs=pieces.map(p=>vAdp(p.adp)).sort((a,b)=>b-a);
+  const pkgV=vs[0]+0.55*vs.slice(1).reduce((a,b)=>a+b,0);
+  const pkgFair=B=>{const v=vAdp(B.adp);return Math.abs(v-pkgV)<=0.35*Math.max(v,pkgV);};
+  const fairAll=TRP.filter(B=>!inPkg.has(B.name)&&GWD[B.name]&&B.adp>0&&B.adp<110&&pkgFair(B))
+    .map(B=>{const g=GWD[B.name];
+      return {name:B.name,team:B.team,pos:B.pos,adp:B.adp,pw:g.pw,
+        net:+(g.pw+kickPw-pkgPw).toFixed(3),
+        netW:g.pwW.map((v,i)=>+(v+kickW[i]-pkgW[i]).toFixed(3))};})
+    .sort((a,b)=>b.net-a.net);
+  const targets=fairAll.filter(t=>t.net>=Math.max(0.01,0.10*pkgPw)).slice(0,4);
+  // when nothing clears the bar, the verdict is KEEP THE DEPTH — and we show the
+  // closest fair calls with their red nets so the user sees exactly why.
+  const closest=targets.length?[]:fairAll.slice(0,3);
+  return {pieces:pieces.map(p=>({name:p.name,team:p.team,pos:p.pos,adp:p.adp||0,
+      pw:GWD[p.name].pw,pwW:GWD[p.name].pwW})),
+    pkgPw,pkgW,kickers:kickers.map(k=>({name:k.name,team:k.team,pos:k.pos,adp:k.adp||0,pw:GWD[k.name].pw})),
+    kickPw,targets,closest};
+}
+function upgradesFor(p){
+  const u=upgradeData(p); if(!u) return '';
+  const fmt=v=>(v>0?'+':'')+v.toFixed(2);
+  const row=t=>`<div class="upgrow" data-n="${t.name}" role="button" tabindex="0">
+      <div class="upgnm"><span class="ubust">${pixBust(t.name,t.team,24)}</span><span class="utxt"><b>${t.name}</b><span>${t.team}${t.pos?' · '+t.pos:''} · ADP ${t.adp?Math.round(t.adp):'ud'}</span></span></div>
+      <div class="upgd">${fmt(t.d)}<em>title wins</em></div>
+      <div class="upgw">${['W1','W2','FIN'].map((L,i)=>{const dw=t.dW[i];
+        return `<span class="${dw>0.004?'g':dw<-0.004?'r':''}">${L} ${fmt(dw)}</span>`;}).join('')}</div>
+    </div>`;
+  let h='<div class="upg">';
+  h+=`<div class="upghead">Better for the title weeks</div>`;
+  if(!u.trades.length&&!u.adds.length)
+    h+=`<p class="upgnone">Nobody at his market price out-earns him in your playoff weeks. He's the hold.</p>`;
+  if(u.trades.length) h+=`<div class="upglab">Trade for · fair by ADP</div>`+u.trades.map(row).join('');
+  if(u.adds.length) h+=`<div class="upglab">Waiver tier · often unrostered</div>`+u.adds.map(row).join('');
+  h+=`<p class="upgfine">Deltas = expected title-week matchup wins vs him, same neutral lineup. Availability varies by league.</p></div>`;
+  return h;
+}
 function renderSummary(){const s=V.summary; if(!s){q('teamsum').innerHTML='';return;} const bits=[];
   if(s.risers)bits.push(`<b class="u">${s.risers} trending up</b>`);
   if(s.fades)bits.push(`<b class="d">${s.fades} slipping</b>`);
@@ -521,6 +815,35 @@ function renderSummary(){const s=V.summary; if(!s){q('teamsum').innerHTML='';ret
   q('teamsum').innerHTML=line;}
 
 // ---------- league state ----------
+// ---- 8-bit player busts: one 12x13 silhouette (the landing duel's), colors per player ----
+// jersey = team color, skin/hair seeded from the name so a player always looks like himself.
+const TEAMCOL={ATL:'#e03a3e',BOS:'#007a33',BKN:'#3d3d3d',CHA:'#1d1160',CHI:'#ce1141',CLE:'#860038',
+ DAL:'#00538c',DEN:'#0e2240',DET:'#c8102e',GSW:'#1d428a',HOU:'#ce1141',IND:'#002d62',LAC:'#c8102e',
+ LAL:'#552583',MEM:'#5d76a9',MIA:'#98002e',MIL:'#00471b',MIN:'#0c2340',NOP:'#85714d',NO:'#85714d',
+ NYK:'#f58426',OKC:'#007ac1',ORL:'#0077c0',PHI:'#006bb6',PHO:'#e56020',PHX:'#e56020',POR:'#e03a43',
+ SAC:'#5a2d81',SAS:'#8a8d8f',TOR:'#ce1141',UTA:'#002b5c',WAS:'#e31837'};
+const SKINS=['#8d5524','#a9714b','#c9a472','#e9c49f','#6b4226','#7a4a2e'];
+const HAIRS=['#15100a','#241a10','#0d0906','#3b2a18'];
+function pixBust(name,team,px){
+  let h=0; for(const c of (name||'')) h=(h*31+c.charCodeAt(0))>>>0;
+  const skin=SKINS[h%SKINS.length], hair=HAIRS[(h>>3)%HAIRS.length], bald=((h>>6)%7)===0;
+  const jer=TEAMCOL[team]||'#a9713f';
+  const G=[]; const put=(x,y,f)=>G.push(`<rect x="${x*10}" y="${y*10}" width="10" height="10" fill="${f}"/>`);
+  for(let x=3;x<=8;x++) put(x,0,bald?skin:hair);
+  for(let x=2;x<=9;x++) put(x,1,bald?skin:hair);
+  for(let x=2;x<=9;x++) put(x,2,((h>>4)&1)?skin:hair);   // hairline varies
+  for(let x=2;x<=9;x++) put(x,3,skin);
+  for(let x=2;x<=9;x++) put(x,4,(x===3||x===8)?'#0d0906':skin);  // eyes
+  for(let x=2;x<=9;x++) put(x,5,skin);
+  for(let x=3;x<=8;x++) put(x,6,skin);
+  for(let x=4;x<=7;x++) put(x,7,skin);
+  for(let x=2;x<=9;x++) put(x,8,(x>=4&&x<=7)?'#eee1c6':jer);     // collar
+  for(let x=1;x<=10;x++) put(x,9,jer);
+  for(let x=1;x<=10;x++) put(x,10,(x===3||x===8)?skin:jer);      // arms
+  for(let x=0;x<=11;x++) put(x,11,(x===3||x===8)?skin:jer);
+  for(let x=0;x<=11;x++){ if(x===3||x===8) continue; put(x,12,jer); }
+  return `<svg width="${px}" height="${Math.round(px*13/12)}" viewBox="0 0 120 130" shape-rendering="crispEdges" style="image-rendering:pixelated" aria-hidden="true">${G.join('')}</svg>`;
+}
 const NORM=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.'’-]/g,'').replace(/\b(jr|sr|ii|iii|iv)\b/g,'').replace(/\s+/g,' ').trim();
 const byNorm={}; MOCK.all.forEach(p=>byNorm[NORM(p.name)]=p);
 function matchNames(list){const names=[],miss=[];for(const n of list){const p=byNorm[NORM(n)];if(p)names.push(p.name);else if((n||'').trim())miss.push(n.trim());}return{names,miss};}
@@ -772,9 +1095,16 @@ const gridWar=(()=>{let done=null,key=null;return()=>{
   for(const a of ['fgm','fga','ftm','fta']) avg.att[a]=pool.reduce((s,p)=>s+(p.att?p.att[a]:0),0)/pool.length;
   avg.expGames=trSum(avg.weeklyGames); avg.listedGames=avg.expGames;
   const fill=Array(Math.max(1,SET.starters-1)).fill(avg);
-  const base=trExpWins([...fill,trRep()]);
+  const teamBase=[...fill,trRep()];
+  const baseW=[0,1,2].map(w=>trMatchupP(trCatWinP(teamBase,w,true)));   // per playoff week
+  let baseRs=0; for(let w=0;w<RSWEEKS;w++) baseRs+=trMatchupP(trCatWinP(teamBase,w,false));
   const out={};
-  for(const p of TRP){const w=trExpWins([...fill,p]); out[p.name]={pw:w.po-base.po, rw:w.rs-base.rs};}
+  for(const p of TRP){
+    const team=[...fill,p];
+    const pwW=baseW.map((b,w)=>trMatchupP(trCatWinP(team,w,true))-b);   // his lift, week by week
+    let rs=0; for(let w=0;w<RSWEEKS;w++) rs+=trMatchupP(trCatWinP(team,w,false));
+    out[p.name]={pw:+pwW.reduce((a,b)=>a+b,0).toFixed(3), rw:rs-baseRs, pwW:pwW.map(v=>+v.toFixed(3))};
+  }
   // swing = rank movement between the two boards, across the whole pool
   const byRw=[...TRP].sort((a,b)=>out[b.name].rw-out[a.name].rw);
   const byPw=[...TRP].sort((a,b)=>out[b.name].pw-out[a.name].pw);
@@ -985,6 +1315,9 @@ document.getElementById('weekbar').addEventListener('click',e=>{const b=e.target
   const i=+b.dataset.w;ACTIVEWEEKS[i]=!ACTIVEWEEKS[i];b.classList.toggle('on',ACTIVEWEEKS[i]);rerender();});
 document.getElementById('sub').textContent=`${MOCK.leagueName} · updated ${MOCK.updated}`;
 LEAGUE=loadLeague();computeViews();renderAll();
+// front door: the player board. Moves leads only once a league is connected —
+// sync is a power feature, not the price of admission.
+showTab(LEAGUE?'trades':'players');
 </script>
 </div><script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
