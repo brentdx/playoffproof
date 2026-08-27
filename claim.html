@@ -3,6 +3,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Claim your league · PlayoffProof</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ccircle%20cx='50'%20cy='50'%20r='48'%20fill='%23e8e2d5'/%3E%3Cg%20fill='none'%20stroke='%238f6330'%20stroke-width='5'%3E%3Ccircle%20cx='50'%20cy='50'%20r='30'/%3E%3Cline%20x1='50'%20y1='20'%20x2='50'%20y2='80'/%3E%3Cline%20x1='20'%20y1='50'%20x2='80'%20y2='50'/%3E%3Cpath%20d='M50%2020%20C33%2032%2033%2068%2050%2080'/%3E%3Cpath%20d='M50%2020%20C67%2032%2067%2068%2050%2080'/%3E%3C/g%3E%3C/svg%3E">
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","1434096858619667");fbq("track","PageView");</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1434096858619667&ev=PageView&noscript=1"></noscript>
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="brand.css">
 <style>
@@ -98,6 +100,7 @@ document.getElementById('claim').addEventListener('submit',async e=>{
  document.getElementById('payCard').href=STRIPE_LINK+(STRIPE_LINK.includes('?')?'&':'?')+'prefilled_email='+email;
  if(PAYPAL_LINK.includes('YOUR_PP_LINK')){document.getElementById('payPP').style.display='none';}
  else{document.getElementById('payPP').href=PAYPAL_LINK;}
+ try{fbq('track','Lead');fbq('track','InitiateCheckout',{currency:'USD',value:69});}catch(e){}
  document.getElementById('claim').style.display='none';
  document.getElementById('paychoice').style.display='block';
 });
