@@ -416,10 +416,10 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
     <div class="cdiv"><span>or paste from any platform</span></div>
     <label>Your roster</label>
     <textarea id="pasteros" placeholder="Paste your team. Names alone or the whole roster table both work, we pick out the players."></textarea>
-    <label>Available players (optional, makes Available exact)</label>
-    <textarea id="pasteavail" placeholder="Your platform's Add Players / Available page already lists the free agents. Paste it — the top ~30 by rank is plenty."></textarea>
+    <label>Everyone who's taken (optional, makes free agents exact)</label>
+    <textarea id="pasteavail" placeholder="Easiest: paste your league's Rosters page, all teams at once (ESPN & Yahoo: League → Rosters). Your Available / Add Players list works too — we figure out which you pasted."></textarea>
     <button id="paste-go">Load my team</button>
-    <div class="chelp"><a href="import-guide.html" target="_blank">How do I copy from Yahoo or ESPN? →</a></div>
+    <div class="chelp"><a href="import-guide.html" target="_blank">Where do I copy this from? (ESPN, Yahoo) →</a></div>
     <div class="cdiv"><span>or</span></div>
     <button id="demo-go" class="ghost">Try a demo team</button>
   </div>
@@ -437,7 +437,7 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
 </div>
 </div>
 <div class="pane on" id="p-trades">
-  <div id="tr-connect" class="cbox mini"><p>This is a <b>demo team</b> so you can see how it works. Happy on the Players board? That's the whole product. Want these moves to be about <b>your</b> roster? <a href="#" id="tr-toteam">Connect your league →</a> (30 seconds, optional).</p></div>
+  <div id="tr-connect" class="cbox mini"><p>These moves are running on a <b>demo roster</b> so you can see them in action. Connect your league to make them about <b>your</b> team, your players and your league's real free agents. About 30 seconds, whenever you want it.</p><p style="margin-top:8px"><a href="#" id="tr-toteam">Connect your league →</a></p></div>
   <div id="tr-content" hidden>
     <details class="trdefd"><summary>How this works · PWAR, RWAR, the two dials, trade fairness</summary><p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across the entire regular season, week by week on the real schedule (playoff weeks excluded). A matchup = winning the <b>majority of your league's categories</b> (5 of 9 standard, set yours below), so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p></details>
     <div class="lgset" id="lgset"></div>
@@ -953,11 +953,18 @@ function extractPlayers(text){const pad=' '+NORM((text||'').replace(/[\n,;|\t\/]
   return found;}
 q('paste-go').onclick=()=>{const mine=extractPlayers(q('pasteros').value);
   if(!mine.length){q('sl-msg').textContent='Could not find any players in that paste. Paste your roster (names are enough).';return;}
-  const availText=q('pasteavail').value.trim();let rostered;
-  if(availText){const avail=new Set(extractPlayers(availText));rostered=new Set(MOCK.all.filter(p=>!avail.has(p.name)).map(p=>p.name));mine.forEach(n=>rostered.add(n));}
+  // box 2 accepts EITHER the full league-rosters page OR a free-agent list — auto-detected:
+  // a rosters page includes YOUR players (high overlap) -> those names ARE the owned set;
+  // a free-agent list excludes your players -> owned = everyone NOT in it.
+  const allText=q('pasteavail').value.trim();let rostered,mode='';
+  if(allText){const paste=new Set(extractPlayers(allText));
+    const overlap=mine.filter(n=>paste.has(n)).length;
+    if(overlap>=Math.max(2,Math.ceil(mine.length*0.4))){rostered=new Set(paste);mode='rosters';}
+    else{rostered=new Set(MOCK.all.filter(p=>!paste.has(p.name)).map(p=>p.name));mode='avail';}
+    mine.forEach(n=>rostered.add(n));}
   else rostered=new Set(mine);
   setLeague({name:'My team',roster:new Set(mine),rostered});
-  q('sl-msg').textContent='Loaded '+mine.length+' on your team.'+(availText?' Free agents set from your paste.':' Tip: paste your free-agent list too for exact Available.');};
+  q('sl-msg').textContent='Loaded '+mine.length+' on your team'+(mode==='rosters'?', '+rostered.size+' rostered leaguewide. Free agents are everyone else.':mode==='avail'?'. Free agents set from your list.':'. Tip: paste your league\'s Rosters page for exact free agents.');};
 let _smap;async function sleeperMap(){if(_smap)return _smap;const j=await (await fetch('sleeper-players.json')).json();_smap=j.players||j;return _smap;}
 async function loadSleeperLeague(lg,userId){const msg=q('sl-msg');msg.textContent='Loading '+lg.name+'…';
   if(lg.total_rosters>=4) SET.teams=lg.total_rosters;
