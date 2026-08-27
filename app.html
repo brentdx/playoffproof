@@ -59,16 +59,22 @@ h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .cbox .cmsg{font-size:12.5px;color:var(--ink2);margin-top:8px;min-height:16px;text-align:left}
 .cbox.mini a,.lgcta a,.cbox .chelp a{color:#d8c9a3;text-decoration:none;font-size:12.5px}
 .cbox .chelp{margin-top:12px}
-/* IA: Moves tab prominent; Players sub-chips */
-.movetab{border:1px solid rgba(203,166,83,.5)!important;color:#d8c9a3!important}
-.movetab.on{background:linear-gradient(90deg,rgba(203,166,83,.25),rgba(77,124,255,.18))!important;color:#fff!important}
+/* IA: both tabs equal weight — the board is the product, the league room is a bonus */
 .pchips{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap}
 .pchips button{background:transparent;border:1px solid var(--line2);border-radius:18px;color:var(--ink2);font:inherit;font-size:12px;font-weight:700;padding:6px 13px;cursor:pointer}
 .pchips button.on{background:var(--bg2);color:#fff;border-color:#cba653}
 .pchips .ct{color:var(--muted);font-weight:500;font-size:10.5px}
 .sub{display:none}.sub.on{display:block}
 /* trades tab */
-.trdef{color:var(--muted);font-size:12px;line-height:1.55;margin:2px 0 16px;max-width:74ch;border-left:2px solid var(--line2);padding-left:11px}
+.trdef{color:var(--muted);font-size:12px;line-height:1.55;margin:2px 0 16px;max-width:none;border-left:2px solid var(--line2);padding-left:11px}
+#tr-connect{max-width:none;margin:10px 0 14px;padding:12px 18px;text-align:left;border-radius:12px}
+#tr-connect p{margin:0;font-size:12.5px;line-height:1.55}
+details.trdefd{margin:2px 0 14px}
+details.trdefd summary{cursor:pointer;color:var(--gold);font-size:11.5px;letter-spacing:.06em;font-weight:700;user-select:none;list-style:none;display:inline-flex;align-items:center;gap:6px}
+details.trdefd summary::-webkit-details-marker{display:none}
+details.trdefd summary::before{content:'▸';font-size:10px;transition:transform .15s}
+details.trdefd[open] summary::before{transform:rotate(90deg)}
+details.trdefd .trdef{margin-top:10px}
 .trdef b{color:#d8c9a3}
 .trapp{display:grid;grid-template-columns:250px 1fr;gap:16px;align-items:start}
 .trpanel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
@@ -241,6 +247,16 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
 .gside-x{float:right;background:none;border:0;color:var(--muted);font-size:20px;line-height:1;cursor:pointer;padding:2px 6px}
 .gside-x:hover{color:var(--ink)}
 @media(max-width:999px){.gside{display:none}}
+/* ---- the insight strip ---- */
+.istrip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:2px 0 12px}
+.istc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.istt{font-family:var(--serif);font-weight:600;font-size:14.5px;color:var(--gold)}
+.ists{font-size:10px;color:var(--muted);margin:1px 0 7px}
+.istp{display:flex;align-items:center;gap:7px;padding:4px 6px;margin:0 -6px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--ink)}
+.istp:hover{background:rgba(240,232,214,.05)}
+.istp b{margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700}
+.istp b.g{color:var(--up)}.istp b.r{color:var(--down)}
+@media(max-width:760px){.istrip{grid-template-columns:1fr;gap:8px}}
 /* ---- the no-sync upgrade finder ---- */
 .upg{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
 .upghead{font-family:var(--serif);font-weight:600;font-size:16px;color:var(--ink);margin-bottom:2px}
@@ -268,6 +284,10 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
 .pkghint{color:var(--muted);font-size:10.5px;padding:4px 2px;white-space:nowrap}
 .pkghost{background:none;border:0;color:var(--muted);font-size:10.5px;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer;white-space:nowrap;padding:0 2px}
 .pkghost:hover{color:var(--ink)}
+.pkgseg{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;white-space:nowrap}
+.segb{width:24px;height:24px;padding:0;background:var(--bg2);border:1px solid var(--line);border-radius:6px;color:var(--muted);font-size:12px;font-weight:800;cursor:pointer}
+.segb:hover{border-color:var(--brand)}
+.segb.on{background:var(--brand);border-color:var(--brand);color:#140f08}
 .pkgbtn[disabled]{opacity:.45;cursor:default}
 .tg .tgverd{display:flex;align-items:baseline;gap:10px;margin:8px 0 4px}
 .tg .tgpill{border:1px solid;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:900;letter-spacing:.12em}
@@ -367,8 +387,8 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
   <div class="posline">Every player scored for your fantasy playoff weeks (Mar 23–Apr 12), refreshed daily. Green is rising for your title run, red is fading.</div>
   <div class="sub" id="sub"></div>
   <div class="tabs" id="tabs">
-    <button data-t="trades" class="movetab on">⚡ Moves</button>
     <button data-t="players">Players</button>
+    <button data-t="trades">My team</button>
   </div>
   <div class="weekbar" id="weekbar">
     <b>Your playoff weeks:</b>
@@ -380,13 +400,13 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
 </header>
 <div class="pane" id="p-players">
 <div class="pchips" id="pchips">
-  <button data-v="team">Your team <span class="ct" id="c-team"></span></button>
+  <button data-v="team">My roster <span class="ct" id="c-team"></span></button>
   <button data-v="all" class="on">All players <span class="ct" id="c-all"></span></button>
   <button data-v="avail">Available <span class="ct" id="c-avail"></span></button>
 </div>
 <div class="sub" id="p-team">
   <div id="team-connect" class="cbox">
-    <h2>Connect your league</h2>
+    <h2>Connect your league <span style="font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.02em">· optional, everything works without it</span></h2>
     <p>See your roster and free agents ranked for your playoff weeks. We never ask for your password.</p>
     <label>Sleeper username</label>
     <div class="crow"><input id="sl-user" placeholder="your Sleeper username" autocapitalize="none"><button id="sl-go">Connect</button></div>
@@ -404,20 +424,20 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
   <div id="team-content" hidden>
     <div class="teamsum" id="teamsum"></div>
     <div class="lgcta"><span id="lg-name"></span><a href="#" id="lg-change">change league</a></div>
-    <div class="cbox mini" style="margin:14px 0"><p>Your ranked pickups, drops, and trades live on <a href="#" id="team-tomoves">the ⚡ Moves tab →</a></p></div>
+    <div class="cbox mini" style="margin:14px 0"><p>Ranked pickups, drops, and trades for this roster live on <a href="#" id="team-tomoves">the My team tab →</a></p></div>
     <h3>Your roster</h3><div class="grid" id="roster"></div>
   </div>
 </div>
 <div class="sub on" id="p-all"><div class="tablewrap"><div class="lgrid" id="list-all"></div></div></div>
 <div class="sub" id="p-avail">
-  <div id="avail-connect" class="cbox mini"><p>These are the demo league's free agents. <a href="#" id="avail-toteam">Set up your league →</a> to see who's actually available in yours.</p></div>
+  <div id="avail-connect" class="cbox mini"><p>These are the demo league's free agents. If you want your league's actual list, <a href="#" id="avail-toteam">connect it →</a> — otherwise the full board has everyone.</p></div>
   <div id="avail-content" hidden><h3>Free agents</h3><div class="tablewrap"><div class="lgrid" id="list-avail"></div></div></div>
 </div>
 </div>
 <div class="pane on" id="p-trades">
-  <div id="tr-connect" class="cbox mini"><p>You're looking at a <b>demo team</b>. <a href="#" id="tr-toteam">Set up your league →</a> (30 seconds) and every move on this page becomes about <b>your</b> roster.</p></div>
+  <div id="tr-connect" class="cbox mini"><p>This is a <b>demo team</b> so you can see how it works. Happy on the Players board? That's the whole product. Want these moves to be about <b>your</b> roster? <a href="#" id="tr-toteam">Connect your league →</a> (30 seconds, optional).</p></div>
   <div id="tr-content" hidden>
-    <p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across the entire regular season, week by week on the real schedule (playoff weeks excluded). A matchup = winning the <b>majority of your league's categories</b> (5 of 9 standard — set yours below), so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p>
+    <details class="trdefd"><summary>How this works · PWAR, RWAR, the two dials, trade fairness</summary><p class="trdef"><b>PWAR</b> = expected playoff matchup wins a player adds over a waiver replacement. <b>RWAR</b> = the same across the entire regular season, week by week on the real schedule (playoff weeks excluded). A matchup = winning the <b>majority of your league's categories</b> (5 of 9 standard, set yours below), so stacking a category you already win adds almost nothing, and fixing a coin-flip category adds a lot. Playoff output runs on two separate dials: <b>Games</b>, will he even play (health, team rest policy, back-to-backs, travel), and <b>Effort</b>, how hard he plays the games he's in (contract incentives, team stakes). Output = games × production × effort. Trade suggestions are held to <b>market value (ADP)</b>: we only propose swaps another manager would plausibly accept. Pickups are free, so there only playoff impact matters. All numbers are projections for entertainment only, not professional, legal, or financial advice.</p></details>
     <div class="lgset" id="lgset"></div>
     <div id="catprof"></div>
     <div id="tr-plan"></div>
@@ -539,7 +559,8 @@ function renderList(scope){
     const mine=LG().roster.has(p.name);
     return `<tr class="grow" data-n="${p.name}" tabindex="0"><td class="rk"><button class="pksel${pkgSel.has(p.name)?' on':''}" data-n="${p.name}" title="select for a package" aria-label="select ${p.name}"></button>${i+1}</td><td class="nm">${mine?'<span class="gmine" title="on your roster">●</span> ':''}<b>${p.name}</b><span class="tp">${p.team}${p.pos?' · '+p.pos:''}</span></td>${
       GCOLS.map(c=>{const v=val(c,p);return `<td style="${heat(c,v)}">${c.f(p,v)}</td>`;}).join('')}</tr>`;}).join('');
-  q('list-'+scope).innerHTML=legend+`<div class="gsplit"><div class="gwrap"><table class="gt">${head}<tbody>${rows}</tbody></table></div><aside class="gside" id="gside-${scope}" hidden></aside></div>`;
+  const strip=scope==='all'?insightStrip():'';
+  q('list-'+scope).innerHTML=strip+legend+`<div class="gsplit"><div class="gwrap"><table class="gt">${head}<tbody>${rows}</tbody></table></div><aside class="gside" id="gside-${scope}" hidden></aside></div>`;
   const bn={}; data.forEach(p=>bn[p.name]=p);
   document.querySelectorAll('#list-'+scope+' .gt th[data-k]').forEach(el=>el.onclick=()=>{
     const k=el.dataset.k, c=GCOLS.find(x=>x.k===k);
@@ -570,6 +591,9 @@ function renderList(scope){
   paneShow[scope]={showPlayer,showHtml,closeSide};
   document.querySelectorAll('#list-'+scope+' .pksel').forEach(b=>b.onclick=e=>{
     e.stopPropagation(); togglePkg(b.dataset.n);});
+  document.querySelectorAll('#list-'+scope+' .istp').forEach(el=>{
+    el.onclick=()=>showPlayer(el.dataset.n);
+    el.onkeydown=e=>{if(e.key==='Enter')showPlayer(el.dataset.n);};});
   document.querySelectorAll('#list-'+scope+' .gt tr.grow').forEach(el=>{const go=()=>{
     if(wide()){ if(selState[scope]===el.dataset.n){closeSide();return;} showPlayer(el.dataset.n); return; }
     const nx=el.nextElementSibling;
@@ -595,6 +619,7 @@ const paneShow={all:null,avail:null};
 const pkgSel=new Set();      // give side
 const pkgGet=new Set();      // their side (grade-a-trade mode)
 let pkgMode='give';
+let pkgRetN=1;               // how many players the user wants back (their call, never forced)
 function syncSelClasses(n){
   document.querySelectorAll(`.pksel[data-n="${CSS.escape(n)}"]`).forEach(b=>{
     b.classList.toggle('on',pkgSel.has(n));
@@ -623,11 +648,15 @@ function renderPkgBar(){
     mid=`<span class="pkgarrow" title="give for get">⇄</span><div class="chips">${get||'<span class="pkghint">tap rows to add their side</span>'}</div>`;
     label='Grade this trade';
   }else{
-    label=pkgSel.size===1?'Find his playoff upgrade':`Find the ${pkgSel.size}-for-1`;
+    // the SHAPE is the user's call: how many players back?
+    mid=`<span class="pkgseg" title="how many players you want back">get back
+      <button class="segb${pkgRetN===1?' on':''}" data-r="1">1</button><button class="segb${pkgRetN===2?' on':''}" data-r="2">2</button></span>`;
+    label=(pkgSel.size===1&&pkgRetN===1)?'Find his playoff upgrade':`Find the ${pkgSel.size}-for-${pkgRetN}`;
     ghost=`<button class="pkghost">grade an offer instead</button>`;
   }
   bar.innerHTML=`<div class="chips">${give||'<span class="pkghint">your side</span>'}</div>${mid}${ghost}<button class="pkgbtn"${grading&&(!pkgSel.size||!pkgGet.size)?' disabled':''}>${label}</button><button class="pkgclear" title="clear selection">×</button>`;
   bar.querySelectorAll('.pkgchip .x').forEach(x=>x.onclick=()=>togglePkg(x.dataset.n));
+  bar.querySelectorAll('.segb').forEach(s=>s.onclick=()=>{pkgRetN=+s.dataset.r;renderPkgBar();});
   const gh=bar.querySelector('.pkghost'); if(gh) gh.onclick=()=>{pkgMode='get';renderPkgBar();};
   bar.querySelector('.pkgclear').onclick=()=>{
     [...pkgSel].forEach(n=>{pkgSel.delete(n);syncSelClasses(n);});
@@ -650,30 +679,48 @@ function renderPkgBar(){
       const t=tradeEval([...pkgSel],[...pkgGet]); if(!t) return;
       showIn(renderTradeGrade(t)); return;
     }
-    if(pkgSel.size===1){ api.showPlayer([...pkgSel][0]); return; }
-    const u=packageData([...pkgSel]); if(!u) return;
+    if(pkgSel.size===1&&pkgRetN===1){ api.showPlayer([...pkgSel][0]); return; }
+    const u=findReturn([...pkgSel],pkgRetN); if(!u) return;
     showIn(renderPackage(u));
   };
 }
 function renderPackage(u){
   const fmt=v=>(v>0?'+':'')+v.toFixed(2);
+  const shape=`${u.pieces.length}-for-${u.retN}`;
   const pieces=u.pieces.map(p=>`<div class="piece">${pixBust(p.name,p.team,40)}<b>${p.name}</b><span>${p.team} · ADP ${p.adp?Math.round(p.adp):'ud'}</span></div>`).join('');
   const kick=u.kickers.map(k=>k.name).join(' + ');
-  const tar=t=>`<div class="pktar" data-n="${t.name}" role="button" tabindex="0">
-    <div class="top">${pixBust(t.name,t.team,34)}<div><b>${t.name}</b><span>${t.team}${t.pos?' · '+t.pos:''} · ADP ${Math.round(t.adp)}</span></div>
+  const tar=t=>{const multi=t.players.length>1;
+    return `<div class="pktar" data-n="${t.players[0].name}" role="button" tabindex="0">
+    <div class="top">${t.players.map(p=>pixBust(p.name,p.team,34)).join('')}<div><b>${t.players.map(p=>p.name).join(' + ')}</b><span>${t.players.map(p=>`${p.team}${p.pos?' · '+p.pos:''} · ADP ${Math.round(p.adp)}`).join(' &nbsp;|&nbsp; ')}</span></div>
     <div class="net${t.net<0?' neg':''}">${fmt(t.net)}<em>net title wins</em></div></div>
-    <div class="math">he adds <b>${fmt(t.pw)}</b>${u.kickers.length?` · open slot${u.kickers.length>1?'s':''} refill${u.kickers.length>1?'':'s'}: <b>${kick}</b> (${fmt(u.kickPw)})`:''} · you give <b>−${u.pkgPw.toFixed(2)}</b></div>
-    <div class="upgw">${['W1','W2','FIN'].map((L,i)=>`<span class="${t.netW[i]>0.004?'g':t.netW[i]<-0.004?'r':''}">${L} ${fmt(t.netW[i])}</span>`).join('')}</div></div>`;
-  let h=`<div class="upg pkg" style="border-top:0;padding-top:2px"><div class="upghead">The ${u.pieces.length}-for-1</div>
+    <div class="math">${multi?'they add':'he adds'} <b>${fmt(t.pw)}</b>${u.kickers.length?` · open slot${u.kickers.length>1?'s':''} refill${u.kickers.length>1?'':'s'}: <b>${kick}</b> (${fmt(u.kickPw)})`:''}${u.opened<0?` · you'll drop an end-of-bench player to fit (assumed replacement level)`:''} · you give <b>−${u.pkgPw.toFixed(2)}</b></div>
+    <div class="upgw">${['W1','W2','FIN'].map((L,i)=>`<span class="${t.netW[i]>0.004?'g':t.netW[i]<-0.004?'r':''}">${L} ${fmt(t.netW[i])}</span>`).join('')}</div></div>`;};
+  let h=`<div class="upg pkg" style="border-top:0;padding-top:2px"><div class="upghead">The ${shape}</div>
     <div class="pieces">${pieces}</div>
-    <div class="pkgsum">Package gives up <b>${u.pkgPw.toFixed(2)}</b> title wins · W1 ${u.pkgW[0].toFixed(2)} · W2 ${u.pkgW[1].toFixed(2)} · FIN ${u.pkgW[2].toFixed(2)}</div>`;
+    <div class="pkgsum">You'd give up <b>${u.pkgPw.toFixed(2)}</b> title wins · W1 ${u.pkgW[0].toFixed(2)} · W2 ${u.pkgW[1].toFixed(2)} · FIN ${u.pkgW[2].toFixed(2)}</div>`;
   if(!u.targets.length){
-    h+=`<p class="upgnone"><b style="color:var(--gold)">Verdict: keep the depth.</b> No fair ${u.pieces.length}-for-1 nets out positive in your title weeks: two rostered contributors out-earn one star plus a waiver refill. Depth is playoff value.</p>`;
+    h+=`<p class="upgnone"><b style="color:var(--gold)">Verdict: hold.</b> No fair ${shape} nets out positive in your title weeks${u.retN<u.pieces.length?': rostered contributors out-earn one star plus a waiver refill. Depth is playoff value':''}.</p>`;
     if(u.closest.length) h+=`<div class="upglab">The closest calls · still net losses</div>`+u.closest.map(tar).join('');
   }
-  else h+=`<div class="upglab">Trade them for · fair by ADP</div>`+u.targets.map(tar).join('');
-  h+=`<p class="upgfine">Net = him + best waiver refill${u.kickers.length>1?'s':''} − your package, in expected title-week matchup wins, same neutral lineup. Availability varies by league.</p></div>`;
+  else h+=`<div class="upglab">Trade for · fair by draft capital</div>`+u.targets.map(tar).join('');
+  h+=`<p class="upgfine">Net = the return${u.kickers.length?` + best waiver refill${u.kickers.length>1?'s':''}`:''} − your side, in expected title-week matchup wins, same neutral lineup. Availability varies by league.</p></div>`;
   return h;
+}
+// THE INSIGHT STRIP: the engine's POV, surfaced before a single click — who climbs
+// for the title weeks, who's free money on waivers, who the market still overpays.
+function insightStrip(){
+  const GWD=gridWar();
+  const P=TRP.filter(p=>GWD[p.name]);
+  const kings=P.filter(p=>GWD[p.name].sw>0&&p.score>=55).sort((a,b)=>GWD[b.name].sw-GWD[a.name].sw).slice(0,3);
+  const gold=P.filter(p=>(!p.adp||p.adp>=110)).sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,3);
+  const fading=P.filter(p=>p.adp>0&&p.adp<=50&&GWD[p.name].sw<-2).sort((a,b)=>GWD[a.name].sw-GWD[b.name].sw).slice(0,3);
+  const row=(p,val,cls)=>`<div class="istp" data-n="${p.name}" role="button" tabindex="0">${pixBust(p.name,p.team,20)}<span>${p.name.split(' ').slice(-1)[0]}</span><b class="${cls}">${val}</b></div>`;
+  const card=(title,sub,rows)=>`<div class="istc"><div class="istt">${title}</div><div class="ists">${sub}</div>${rows}</div>`;
+  return `<div class="istrip">`+
+    card('Window Kings','climb hardest when the title’s on the line',kings.map(p=>row(p,'+'+GWD[p.name].sw+' spots','g')).join(''))+
+    card('Waiver Gold','likely unrostered, real title-week value',gold.map(p=>row(p,'+'+GWD[p.name].pw.toFixed(2)+' wins','g')).join(''))+
+    card('Fading Stars','the market still pays full price',fading.map(p=>row(p,GWD[p.name].sw+' spots','r')).join(''))+
+  `</div>`;
 }
 // GRADE A SPECIFIC OFFER: give side vs get side, N-for-M. Slot math both ways —
 // giving more than you get opens slots (waiver refills credited); getting more than
@@ -700,11 +747,12 @@ function tradeEval(giveN,getN){
   const netW=[0,1,2].map(i=>+(gt.pwW[i]+kickW[i]-gv.pwW[i]).toFixed(3));
   const gate=+Math.max(0.01,0.05*Math.max(gv.pw,gt.pw)).toFixed(3);
   const verdict=net>=gate?'ACCEPT':net<=-gate?'DECLINE':'TOSS-UP';
-  // the better ask for the same give side, to counter with
+  // the better ask for the same give side AND SAME SHAPE, to counter with
   let alt=null;
-  if(giveN.length>=2){const p=packageData(giveN); if(p&&p.targets.length) alt={name:p.targets[0].name,gain:p.targets[0].net};}
-  else{const u=upgradeData(trByName[giveN[0]]); if(u&&u.trades.length) alt={name:u.trades[0].name,gain:u.trades[0].d};}
-  if(alt&&getN.includes(alt.name)) alt=null;
+  const fr=findReturn(giveN,Math.min(2,getN.length));
+  if(fr&&fr.targets.length){const t=fr.targets[0];
+    alt={name:t.players.map(p=>p.name).join(' + '),gain:t.net};
+    if(t.players.some(p=>getN.includes(p.name))) alt=null;}
   return {give:gv,get:gt,kickers,kickPw,net,netW,gate,verdict,opened,alt};
 }
 function renderTradeGrade(t){
@@ -751,43 +799,59 @@ function upgradeData(p){
 // WAR currency makes possible: trading N-for-1 opens N-1 roster slots, and the best
 // waiver adds fill them — so net = target + kickers − what you gave. Fairness = the
 // same ADP guardrail, applied against your best piece (you're trading up, not sideways).
-function packageData(names){
+// FIND A RETURN of the user's chosen shape: give 1-3, get back 1 or 2. Never forces
+// consolidation — the shape is the user's call. Fairness runs on DRAFT CAPITAL on BOTH
+// sides: v = 1/sqrt(ADP) (steep at the top, like real pick value), lesser pieces count
+// at 55% (the market's package discount), and the return must sit in a two-sided band
+// of the give side's combined value — two goods can buy an elite, never a Jokic for
+// role guys, and a star can split into two mids but not two scrubs.
+function findReturn(names,retN){
   const GWD=gridWar();
   const pieces=names.map(n=>trByName[n]).filter(p=>p&&GWD[p.name]);
-  if(pieces.length<2) return null;
+  if(!pieces.length) return null;
+  retN=Math.max(1,Math.min(2,retN||1));
   const sum=a=>a.reduce((x,y)=>x+y,0);
   const pkgPw=+sum(pieces.map(p=>GWD[p.name].pw)).toFixed(3);
   const pkgW=[0,1,2].map(i=>+sum(pieces.map(p=>GWD[p.name].pwW[i])).toFixed(3));
   const inPkg=new Set(names);
-  const best=pieces.reduce((a,b)=>(a.adp&&(!b.adp||a.adp<b.adp))?a:b);
-  // open-slot kickers: top waiver-tier adds NOT in the package, one per opened slot
-  const kickers=TRP.filter(B=>!inPkg.has(B.name)&&GWD[B.name]&&(!B.adp||B.adp>=110))
-    .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,pieces.length-1);
+  const opened=pieces.length-retN;   // >0: slots open (waiver refills); <0: forced drop, assumed replacement
+  const kickers=opened>0?TRP.filter(B=>!inPkg.has(B.name)&&GWD[B.name]&&(!B.adp||B.adp>=110))
+    .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,opened):[];
   const kickPw=+sum(kickers.map(k=>GWD[k.name].pw)).toFixed(3);
   const kickW=[0,1,2].map(i=>+sum(kickers.map(k=>GWD[k.name].pwW[i])).toFixed(3));
-  // package fairness runs on DRAFT CAPITAL, not the best piece alone: v = 1/sqrt(ADP)
-  // (steep at the top, like real pick value), lesser pieces count at 55% (the market's
-  // 2-for-1 discount), and the target must sit in a two-sided band of the package's
-  // combined value — two good pieces can buy an elite, but never a Jokic for role guys.
   const vAdp=a=>a>0?1/Math.sqrt(a):0;
   const vs=pieces.map(p=>vAdp(p.adp)).sort((a,b)=>b-a);
   const pkgV=vs[0]+0.55*vs.slice(1).reduce((a,b)=>a+b,0);
-  const pkgFair=B=>{const v=vAdp(B.adp);return Math.abs(v-pkgV)<=0.35*Math.max(v,pkgV);};
-  const fairAll=TRP.filter(B=>!inPkg.has(B.name)&&GWD[B.name]&&B.adp>0&&B.adp<110&&pkgFair(B))
-    .map(B=>{const g=GWD[B.name];
-      return {name:B.name,team:B.team,pos:B.pos,adp:B.adp,pw:g.pw,
-        net:+(g.pw+kickPw-pkgPw).toFixed(3),
-        netW:g.pwW.map((v,i)=>+(v+kickW[i]-pkgW[i]).toFixed(3))};})
-    .sort((a,b)=>b.net-a.net);
-  const targets=fairAll.filter(t=>t.net>=Math.max(0.01,0.10*pkgPw)).slice(0,4);
-  // when nothing clears the bar, the verdict is KEEP THE DEPTH — and we show the
-  // closest fair calls with their red nets so the user sees exactly why.
-  const closest=targets.length?[]:fairAll.slice(0,3);
+  const inBand=v=>Math.abs(v-pkgV)<=0.35*Math.max(v,pkgV);
+  const cands=TRP.filter(B=>!inPkg.has(B.name)&&GWD[B.name]&&B.adp>0&&B.adp<110);
+  const mk=ps=>{const pw=+sum(ps.map(p=>GWD[p.name].pw)).toFixed(3);
+    return {players:ps.map(p=>({name:p.name,team:p.team,pos:p.pos,adp:p.adp})),pw,
+      net:+(pw+kickPw-pkgPw).toFixed(3),
+      netW:[0,1,2].map(i=>+(sum(ps.map(p=>GWD[p.name].pwW[i]))+kickW[i]-pkgW[i]).toFixed(3))};};
+  let raw=[];
+  if(retN===1){ for(const B of cands) if(inBand(vAdp(B.adp))) raw.push(mk([B])); }
+  else{
+    for(let i=0;i<cands.length;i++)for(let j=i+1;j<cands.length;j++){
+      const va=vAdp(cands[i].adp),vb=vAdp(cands[j].adp);
+      if(!inBand(Math.max(va,vb)+0.55*Math.min(va,vb))) continue;
+      raw.push(mk([cands[i],cands[j]]));
+    }
+  }
+  raw.sort((a,b)=>b.net-a.net);
+  // diversity: no player appears in more than 2 shown returns (else every pair is KAT+x)
+  const used={}; raw=raw.filter(t=>{ if(t.players.some(p=>(used[p.name]||0)>=2)) return false;
+    t.players.forEach(p=>used[p.name]=(used[p.name]||0)+1); return true; });
+  const gate=Math.max(0.01,0.10*pkgPw);
+  const targets=raw.filter(t=>t.net>=gate).slice(0,4);
+  // when nothing clears the bar, the verdict is KEEP/HOLD — and we show the closest
+  // fair calls with their red nets so the user sees exactly why.
+  const closest=targets.length?[]:raw.slice(0,3);
   return {pieces:pieces.map(p=>({name:p.name,team:p.team,pos:p.pos,adp:p.adp||0,
       pw:GWD[p.name].pw,pwW:GWD[p.name].pwW})),
     pkgPw,pkgW,kickers:kickers.map(k=>({name:k.name,team:k.team,pos:k.pos,adp:k.adp||0,pw:GWD[k.name].pw})),
-    kickPw,targets,closest};
+    kickPw,targets,closest,retN,opened};
 }
+const packageData=names=>findReturn(names,1);
 function upgradesFor(p){
   const u=upgradeData(p); if(!u) return '';
   const fmt=v=>(v>0?'+':'')+v.toFixed(2);
@@ -1127,7 +1191,7 @@ function renderCatProfile(now, after, wkNow, wkAfter){
     return `<div class="cpc"><div class="cpl">${c.s.toUpperCase()}</div>
       <div class="cpv">${Math.round(p*100)}%${a!=null&&Math.abs(d)>=0.02?` <span class="${d>0?'gtxt':'ltxt'}">&rarr;${Math.round(a*100)}</span>`:''}</div>
       <div class="cpb"><i class="${cls(a!=null?a:p)}" style="width:${(a!=null?a:p)*100}%"></i></div></div>`;}).join('');
-  q('catprof').innerHTML=`<div class="catprof"><div class="cph">${odds} · <b class="gtxt">${n.lock}</b> locks · <b style="color:#d6a94e">${n.flip}</b> coin-flips · <b class="ltxt">${n.punt}</b> punts. First to ${need} categories wins the week — the flips decide it.</div><div class="cpgrid" style="grid-template-columns:repeat(${cats.length},minmax(0,1fr))">${cells}</div></div>`;
+  q('catprof').innerHTML=`<div class="catprof"><div class="cph">${odds} · <b class="gtxt">${n.lock}</b> locks · <b style="color:#d6a94e">${n.flip}</b> coin-flips · <b class="ltxt">${n.punt}</b> punts. First to ${need} categories wins the week. The flips decide it.</div><div class="cpgrid" style="grid-template-columns:repeat(${cats.length},minmax(0,1fr))">${cells}</div></div>`;
 }
 let trAnchor=null, trSwap=null, trGive=[], trGet=[], _warCache=null;
 let PLAN=loadPlan();
