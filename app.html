@@ -1416,7 +1416,7 @@ $('g-send').onclick = async () => {
   $('g-send').textContent = 'Sending…';
   const { error } = await supabase.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.origin + '/app.html' } });
   $('g-send').textContent = 'Send magic link';
-  $('g-signin-msg').textContent = error ? error.message : 'Check your email and tap the link.';
+  $('g-signin-msg').textContent = error ? error.message : 'Check your email and tap the link. Nothing in a minute? Check spam, and drag us to your inbox so the next one lands right.';
 };
 $('g-pay').onclick = async () => {
   const { data:{ session } } = await supabase.auth.getSession(); if(!session) return;
