@@ -1,11 +1,31 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PlayoffProof: Your playoff board</title>
+<meta name="description" content="280 NBA players priced for the three weeks that decide your fantasy title. Sortable board, upgrade finder, trade grader. One manager per league.">
+<meta property="og:title" content="PlayoffProof: Your playoff board">
+<meta property="og:description" content="Every player priced for your title weeks, updated nightly. Grade any trade offer in seconds. One manager per league.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://playoffproof.com/app.html">
+<meta property="og:image" content="https://playoffproof.com/og-app-v2.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PlayoffProof: Your playoff board">
+<meta name="twitter:description" content="Every player priced for your title weeks, updated nightly. Grade any trade offer in seconds.">
+<meta name="twitter:image" content="https://playoffproof.com/og-app-v2.png">
+
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>PlayoffProof — Your Movers</title>
+
 <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","1434096858619667");fbq("track","PageView");</script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1434096858619667&ev=PageView&noscript=1"></noscript>
+<script>
+  window.edgetag=window.edgetag||function(){(edgetag.stubs=edgetag.stubs||[]).push(arguments)};
+  edgetag('init', {
+    edgeURL: 'https://gtklh.playoffproof.com',
+    disableConsentCheck: true
+  })
+</script>
+<script async type="text/javascript" src="https://gtklh.playoffproof.com/load"></script>
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
 :root{
@@ -354,6 +374,21 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
 .gatecard .or{color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0}
 .gatecard .msg{font-size:13px;color:var(--ink2);margin-top:12px;min-height:18px}
 .gatecard a{color:var(--muted);font-size:12px;display:inline-block;margin-top:16px;text-decoration:none}
+/* ---- PREVIEW MODE: strangers see the real board, top of it anyway ---- */
+body.preview .gt tbody tr.grow:nth-child(n+21){filter:blur(6px);pointer-events:none;user-select:none}
+body.preview .pksel{visibility:hidden}
+body.preview #pkgbar{display:none!important}
+body.preview .upg .upglab,body.preview .upg .upgrow,body.preview .upg .upgnone,body.preview .upg .upgfine{filter:blur(5px);pointer-events:none;user-select:none}
+body.preview .upg{position:relative}
+body.preview .upg::after{content:'Unlock to see who beats him in your title weeks';position:absolute;inset:34px 0 auto 0;text-align:center;color:var(--gold);font-weight:700;font-size:13px;letter-spacing:.03em}
+.pvbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 16px;background:linear-gradient(180deg,rgba(15,13,10,.86),#0f0d0a 40%);border-top:1px solid rgba(203,166,83,.45);backdrop-filter:blur(6px)}
+.pvbar .pvtxt{color:var(--ink2);font-size:12.5px}
+.pvbar .pvtxt b{color:var(--ink)}
+.pvbar button{background:linear-gradient(100deg,#d6a94e,#a9713f);color:#140f08;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:800;font-size:13px;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
+.pvbar a{color:var(--muted);font-size:12px;text-decoration:underline dotted;text-underline-offset:3px;white-space:nowrap}
+body.preview #app{padding-bottom:76px}
+.vipbadge{position:fixed;top:10px;right:10px;z-index:70;background:rgba(15,13,10,.9);border:1px solid rgba(203,166,83,.55);color:#d6a94e;font-size:9.5px;font-weight:800;letter-spacing:.14em;border-radius:7px;padding:6px 10px;pointer-events:none}
+@media(max-width:640px){.pvbar{flex-wrap:wrap;gap:8px;text-align:center}.pvbar .pvtxt{width:100%}}
 </style></head>
 <body><div id="gate" class="gatewrap">
  <div class="gatecard">
@@ -364,11 +399,12 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
    <input id="g-email" type="email" placeholder="you@email.com" autocomplete="email">
    <button id="g-send">Send magic link</button>
    <div class="msg" id="g-signin-msg"></div>
+   <a href="#" id="g-back">&larr; back to the board preview</a>
   </div>
   <div id="g-unlock" hidden>
    <h2>Unlock your board</h2>
    <p>Founding access for the 2026-27 season. One manager per league, forever.</p>
-   <button id="g-pay">🔒 Become a Founding Load Manager — $69</button>
+   <button id="g-pay">🔒 Become a Founding Load Manager · $69</button>
    <div class="or">or</div>
    <input id="g-code" placeholder="have a friend code? paste it">
    <button id="g-redeem" class="ghost">Unlock with code</button>
@@ -381,6 +417,12 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
    <div class="msg" id="g-act-msg"></div>
   </div>
  </div>
+</div>
+<div id="vipbadge" class="vipbadge" hidden>CREATOR PREVIEW · playoffproof.com</div>
+<div id="pvbar" class="pvbar" hidden>
+ <span class="pvtxt">This is the <b>live board</b>, top 20 of 280 players. Full board, trade grades and upgrade finder: <b>$69 for the season · one manager per league.</b></span>
+ <button id="pv-unlock">Unlock your league's board</button>
+ <a href="#" id="pv-signin">already a member? sign in</a>
 </div>
 <div id="app" hidden><div class="wrap">
 <header>
@@ -714,13 +756,17 @@ function insightStrip(){
   const GWD=gridWar();
   const P=TRP.filter(p=>GWD[p.name]);
   const kings=P.filter(p=>GWD[p.name].sw>0&&p.score>=55).sort((a,b)=>GWD[b.name].sw-GWD[a.name].sw).slice(0,3);
-  const gold=P.filter(p=>(!p.adp||p.adp>=110)).sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,3);
+  const preDraft=new Date().toISOString().slice(0,10)<'2026-10-20';
+  const steals=P.filter(p=>isSteal(p,GWD)).sort((a,b)=>GWD[a.name].rr-GWD[b.name].rr).slice(0,3);
+  const gold=P.filter(p=>isWaiver(p,GWD)).sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,3);
   const fading=P.filter(p=>p.adp>0&&p.adp<=50&&GWD[p.name].sw<-2).sort((a,b)=>GWD[a.name].sw-GWD[b.name].sw).slice(0,3);
   const row=(p,val,cls)=>`<div class="istp" data-n="${p.name}" role="button" tabindex="0">${pixBust(p.name,p.team,20)}<span>${p.name.split(' ').slice(-1)[0]}</span><b class="${cls}">${val}</b></div>`;
   const card=(title,sub,rows)=>`<div class="istc"><div class="istt">${title}</div><div class="ists">${sub}</div>${rows}</div>`;
   return `<div class="istrip">`+
     card('Window Kings','climb hardest when the title’s on the line',kings.map(p=>row(p,'+'+GWD[p.name].sw+' spots','g')).join(''))+
-    card('Waiver Gold','likely unrostered, real title-week value',gold.map(p=>row(p,'+'+GWD[p.name].pw.toFixed(2)+' wins','g')).join(''))+
+    (preDraft
+      ? card('Draft Steals','the market drafts them late, our board doesn\'t',steals.map(p=>row(p,'ADP '+Math.round(p.adp)+' → #'+GWD[p.name].rr,'g')).join(''))
+      : card('Waiver Gold','deep on every board, real title-week value',gold.map(p=>row(p,'+'+GWD[p.name].pw.toFixed(2)+' wins','g')).join('')))+
     card('Fading Stars','the market still pays full price',fading.map(p=>row(p,GWD[p.name].sw+' spots','r')).join(''))+
   `</div>`;
 }
@@ -740,9 +786,9 @@ function tradeEval(giveN,getN){
   const gv=side(G), gt=side(R);
   const opened=G.length-R.length;
   const excl=new Set([...giveN,...getN]);
-  const kickers=opened>0?TRP.filter(B=>!excl.has(B.name)&&GWD[B.name]&&(!B.adp||B.adp>=110))
+  const kickers=opened>0?TRP.filter(B=>!excl.has(B.name)&&isWaiver(B,GWD))
     .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,opened)
-    .map(k=>({name:k.name,team:k.team,pw:GWD[k.name].pw,pwW:GWD[k.name].pwW})):[];
+    .map(k=>({name:k.name,team:k.team,adp:k.adp||0,rr:GWD[k.name].rr,pw:GWD[k.name].pw,pwW:GWD[k.name].pwW})):[];
   const kickPw=+sum(kickers.map(k=>k.pw)).toFixed(3);
   const kickW=[0,1,2].map(i=>+sum(kickers.map(k=>k.pwW[i])).toFixed(3));
   const net=+(gt.pw+kickPw-gv.pw).toFixed(3);
@@ -783,7 +829,7 @@ function renderTradeGrade(t){
 function upgradeData(p){
   const GWD=gridWar(); const mine=GWD[p.name]; if(!mine) return null;
   const cands=TRP.filter(B=>B.name!==p.name&&GWD[B.name]);
-  const pack=B=>{const g=GWD[B.name];return {name:B.name,team:B.team,pos:B.pos,adp:B.adp||0,
+  const pack=B=>{const g=GWD[B.name];return {name:B.name,team:B.team,pos:B.pos,adp:B.adp||0,rr:g.rr,
     d:+(g.pw-mine.pw).toFixed(3), dW:g.pwW.map((v,i)=>+(v-mine.pwW[i]).toFixed(3))};};
   // tiers are exclusive: a TRADE target is a market asset (drafted, above waiver tier);
   // waiver-tier players (ADP 110+/undrafted) only ever appear as ADDS — otherwise the
@@ -793,7 +839,7 @@ function upgradeData(p){
   const MINU=Math.max(0.01,0.12*mine.pw);
   const trades=cands.filter(B=>B.adp>0&&B.adp<110&&adpFair(p,B)&&GWD[B.name].pw>mine.pw+MINU)
     .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,4).map(pack);
-  const adds=cands.filter(B=>(!B.adp||B.adp>=110)&&GWD[B.name].pw>mine.pw+MINU)
+  const adds=cands.filter(B=>isWaiver(B,GWD)&&GWD[B.name].pw>mine.pw+MINU)
     .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,3).map(pack);
   return {name:p.name,adp:p.adp||0,pw:mine.pw,pwW:mine.pwW,trades,adds};
 }
@@ -817,7 +863,7 @@ function findReturn(names,retN){
   const pkgW=[0,1,2].map(i=>+sum(pieces.map(p=>GWD[p.name].pwW[i])).toFixed(3));
   const inPkg=new Set(names);
   const opened=pieces.length-retN;   // >0: slots open (waiver refills); <0: forced drop, assumed replacement
-  const kickers=opened>0?TRP.filter(B=>!inPkg.has(B.name)&&GWD[B.name]&&(!B.adp||B.adp>=110))
+  const kickers=opened>0?TRP.filter(B=>!inPkg.has(B.name)&&isWaiver(B,GWD))
     .sort((a,b)=>GWD[b.name].pw-GWD[a.name].pw).slice(0,opened):[];
   const kickPw=+sum(kickers.map(k=>GWD[k.name].pw)).toFixed(3);
   const kickW=[0,1,2].map(i=>+sum(kickers.map(k=>GWD[k.name].pwW[i])).toFixed(3));
@@ -850,7 +896,7 @@ function findReturn(names,retN){
   const closest=targets.length?[]:raw.slice(0,3);
   return {pieces:pieces.map(p=>({name:p.name,team:p.team,pos:p.pos,adp:p.adp||0,
       pw:GWD[p.name].pw,pwW:GWD[p.name].pwW})),
-    pkgPw,pkgW,kickers:kickers.map(k=>({name:k.name,team:k.team,pos:k.pos,adp:k.adp||0,pw:GWD[k.name].pw})),
+    pkgPw,pkgW,kickers:kickers.map(k=>({name:k.name,team:k.team,pos:k.pos,adp:k.adp||0,rr:GWD[k.name].rr,pw:GWD[k.name].pw})),
     kickPw,targets,closest,retN,opened};
 }
 const packageData=names=>findReturn(names,1);
@@ -868,7 +914,7 @@ function upgradesFor(p){
   if(!u.trades.length&&!u.adds.length)
     h+=`<p class="upgnone">Nobody at his market price out-earns him in your playoff weeks. He's the hold.</p>`;
   if(u.trades.length) h+=`<div class="upglab">Trade for · fair by ADP</div>`+u.trades.map(row).join('');
-  if(u.adds.length) h+=`<div class="upglab">Waiver tier · often unrostered</div>`+u.adds.map(row).join('');
+  if(u.adds.length) h+=`<div class="upglab">Waiver tier · usually unrostered in 10-team leagues</div>`+u.adds.map(row).join('');
   h+=`<p class="upgfine">Deltas = expected title-week matchup wins vs him, same neutral lineup. Availability varies by league.</p></div>`;
   return h;
 }
@@ -888,11 +934,13 @@ const TEAMCOL={ATL:'#e03a3e',BOS:'#007a33',BKN:'#3d3d3d',CHA:'#1d1160',CHI:'#ce1
  LAL:'#552583',MEM:'#5d76a9',MIA:'#98002e',MIL:'#00471b',MIN:'#0c2340',NOP:'#85714d',NO:'#85714d',
  NYK:'#f58426',OKC:'#007ac1',ORL:'#0077c0',PHI:'#006bb6',PHO:'#e56020',PHX:'#e56020',POR:'#e03a43',
  SAC:'#5a2d81',SAS:'#8a8d8f',TOR:'#ce1141',UTA:'#002b5c',WAS:'#e31837'};
+// recognizable players get accurate tones (name-hash stays as the deep-roster fallback)
+const SKIN_OVERRIDES={'Zion Williamson':'#5b3a21','Anthony Davis':'#5b3a21','Kawhi Leonard':'#5b3a21','Onyeka Okongwu':'#5b3a21',"Kel'el Ware":'#5b3a21','Scottie Barnes':'#5b3a21','Anthony Edwards':'#5b3a21','Tyrese Maxey':'#5b3a21','Donovan Mitchell':'#5b3a21','Desmond Bane':'#7a4a2e','Kyrie Irving':'#7a4a2e','Ryan Rollins':'#7a4a2e','Julian Champagnie':'#7a4a2e','Miles McBride':'#7a4a2e','Shai Gilgeous-Alexander':'#7a4a2e','Jalen Johnson':'#7a4a2e','Trae Young':'#a9714b','Zach LaVine':'#a9714b','Karl-Anthony Towns':'#a9714b','Jamal Murray':'#a9714b','Isaiah Joe':'#a9714b','John Collins':'#a9714b','Mikal Bridges':'#a9714b','Jalen Brunson':'#a9714b','Jayson Tatum':'#a9714b','Tyrese Haliburton':'#a9714b','Cade Cunningham':'#a9714b','Tobias Harris':'#a9714b','Domantas Sabonis':'#e9c49f','Josh Giddey':'#e9c49f','Tyler Herro':'#e9c49f','Donovan Clingan':'#e9c49f','AJ Green':'#e9c49f','Ryan Kalkbrenner':'#e9c49f','Grayson Allen':'#e9c49f','Nikola Jokic':'#e9c49f','Victor Wembanyama':'#e9c49f','Luka Doncic':'#e9c49f','Cooper Flagg':'#e9c49f','Kon Knueppel':'#e9c49f'};
 const SKINS=['#8d5524','#a9714b','#c9a472','#e9c49f','#6b4226','#7a4a2e'];
 const HAIRS=['#15100a','#241a10','#0d0906','#3b2a18'];
 function pixBust(name,team,px){
   let h=0; for(const c of (name||'')) h=(h*31+c.charCodeAt(0))>>>0;
-  const skin=SKINS[h%SKINS.length], hair=HAIRS[(h>>3)%HAIRS.length], bald=((h>>6)%7)===0;
+  const skin=SKIN_OVERRIDES[name]||SKINS[h%SKINS.length], hair=HAIRS[(h>>3)%HAIRS.length], bald=((h>>6)%7)===0;
   const jer=TEAMCOL[team]||'#a9713f';
   const G=[]; const put=(x,y,f)=>G.push(`<rect x="${x*10}" y="${y*10}" width="10" height="10" fill="${f}"/>`);
   for(let x=3;x<=8;x++) put(x,0,bald?skin:hair);
@@ -1156,6 +1204,11 @@ function trPlayerWAR(p){
 // one starter slot on a league-average lineup, vs handing that slot to the waiver
 // replacement. Roster-free, so all rows are comparable and sortable. (The trade tab's
 // trPlayerWAR is the roster-specific version of the same engine.)
+// TIER TRUTH: 'waiver' means market AND our board agree he's deep (Ware/Rollins are ADP 120+
+// but top-75 on our board: those are DRAFT STEALS, never 'on your wire'). Refill math and
+// suggestion tiers all use these, so the app never contradicts its own rankings.
+const isWaiver=(p,G)=>(!p.adp||p.adp>=110)&&G[p.name]&&G[p.name].rr>120;
+const isSteal=(p,G)=>p.adp>=90&&G[p.name]&&G[p.name].rr<=75;
 const gridWar=(()=>{let done=null,key=null;return()=>{
   const k=LG().name+'|'+JSON.stringify(SET); if(done&&key===k)return done; key=k;
   const nS=Math.min(SET.teams*SET.starters,TRP.length);
@@ -1182,7 +1235,7 @@ const gridWar=(()=>{let done=null,key=null;return()=>{
   const byRw=[...TRP].sort((a,b)=>out[b.name].rw-out[a.name].rw);
   const byPw=[...TRP].sort((a,b)=>out[b.name].pw-out[a.name].pw);
   const rkR={},rkP={}; byRw.forEach((p,i)=>rkR[p.name]=i); byPw.forEach((p,i)=>rkP[p.name]=i);
-  for(const p of TRP) out[p.name].sw=rkR[p.name]-rkP[p.name];
+  for(const p of TRP){ out[p.name].sw=rkR[p.name]-rkP[p.name]; out[p.name].rr=rkR[p.name]+1; out[p.name].pr=rkP[p.name]+1; }
   done=out; return done;};})();
 // 3-playoff-week average win probability per category — the team's category composition
 function trCatProfile(players){const o={};for(const c of AC())o[c.k]=0;
@@ -1398,24 +1451,51 @@ const supabase = createClient('https://lcglavmrtxijzacmebzy.supabase.co', 'eyJhb
 const PAYLINK = 'https://buy.stripe.com/aFa4gr8gN6Cy0tYga64sE00';
 const $ = id => document.getElementById(id);
 const paid = new URLSearchParams(location.search).get('paid') === '1';
+// ---- creator preview codes (?vip=SCOUT-XXXX): full app, no signup. Hashes only —
+// revoke by removing a hash + rebuild; all expire VIP_UNTIL. Per-creator codes so a
+// leak is traceable. This matches the gate's existing client-side security model.
+const VIP_HASHES = new Set(['30433d63a969d38ab61dd82d64cefa9db6bfe9656bc094af2e07fa1ddd4c13af','904d1e19c6c3da25cfc1083919d73255b3dae9f2414ef1fcc3ebe5855c9aa9fd','ea460f1180d67cea2c606ffa26b749272f48de5f18b5dfa0684e4a5757b466f6','0f61146f0fbbecb7fa6a7eb574736035e554be09168c8a0ca5cc1a85296b56c2','f0da57796d918dd29885cd8b493239c89598377a80158024117f5f1b34cbea8e','c994028b5c1fc66babac9731f194298f5fdf2f323d164624b862686ff8d59934']);
+const VIP_UNTIL = '2026-11-30';
+async function vipOk(){
+  const p = new URLSearchParams(location.search).get('vip');
+  if(p){ localStorage.setItem('pp_vip', p.trim().toUpperCase());
+    history.replaceState(null,'',location.pathname); }
+  const code = localStorage.getItem('pp_vip');
+  if(!code || new Date().toISOString().slice(0,10) > VIP_UNTIL) return false;
+  // baked launch codes (work with zero backend)
+  const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code));
+  const hex = [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  if(VIP_HASHES.has(hex)) return true;
+  // self-serve codes: rows Brent adds in the Supabase vip_codes table
+  try{ const { data } = await supabase.rpc('check_vip', { p_code: code }); return data === true; }
+  catch(e){ return false; }
+}
 function show(which){
-  $('gate').hidden = which==='app'; $('app').hidden = which!=='app';
+  const preview = which==='preview';
+  $('gate').hidden = preview || which==='app';
+  $('app').hidden = !(which==='app' || preview);
+  $('pvbar').hidden = !preview;
+  document.body.classList.toggle('preview', preview);
   $('g-signin').hidden = which!=='signin';
   $('g-unlock').hidden = which!=='unlock';
   $('g-activating').hidden = which!=='activating';
-  if(which==='app') window.scrollTo(0,0);
+  if(which==='app'||preview) window.scrollTo(0,0);
 }
 async function entitled(session){
   const { data } = await supabase.from('entitlements').select('status').eq('user_id', session.user.id).maybeSingle();
   return data && data.status === 'active';
 }
 async function route(){
+  if(await vipOk()){ show('app'); $('vipbadge').hidden=false; return; }
   const { data:{ session } } = await supabase.auth.getSession();
-  if(!session){ show('signin'); return; }
+  if(!session){ show('preview'); try{fbq('track','ViewContent',{content_name:'board-preview'});}catch(e){} return; }
   if(await entitled(session)){ show('app'); return; }
   if(paid){ show('activating'); poll(session, 0); return; }
   show('unlock');
 }
+$('pv-unlock').onclick = () => { try{fbq('track','Lead',{content_name:'preview-unlock'});}catch(e){} show('signin'); };
+$('pv-signin').onclick = e => { e.preventDefault(); show('signin'); };
+$('g-back').onclick = e => { e.preventDefault(); show('preview'); };
 function poll(session, n){
   if(n > 8){ $('g-act-msg').textContent = 'Still working. Refresh in a moment.'; return; }
   setTimeout(async () => { (await entitled(session)) ? show('app') : poll(session, n+1); }, 2000);
@@ -1431,6 +1511,11 @@ $('g-pay').onclick = async () => {
   try{fbq('track','InitiateCheckout',{currency:'USD',value:69});}catch(e){}
   const { data:{ session } } = await supabase.auth.getSession(); if(!session) return;
   const u = session.user;
+  // stash Meta click cookies so the server-side Purchase can match this browser, not just the email
+  try{
+    const ck = n => (document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)'))||[])[1] || null;
+    await supabase.from('attribution').upsert({ user_id: u.id, fbp: ck('_fbp'), fbc: ck('_fbc'), ua: navigator.userAgent, updated_at: new Date().toISOString() });
+  }catch(e){}
   location.href = PAYLINK + '?client_reference_id=' + u.id + '&prefilled_email=' + encodeURIComponent(u.email);
 };
 $('g-redeem').onclick = async () => {
