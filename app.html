@@ -403,8 +403,8 @@ body.preview #app{padding-bottom:76px}
   </div>
   <div id="g-unlock" hidden>
    <h2>Unlock your board</h2>
-   <p>Founding access for the 2026-27 season. One manager per league, forever.</p>
-   <button id="g-pay">🔒 Become a Founding Load Manager · $69</button>
+   <p>Founding access for the 2026-27 season: $29 instead of $69, one of 100 founding spots. Renews at the regular price. One manager per league, forever.</p>
+   <button id="g-pay">🔒 Founding access · $29</button>
    <div class="or">or</div>
    <input id="g-code" placeholder="have a friend code? paste it">
    <button id="g-redeem" class="ghost">Unlock with code</button>
@@ -420,7 +420,7 @@ body.preview #app{padding-bottom:76px}
 </div>
 <div id="vipbadge" class="vipbadge" hidden>CREATOR PREVIEW · playoffproof.com</div>
 <div id="pvbar" class="pvbar" hidden>
- <span class="pvtxt">This is the <b>live board</b>, top 20 of 280 players. Full board, trade grades and upgrade finder: <b>$69 for the season · one manager per league.</b></span>
+ <span class="pvtxt">This is the <b>live board</b>, top 20 of 280 players. Full board, trade grades and upgrade finder: <b>$29 founding price</b> (normally $69) · 100 founding spots · one manager per league.</span>
  <button id="pv-unlock">Unlock your league's board</button>
  <a href="#" id="pv-signin">already a member? sign in</a>
 </div>
@@ -1448,7 +1448,7 @@ showTab(LEAGUE?'trades':'players');
 </div><script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const supabase = createClient('https://lcglavmrtxijzacmebzy.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZ2xhdm1ydHhpanphY21lYnp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxODUyMzcsImV4cCI6MjEwMjc2MTIzN30.dnKhfCYKVx-Bk09aWnRH27ryXcUWbYr4x-np76thiaE');
-const PAYLINK = 'https://buy.stripe.com/aFa4gr8gN6Cy0tYga64sE00';
+const PAYLINK = 'https://buy.stripe.com/aFa4gr8gN6Cy0tYga64sE00?prefilled_promo_code=FOUNDING29';
 const $ = id => document.getElementById(id);
 const paid = new URLSearchParams(location.search).get('paid') === '1';
 // ---- creator preview codes (?vip=SCOUT-XXXX): full app, no signup. Hashes only —
