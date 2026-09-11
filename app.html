@@ -387,6 +387,13 @@ body.preview .upg::after{content:'Unlock to see who beats him in your title week
 .pvbar button{background:linear-gradient(100deg,#d6a94e,#a9713f);color:#140f08;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:800;font-size:13px;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
 .pvbar a{color:var(--muted);font-size:12px;text-decoration:underline dotted;text-underline-offset:3px;white-space:nowrap}
 body.preview #app{padding-bottom:76px}
+/* TEASER: the board and the names prove the product is real; the numbers are the product. */
+body.teaser .istp b,body.teaser .istp span{filter:blur(7px);user-select:none}
+body.teaser .istc{position:relative}
+body.teaser .istc::after{content:'🔒';position:absolute;right:12px;top:12px;font-size:13px;opacity:.55}
+body.teaser .gt tbody tr.grow td:not(.rk):not(.nm){filter:blur(6px);user-select:none}
+body.teaser .gt tbody tr.grow:nth-child(n+11) td.nm{filter:blur(6px)}
+body.teaser .lrow-exp,body.teaser .gside{display:none!important}
 .vipbadge{position:fixed;top:10px;right:10px;z-index:70;background:rgba(15,13,10,.9);border:1px solid rgba(203,166,83,.55);color:#d6a94e;font-size:9.5px;font-weight:800;letter-spacing:.14em;border-radius:7px;padding:6px 10px;pointer-events:none}
 @media(max-width:640px){.pvbar{flex-wrap:wrap;gap:8px;text-align:center}.pvbar .pvtxt{width:100%}}
 </style></head>
@@ -420,7 +427,7 @@ body.preview #app{padding-bottom:76px}
 </div>
 <div id="vipbadge" class="vipbadge" hidden>CREATOR PREVIEW · playoffproof.com</div>
 <div id="pvbar" class="pvbar" hidden>
- <span class="pvtxt">This is the <b>live board</b>, top 20 of 280 players. Full board, trade grades and upgrade finder: <b>$29 founding price</b> (normally $69) · 100 founding spots · one manager per league.</span>
+ <span class="pvtxt">The numbers are hidden. This is the live board for <b>280 players</b>, priced for your title weeks. Full board, trade grades and upgrade finder: <b>$29 founding price</b> (normally $69) · 100 founding spots · one manager per league.</span>
  <button id="pv-unlock">Unlock your league's board</button>
  <a href="#" id="pv-signin">already a member? sign in</a>
 </div>
@@ -1451,6 +1458,7 @@ const supabase = createClient('https://lcglavmrtxijzacmebzy.supabase.co', 'eyJhb
 const PAYLINK = 'https://buy.stripe.com/aFa4gr8gN6Cy0tYga64sE00?prefilled_promo_code=FOUNDING29';
 const $ = id => document.getElementById(id);
 const paid = new URLSearchParams(location.search).get('paid') === '1';
+const GATE_MODE = 'teaser';
 // ---- creator preview codes (?vip=SCOUT-XXXX): full app, no signup. Hashes only —
 // revoke by removing a hash + rebuild; all expire VIP_UNTIL. Per-creator codes so a
 // leak is traceable. This matches the gate's existing client-side security model.
@@ -1476,6 +1484,7 @@ function show(which){
   $('app').hidden = !(which==='app' || preview);
   $('pvbar').hidden = !preview;
   document.body.classList.toggle('preview', preview);
+  document.body.classList.toggle('teaser', preview && GATE_MODE === 'teaser');
   $('g-signin').hidden = which!=='signin';
   $('g-unlock').hidden = which!=='unlock';
   $('g-activating').hidden = which!=='activating';
@@ -1488,7 +1497,9 @@ async function entitled(session){
 async function route(){
   if(await vipOk()){ show('app'); $('vipbadge').hidden=false; return; }
   const { data:{ session } } = await supabase.auth.getSession();
-  if(!session){ show('preview'); try{fbq('track','ViewContent',{content_name:'board-preview'});}catch(e){} return; }
+  if(!session){
+    if(GATE_MODE === 'hard'){ show('signin'); return; }
+    show('preview'); try{fbq('track','ViewContent',{content_name:'board-preview'});}catch(e){} return; }
   if(await entitled(session)){ show('app'); return; }
   if(paid){ show('activating'); poll(session, 0); return; }
   show('unlock');
