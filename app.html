@@ -410,13 +410,19 @@ body.teaser .lrow-exp,body.teaser .gside{display:none!important}
   </div>
   <div id="g-unlock" hidden>
    <h2>Unlock your board</h2>
-   <p>Founding access for the 2026-27 season: $29 instead of $69, one of 100 founding spots. Renews at the regular price. One manager per league, forever.</p>
-   <button id="g-pay">🔒 Founding access · $29</button>
+   <p>The first 100 managers get the full season free. No card, nothing to cancel. One manager per league.</p>
+   <button id="g-pay">🎁 Claim your free founding spot</button>
    <div class="or">or</div>
    <input id="g-code" placeholder="have a friend code? paste it">
    <button id="g-redeem" class="ghost">Unlock with code</button>
    <div class="msg" id="g-unlock-msg"></div>
    <a href="#" id="g-signout">sign out</a>
+  </div>
+  <div id="g-blocked" hidden>
+   <h2>Denied. 🚫</h2>
+   <p>You are in my fantasy league. This is a <b>spite build</b>. You do not get the edge.</p>
+   <p style="color:var(--muted);font-size:12.5px">Nothing personal. Actually, it is entirely personal. See you in the playoffs.</p>
+   <a href="#" id="g-blocked-out">sign out</a>
   </div>
   <div id="g-activating" hidden>
    <h2>Activating…</h2>
@@ -427,8 +433,8 @@ body.teaser .lrow-exp,body.teaser .gside{display:none!important}
 </div>
 <div id="vipbadge" class="vipbadge" hidden>CREATOR PREVIEW · playoffproof.com</div>
 <div id="pvbar" class="pvbar" hidden>
- <span class="pvtxt">The numbers are hidden. This is the live board for <b>280 players</b>, priced for your title weeks. Full board, trade grades and upgrade finder: <b>$29 founding price</b> (normally $69) · 100 founding spots · one manager per league.</span>
- <button id="pv-unlock">Unlock your league's board</button>
+ <span class="pvtxt">The numbers are hidden. This is the live board for <b>280 players</b>, priced for your title weeks. Full board, trade grades and upgrade finder: <b>Free for the first 100.</b> Sign in with your email and it is yours.</span>
+ <button id="pv-unlock">Claim a free founding spot</button>
  <a href="#" id="pv-signin">already a member? sign in</a>
 </div>
 <div id="app" hidden><div class="wrap">
@@ -1459,6 +1465,7 @@ const PAYLINK = 'https://buy.stripe.com/aFa4gr8gN6Cy0tYga64sE00?prefilled_promo_
 const $ = id => document.getElementById(id);
 const paid = new URLSearchParams(location.search).get('paid') === '1';
 const GATE_MODE = 'teaser';
+const FREE_FOUNDING = true;
 // ---- creator preview codes (?vip=SCOUT-XXXX): full app, no signup. Hashes only —
 // revoke by removing a hash + rebuild; all expire VIP_UNTIL. Per-creator codes so a
 // leak is traceable. This matches the gate's existing client-side security model.
@@ -1486,6 +1493,7 @@ function show(which){
   document.body.classList.toggle('preview', preview);
   document.body.classList.toggle('teaser', preview && GATE_MODE === 'teaser');
   $('g-signin').hidden = which!=='signin';
+  $('g-blocked').hidden = which!=='blocked';
   $('g-unlock').hidden = which!=='unlock';
   $('g-activating').hidden = which!=='activating';
   if(which==='app'||preview) window.scrollTo(0,0);
@@ -1496,6 +1504,17 @@ async function entitled(session){
 }
 async function route(){
   if(await vipOk()){ show('app'); $('vipbadge').hidden=false; return; }
+  // free-founding cohort: access is granted server-side at signup; ask why we're locked
+  if(FREE_FOUNDING){
+    const { data:{ session:s0 } } = await supabase.auth.getSession();
+    if(s0){
+      try{
+        const { data:st } = await supabase.rpc('my_access_status');
+        if(st==='blocked'){ show('blocked'); return; }
+        if(st==='active'){ show('app'); return; }
+      }catch(e){}
+    }
+  }
   const { data:{ session } } = await supabase.auth.getSession();
   if(!session){
     if(GATE_MODE === 'hard'){ show('signin'); return; }
@@ -1536,6 +1555,7 @@ $('g-redeem').onclick = async () => {
   $('g-unlock-msg').textContent = error ? error.message : (m[data] || data);
   if(data==='granted') setTimeout(route, 500);
 };
+$('g-blocked-out').onclick = async e => { e.preventDefault(); await supabase.auth.signOut(); location.href = location.origin + '/app.html'; };
 $('g-signout').onclick = async e => { e.preventDefault(); await supabase.auth.signOut(); location.href = location.origin + '/app.html'; };
 supabase.auth.onAuthStateChange(() => route());
 route();
