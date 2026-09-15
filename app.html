@@ -375,6 +375,7 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
 .gatecard .msg{font-size:13px;color:var(--ink2);margin-top:12px;min-height:18px}
 .gatecard a{color:var(--muted);font-size:12px;display:inline-block;margin-top:16px;text-decoration:none}
 .gatecard .spots{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800;margin:-4px 0 14px}
+.gatecard .spots s{color:var(--muted);opacity:.7;margin-right:4px;text-decoration-thickness:2px}
 .gatecard .finelet{color:var(--muted);font-size:11.5px;margin:10px 0 0;line-height:1.5}
 /* ---- PREVIEW MODE: strangers see the real board, top of it anyway ---- */
 body.preview .gt tbody tr.grow:nth-child(n+21){filter:blur(6px);pointer-events:none;user-select:none}
@@ -1531,7 +1532,7 @@ async function paintSpots(){
   if(!FREE_FOUNDING) return;
   try{ const { data } = await supabase.rpc('founding_spots_left');
     if(typeof data === 'number'){ const e=$('g-spots');
-      e.textContent = data > 0 ? data + ' of 100 spots left' : 'Founding spots are gone';
+      e.innerHTML = data > 0 ? '<s>100</s> ' + data + ' spots left' : 'Founding spots are gone';
       e.hidden = false; } }catch(e){}
 }
 paintSpots();
