@@ -374,6 +374,8 @@ table.gt{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,mono
 .gatecard .or{color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0}
 .gatecard .msg{font-size:13px;color:var(--ink2);margin-top:12px;min-height:18px}
 .gatecard a{color:var(--muted);font-size:12px;display:inline-block;margin-top:16px;text-decoration:none}
+.gatecard .spots{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800;margin:-4px 0 14px}
+.gatecard .finelet{color:var(--muted);font-size:11.5px;margin:10px 0 0;line-height:1.5}
 /* ---- PREVIEW MODE: strangers see the real board, top of it anyway ---- */
 body.preview .gt tbody tr.grow:nth-child(n+21){filter:blur(6px);pointer-events:none;user-select:none}
 body.preview .pksel{visibility:hidden}
@@ -401,12 +403,14 @@ body.teaser .lrow-exp,body.teaser .gside{display:none!important}
  <div class="gatecard">
   <div class="logo"><img class="logomark" src="logo.svg" alt="">PlayoffProof</div>
   <div id="g-signin">
-   <h2>Sign in</h2>
-   <p>Enter your email and we'll send a one-tap magic link. No password.</p>
+   <h2>Claim your free founding spot</h2>
+   <p>The first 100 managers get the full 2026-27 season free. Every player priced for the three weeks that decide your title.</p>
+   <div id="g-spots" class="spots" hidden></div>
    <input id="g-email" type="email" placeholder="you@email.com" autocomplete="email">
-   <button id="g-send">Send magic link</button>
+   <button id="g-send">Email me my free access</button>
    <div class="msg" id="g-signin-msg"></div>
-   <a href="#" id="g-back">&larr; back to the board preview</a>
+   <p class="finelet">We email you a one-tap link to confirm it's you. No password, no card.</p>
+   <a href="#" id="g-back" hidden>&larr; back to the board preview</a>
   </div>
   <div id="g-unlock" hidden>
    <h2>Unlock your board</h2>
@@ -433,7 +437,7 @@ body.teaser .lrow-exp,body.teaser .gside{display:none!important}
 </div>
 <div id="vipbadge" class="vipbadge" hidden>CREATOR PREVIEW · playoffproof.com</div>
 <div id="pvbar" class="pvbar" hidden>
- <span class="pvtxt">The numbers are hidden. This is the live board for <b>280 players</b>, priced for your title weeks. Full board, trade grades and upgrade finder: <b>Free for the first 100.</b> Sign in with your email and it is yours.</span>
+ <span class="pvtxt">This is the <b>live board</b>, top 20 of 280 players. Full board, trade grades and upgrade finder: <b>Free for the first 100.</b> Sign in with your email and it is yours.</span>
  <button id="pv-unlock">Claim a free founding spot</button>
  <a href="#" id="pv-signin">already a member? sign in</a>
 </div>
@@ -1464,7 +1468,7 @@ const supabase = createClient('https://lcglavmrtxijzacmebzy.supabase.co', 'eyJhb
 const PAYLINK = 'https://buy.stripe.com/aFa4gr8gN6Cy0tYga64sE00?prefilled_promo_code=FOUNDING29';
 const $ = id => document.getElementById(id);
 const paid = new URLSearchParams(location.search).get('paid') === '1';
-const GATE_MODE = 'teaser';
+const GATE_MODE = 'hard';
 const FREE_FOUNDING = true;
 // ---- creator preview codes (?vip=SCOUT-XXXX): full app, no signup. Hashes only —
 // revoke by removing a hash + rebuild; all expire VIP_UNTIL. Per-creator codes so a
@@ -1523,6 +1527,14 @@ async function route(){
   if(paid){ show('activating'); poll(session, 0); return; }
   show('unlock');
 }
+async function paintSpots(){
+  if(!FREE_FOUNDING) return;
+  try{ const { data } = await supabase.rpc('founding_spots_left');
+    if(typeof data === 'number'){ const e=$('g-spots');
+      e.textContent = data > 0 ? data + ' of 100 spots left' : 'Founding spots are gone';
+      e.hidden = false; } }catch(e){}
+}
+paintSpots();
 $('pv-unlock').onclick = () => { try{fbq('track','Lead',{content_name:'preview-unlock'});}catch(e){} show('signin'); };
 $('pv-signin').onclick = e => { e.preventDefault(); show('signin'); };
 $('g-back').onclick = e => { e.preventDefault(); show('preview'); };
